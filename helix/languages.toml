@@ -1,0 +1,312 @@
+# =============================================================================
+# Helix Language Configuration
+# ~/.config/helix/languages.toml
+#
+# NOTE: [[language]] sections MUST come before [language-server.*] sections
+# to avoid TOML parsing warnings.
+#
+# Install LSPs:  see install-lsp.sh
+# Check health:  hx --health
+# Check lang:    hx --health python
+# =============================================================================
+
+# =============================================================================
+# LANGUAGES
+# =============================================================================
+
+# --- Python ------------------------------------------------------------------
+# LSP: pyright (type checking) + ruff (linting/formatting)
+[[language]]
+name = "python"
+language-servers = ["pyright", "ruff"]
+formatter = { command = "ruff", args = ["format", "--line-length", "88", "-"] }
+auto-format = true
+indent = { tab-width = 4, unit = "    " }
+
+# --- Rust --------------------------------------------------------------------
+# LSP: rust-analyzer (built-in default, clippy on save)
+[[language]]
+name = "rust"
+auto-format = true
+indent = { tab-width = 4, unit = "    " }
+
+# --- Shell / Bash ------------------------------------------------------------
+# LSP: bash-language-server, formatter: shfmt
+[[language]]
+name = "bash"
+formatter = { command = "shfmt", args = ["-i", "2", "-ci", "-bn"] }
+auto-format = true
+indent = { tab-width = 2, unit = "  " }
+
+# --- YAML --------------------------------------------------------------------
+# LSP: yaml-language-server
+[[language]]
+name = "yaml"
+formatter = { command = "prettier", args = ["--parser", "yaml"] }
+auto-format = true
+indent = { tab-width = 2, unit = "  " }
+
+# --- JSON --------------------------------------------------------------------
+# LSP: vscode-json-language-server
+[[language]]
+name = "json"
+formatter = { command = "prettier", args = ["--parser", "json"] }
+auto-format = true
+indent = { tab-width = 2, unit = "  " }
+
+# --- JSONC (JSON with comments, e.g. tsconfig) --------------------------------
+[[language]]
+name = "jsonc"
+formatter = { command = "prettier", args = ["--parser", "json"] }
+auto-format = true
+indent = { tab-width = 2, unit = "  " }
+
+# --- Markdown ----------------------------------------------------------------
+# LSP: marksman (navigation/links) + ltex-ls-plus (grammar/spell check)
+[[language]]
+name = "markdown"
+language-servers = ["marksman", "ltex-ls-plus"]
+formatter = { command = "prettier", args = ["--parser", "markdown", "--prose-wrap", "always"] }
+auto-format = true
+soft-wrap.enable = true
+indent = { tab-width = 2, unit = "  " }
+
+# --- LaTeX -------------------------------------------------------------------
+# LSP: texlab (completions, building, forward search)
+# Grammar: ltex-ls-plus (spell/grammar checking)
+[[language]]
+name = "latex"
+language-servers = ["texlab", "ltex-ls-plus"]
+auto-format = true
+indent = { tab-width = 2, unit = "  " }
+
+# --- BibTeX ------------------------------------------------------------------
+# LSP: texlab
+[[language]]
+name = "bibtex"
+language-servers = ["texlab"]
+auto-format = true
+indent = { tab-width = 2, unit = "  " }
+
+# --- TypeScript --------------------------------------------------------------
+# LSP: typescript-language-server
+[[language]]
+name = "typescript"
+language-servers = ["typescript-language-server"]
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
+auto-format = true
+indent = { tab-width = 2, unit = "  " }
+
+# --- TSX ---------------------------------------------------------------------
+[[language]]
+name = "tsx"
+language-servers = ["typescript-language-server"]
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
+auto-format = true
+indent = { tab-width = 2, unit = "  " }
+
+# --- JavaScript --------------------------------------------------------------
+# LSP: typescript-language-server (handles JS too)
+[[language]]
+name = "javascript"
+language-servers = ["typescript-language-server"]
+formatter = { command = "prettier", args = ["--parser", "babel"] }
+auto-format = true
+indent = { tab-width = 2, unit = "  " }
+
+# --- JSX ---------------------------------------------------------------------
+[[language]]
+name = "jsx"
+language-servers = ["typescript-language-server"]
+formatter = { command = "prettier", args = ["--parser", "babel"] }
+auto-format = true
+indent = { tab-width = 2, unit = "  " }
+
+# --- Java --------------------------------------------------------------------
+# LSP: jdtls (Eclipse JDT Language Server)
+[[language]]
+name = "java"
+language-servers = ["jdtls"]
+formatter = { command = "google-java-format", args = ["-"] }
+auto-format = true
+indent = { tab-width = 4, unit = "    " }
+
+# --- Scala -------------------------------------------------------------------
+# LSP: metals (install via coursier)
+[[language]]
+name = "scala"
+language-servers = ["metals"]
+auto-format = true
+indent = { tab-width = 2, unit = "  " }
+
+# --- Kotlin ------------------------------------------------------------------
+# LSP: kotlin-language-server
+[[language]]
+name = "kotlin"
+language-servers = ["kotlin-language-server"]
+auto-format = true
+indent = { tab-width = 4, unit = "    " }
+
+# --- Groovy ------------------------------------------------------------------
+# NOTE: Groovy LSP support is limited. groovy-language-server exists but
+# is not actively maintained. Tree-sitter highlighting works out of the box.
+# For best experience, use per-project .helix/languages.toml if needed.
+[[language]]
+name = "groovy"
+auto-format = false
+indent = { tab-width = 4, unit = "    " }
+
+# --- CSV ---------------------------------------------------------------------
+# No LSP. Tree-sitter provides syntax highlighting via rainbow columns.
+# Helix has built-in CSV support with tree-sitter-csv.
+[[language]]
+name = "csv"
+auto-format = false
+
+# --- TOML (bonus: useful for your configs) ------------------------------------
+[[language]]
+name = "toml"
+formatter = { command = "taplo", args = ["fmt", "-"] }
+auto-format = true
+indent = { tab-width = 2, unit = "  " }
+
+# --- Dockerfile (bonus) ------------------------------------------------------
+[[language]]
+name = "dockerfile"
+auto-format = false
+
+# --- Git (bonus: commit messages, rebase, etc.) -------------------------------
+[[language]]
+name = "git-commit"
+soft-wrap.enable = true
+
+# =============================================================================
+# LANGUAGE SERVERS
+# =============================================================================
+
+# --- Python: Pyright (type analysis) -----------------------------------------
+[language-server.pyright]
+command = "pyright-langserver"
+args = ["--stdio"]
+
+[language-server.pyright.config.python.analysis]
+typeCheckingMode = "basic"               # "off", "basic", "standard", "strict"
+autoImportCompletions = true
+diagnosticMode = "openFilesOnly"         # or "workspace" for full project
+
+# --- Python: Ruff (fast linting + formatting) --------------------------------
+[language-server.ruff]
+command = "ruff"
+args = ["server"]
+
+# --- Rust: rust-analyzer -----------------------------------------------------
+[language-server.rust-analyzer.config]
+check.command = "clippy"                 # Run clippy on save
+cargo.features = "all"
+inlayHints.bindingModeHints.enable = true
+inlayHints.closingBraceHints.minLines = 10
+inlayHints.closureReturnTypeHints.enable = "with_block"
+inlayHints.discriminantHints.enable = "fieldless"
+inlayHints.lifetimeElisionHints.enable = "skip_trivial"
+inlayHints.typeHints.hideClosureInitialization = true
+
+# --- Shell: bash-language-server ---------------------------------------------
+[language-server.bash-language-server]
+command = "bash-language-server"
+args = ["start"]
+
+# --- YAML: yaml-language-server ----------------------------------------------
+[language-server.yaml-language-server]
+command = "yaml-language-server"
+args = ["--stdio"]
+
+[language-server.yaml-language-server.config.yaml]
+validate = true
+completion = true
+
+[language-server.yaml-language-server.config.yaml.schemas]
+# Add your custom schemas here, e.g.:
+# "https://json.schemastore.org/github-workflow.json" = ".github/workflows/*.yml"
+# "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json" = "docker-compose*.yml"
+
+# --- JSON: vscode-json-language-server ---------------------------------------
+[language-server.vscode-json-language-server]
+command = "vscode-json-language-server"
+args = ["--stdio"]
+
+[language-server.vscode-json-language-server.config.json]
+validate = { enable = true }
+
+# --- Markdown: marksman (links, navigation) ----------------------------------
+[language-server.marksman]
+command = "marksman"
+args = ["server"]
+
+# --- Markdown/LaTeX: ltex-ls-plus (grammar & spell checking) -----------------
+[language-server.ltex-ls-plus]
+command = "ltex-ls-plus"
+
+[language-server.ltex-ls-plus.config.ltex]
+language = "en-US"                       # Change to your language
+# additionalRules.motherTongue = "fr"   # Uncomment for French mother tongue
+
+# --- LaTeX: texlab -----------------------------------------------------------
+[language-server.texlab]
+command = "texlab"
+
+[language-server.texlab.config.texlab]
+build.onSave = true
+build.executable = "latexmk"
+build.args = ["-pdf", "-interaction=nonstopmode", "-synctex=1", "%f"]
+forwardSearch.executable = "zathura"     # Change to your PDF viewer
+forwardSearch.args = ["--synctex-forward", "%l:1:%f", "%p"]
+chktex.onOpenAndSave = true              # Lint LaTeX
+chktex.onEdit = false
+
+# --- TypeScript/JavaScript: typescript-language-server -----------------------
+[language-server.typescript-language-server]
+command = "typescript-language-server"
+args = ["--stdio"]
+
+[language-server.typescript-language-server.config.typescript.inlayHints]
+includeInlayParameterNameHints = "all"
+includeInlayFunctionParameterTypeHints = true
+includeInlayVariableTypeHints = true
+includeInlayPropertyDeclarationTypeHints = true
+includeInlayFunctionLikeReturnTypeHints = true
+includeInlayEnumMemberValueHints = true
+
+[language-server.typescript-language-server.config.javascript.inlayHints]
+includeInlayParameterNameHints = "all"
+includeInlayFunctionParameterTypeHints = true
+includeInlayVariableTypeHints = true
+includeInlayPropertyDeclarationTypeHints = true
+includeInlayFunctionLikeReturnTypeHints = true
+includeInlayEnumMemberValueHints = true
+
+# --- Java: jdtls (Eclipse JDT Language Server) -------------------------------
+[language-server.jdtls]
+command = "jdtls"
+
+[language-server.jdtls.config.java.inlayHints]
+parameterNames.enabled = "all"
+
+# --- Scala: metals -----------------------------------------------------------
+[language-server.metals]
+command = "metals"
+
+[language-server.metals.config]
+"isHttpEnabled" = true
+
+[language-server.metals.config.metals.inlayHints]
+typeParameters.enable = true
+hintsInPatternMatch.enable = true
+
+# --- Kotlin: kotlin-language-server ------------------------------------------
+[language-server.kotlin-language-server]
+command = "kotlin-language-server"
+
+# --- TOML: taplo -------------------------------------------------------------
+[language-server.taplo]
+command = "taplo"
+args = ["lsp", "stdio"]
