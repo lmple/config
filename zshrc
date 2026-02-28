@@ -11,6 +11,7 @@ plugins=(
   zsh-syntax-highlighting
   history
   extract
+  zellij
 )
 
 # Load Oh My Zsh
@@ -49,6 +50,11 @@ autoload -Uz compinit && compinit
 
 # Optional: Faster prompt
 POWERLEVEL9K_DISABLE_RPROMPT=true
+
+# Auto-start Zellij (last!)
+if [[ -z "$ZELLIJ" ]] && [[ $- == *i* ]]; then
+  exec zellij attach --create main
+fi
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
