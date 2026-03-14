@@ -11,7 +11,8 @@ plugins=(
   zsh-syntax-highlighting
   history
   extract
-  zellij
+  emacs
+  tmux
 )
 
 # Load Oh My Zsh
@@ -26,10 +27,20 @@ alias gs='git status'
 alias gc='git commit'
 alias gp='git push'
 alias gl='git log --oneline --graph --all'
-alias hx='helix'
+alias emacs-restart='emacsclient -e "(kill-emacs)" 2>/dev/null; /usr/bin/emacs --daemon'
 
 # PATHs
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.config/emacs/bin:$PATH"
+
+# Emacs
+if ! emacsclient -e '(+ 1 0)' &>/dev/null; then
+  /usr/bin/emacs --daemon &>/dev/null &
+fi
+
+if [[ -z "$TMUX" && -n "$PS1" ]]; then
+  tmux new-session -A -s main
+fi
 
 # PyEnv
 export PYENV_ROOT="$HOME/.pyenv"
@@ -50,11 +61,6 @@ autoload -Uz compinit && compinit
 
 # Optional: Faster prompt
 POWERLEVEL9K_DISABLE_RPROMPT=true
-
-# Auto-start Zellij (last!)
-if [[ -z "$ZELLIJ" ]] && [[ $- == *i* ]]; then
-  exec zellij attach --create main
-fi
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
