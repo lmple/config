@@ -1,6 +1,6 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-(setq doom-theme 'doom-dracula)
+(setq doom-theme 'mario-nes)
 (setq display-line-numbers-type t)
 (setq org-directory "~/org/")
 
@@ -17,8 +17,6 @@
               (let ((venv-path (locate-dominating-file default-directory ".venv")))
                 (when venv-path
                   (pyvenv-activate (expand-file-name ".venv" venv-path)))))))
-
-
 
 (require 'acp)
 (require 'agent-shell)
