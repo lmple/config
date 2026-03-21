@@ -1,0 +1,50 @@
+# Theme
+theme = "material_deep_ocean"
+
+[editor]
+mouse = true
+line-number = "relative"
+cursorline = true
+auto-save = true
+color-modes = true
+true-color = true
+bufferline = "multiple" # Show buffer tabs when multiple files open
+rulers = [88, 120] # Visual column rulers
+idle-timeout = 250 # Faster LSP response (ms)
+completion-timeout = 5 # Fast completion popup (ms)
+text-width = 88
+auto-format = true
+default-yank-register = "+"
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.file-picker]
+hidden = false
+git-ignore = true
+max-depth = 8
+
+[editor.indent-guides]
+render = true
+character = "▏"
+skip-levels = 0
+
+[editor.lsp]
+display-messages = true
+display-inlay-hints = true # Show type hints inline
+auto-signature-help = true
+snippets = true
+
+[editor.whitespace.render]
+tab = "all"
+newline = "none"
+
+[editor.whitespace.characters]
+tab = "→"
+tabpad = "·"
+
+[editor.search]
+smart-case = true
+wrap-around = true
