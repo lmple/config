@@ -11,7 +11,6 @@ plugins=(
   zsh-syntax-highlighting
   history
   extract
-  emacs
   tmux
 )
 
@@ -27,16 +26,11 @@ alias gs='git status'
 alias gc='git commit'
 alias gp='git push'
 alias gl='git log --oneline --graph --all'
-alias emacs-restart='emacsclient -e "(kill-emacs)" 2>/dev/null; /usr/bin/emacs --daemon'
+alias hx='helix'
 
 # PATHs
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.config/emacs/bin:$PATH"
-
-# Emacs
-if ! emacsclient -e '(+ 1 0)' &>/dev/null; then
-  /usr/bin/emacs --daemon &>/dev/null &
-fi
 
 if [[ -z "$TMUX" && -n "$PS1" ]]; then
   tmux new-session -A -s main
@@ -61,6 +55,9 @@ autoload -Uz compinit && compinit
 
 # Optional: Faster prompt
 POWERLEVEL9K_DISABLE_RPROMPT=true
+
+# opencode
+export PATH=/home/loic/.opencode/bin:$PATH
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
