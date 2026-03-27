@@ -2,7 +2,7 @@
 
 # Prompt format
 format = """
-[╭─](238)$os$directory$git_branch$git_status$fill$python$nodejs$rust$aws$cmd_duration$time
+[╭─](238)$os$directory$git_branch$git_status$fill$python$nodejs$rust$scala$java$kotlin$lua$ocaml$aws$cmd_duration$time
 [╰─](238)$character"""
 
 right_format = ""
@@ -102,11 +102,33 @@ disabled = false
 style = "fg:208 bg:234"
 format = "[ 🦀 $version ]($style)"
 
+[scala]
+disabled = false
+style = "fg:red bg:234"
+format = "[ $version ]($style)"
+
 [golang]
 disabled = true
 
 [java]
-disabled = true
+disabled = false
+style = "fg:208 bg:234"
+format = "[ $version ]($style)"
+
+[kotlin]
+disabled = false
+style = "fg:133 bg:234"
+format = "[ $version ]($style)"
+
+[lua]
+disabled = false
+style = "fg:27 bg:234"
+format = "[ $version ]($style)"
+
+[ocaml]
+disabled = false
+style = "fg:208 bg:234"
+format = "[ 🐫 $version ]($style)"
 
 [ruby]
 disabled = true
