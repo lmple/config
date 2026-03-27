@@ -1,0 +1,112 @@
+# Starship prompt configuration
+
+# Prompt format
+format = """
+[╭─](238)$os$directory$git_branch$git_status$fill$python$nodejs$rust$aws$cmd_duration$time
+[╰─](238)$character"""
+
+right_format = ""
+
+# Don't add blank line before prompt
+add_newline = false
+
+# Increase timeout for slower commands (e.g. pyenv shims)
+command_timeout = 2000
+
+# Fill between left and right
+[fill]
+symbol = "·"
+style = "238"
+
+# OS icon
+[os]
+disabled = false
+style = "fg:255 bg:234"
+format = "[$symbol ]($style)"
+
+[os.symbols]
+Arch = ""
+EndeavourOS = "λ"
+Linux = ""
+Macos = ""
+
+# Directory
+[directory]
+style = "fg:39 bg:234"
+format = "[ $path ]($style)"
+truncation_length = 0
+truncate_to_repo = false
+
+# Git branch
+[git_branch]
+style = "fg:green bg:234"
+format = "[ $symbol$branch ]($style)"
+symbol = " "
+
+# Git status
+[git_status]
+style = "fg:red bg:234"
+format = "[$all_status$ahead_behind]($style)"
+
+# Python - shows pyenv version and virtualenv
+[python]
+style = "fg:37 bg:234"
+format = '[  ${pyenv_prefix}${version}( \($virtualenv\)) ]($style)'
+detect_extensions = ["py"]
+detect_files = [".python-version", "pyproject.toml", "requirements.txt", "setup.py", "Pipfile"]
+detect_folders = [".venv", "venv"]
+pyenv_version_name = false
+pyenv_prefix = ""
+
+# AWS profile
+[aws]
+style = "fg:208 bg:234"
+format = "[ $symbol$profile( $region) ]($style)"
+symbol = " "
+
+[aws.profile_aliases]
+
+# Color by profile name - uncomment and adjust to your profile names
+# [aws.style]
+# Use these in region_aliases or handle via profile_aliases
+
+# Command duration
+[cmd_duration]
+style = "fg:yellow bg:234"
+format = "[ 󰔟 $duration ]($style)"
+min_time = 2_000
+
+# Time
+[time]
+disabled = false
+style = "fg:white bg:234"
+format = "[ $time ]($style)"
+time_format = "%H:%M:%S"
+
+# Prompt character
+[character]
+success_symbol = "[❯](green)"
+error_symbol = "[❯](red)"
+
+# Disabled modules (not needed)
+[package]
+disabled = true
+
+[nodejs]
+disabled = false
+style = "fg:green bg:234"
+format = "[ 󰎙 $version ]($style)"
+
+[rust]
+disabled = false
+style = "fg:208 bg:234"
+format = "[ 🦀 $version ]($style)"
+
+[golang]
+disabled = true
+
+[java]
+disabled = true
+
+[ruby]
+disabled = true

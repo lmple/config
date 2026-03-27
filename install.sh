@@ -1,9 +1,11 @@
 # ZSH
 ln -s "$(pwd)/zshrc" "$HOME/.zshrc"
-ln -s "$(pwd)/p10k.zsh" "$HOME/.p10k.zsh" # theme
+
+# Starship
+ln -s "$(pwd)/starship.toml" "$HOME/.config/"
 
 # tmux
 ln -s "$(pwd)/tmux.conf" "$HOME/.tmux.conf"
 
-# Helix
-ln -s "$(pwd)/helix" "$HOME/.config/"
+# neovim
+ln -s "$(pwd)/nvim" "$HOME/.config/"

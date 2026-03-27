@@ -1,8 +1,8 @@
 # Path to Oh My Zsh installation
 export ZSH="$HOME/.oh-my-zsh"
 
-# Set Powerlevel10k as the theme
-ZSH_THEME="powerlevel10k/powerlevel10k"
+# Disable oh-my-zsh theme (using starship instead)
+ZSH_THEME=""
 
 # Enable plugins
 plugins=(
@@ -17,8 +17,9 @@ plugins=(
 # Load Oh My Zsh
 source $ZSH/oh-my-zsh.sh
 
-# Load Powerlevel10k configuration if exists
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# Starship prompt
+export STARSHIP_CONFIG=~/.config/starship.toml
+eval "$(starship init zsh)"
 
 # Aliases
 alias ll='ls -lah'
@@ -26,7 +27,12 @@ alias gs='git status'
 alias gc='git commit'
 alias gp='git push'
 alias gl='git log --oneline --graph --all'
-alias hx='helix'
+alias nv='nvim'
+
+#if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+#  eval "$(ssh-agent -s)"
+#  ssh-add ~/.ssh/github 2>/dev/null 
+#fi
 
 # PATHs
 export PATH="$HOME/.local/bin:$PATH"
@@ -41,6 +47,8 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
+# Note: pyenv virtualenv-init is intentionally omitted — its precmd hook
+# deactivates non-pyenv virtualenvs (e.g. uv venvs). Starship handles prompt.
 
 # Enable history sharing across terminals
 setopt SHARE_HISTORY
@@ -52,9 +60,6 @@ ENABLE_CORRECTION="true"
 
 # Enable command completions
 autoload -Uz compinit && compinit
-
-# Optional: Faster prompt
-POWERLEVEL9K_DISABLE_RPROMPT=true
 
 # opencode
 export PATH=/home/loic/.opencode/bin:$PATH
