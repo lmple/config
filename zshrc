@@ -29,10 +29,8 @@ alias gp='git push'
 alias gl='git log --oneline --graph --all'
 alias nv='nvim'
 
-#if ! pgrep -u "$USER" ssh-agent > /dev/null; then
-#  eval "$(ssh-agent -s)"
-#  ssh-add ~/.ssh/github 2>/dev/null 
-#fi
+# extra_config for special variables for personnal or job configs
+[ -f ~/.extra_config ] && source ~/.extra_config
 
 # PATHs
 export PATH="$HOME/.local/bin:$PATH"
@@ -63,6 +61,14 @@ autoload -Uz compinit && compinit
 
 # opencode
 export PATH=/home/loic/.opencode/bin:$PATH
+
+# BEGIN opam configuration
+# This is useful if you're using opam as it adds:
+#   - the correct directories to the PATH
+#   - auto-completion for the opam binary
+# This section can be safely removed at any time if needed.
+[[ ! -r '/home/loic/.opam/opam-init/init.zsh' ]] || source '/home/loic/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
+# END opam configuration
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
