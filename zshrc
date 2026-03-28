@@ -34,6 +34,9 @@ alias nv='nvim'
 #  ssh-add ~/.ssh/github 2>/dev/null 
 #fi
 
+# extra_config for special variables for personnal or job configs
+[ -f ~/.extra_config ] && source ~/.extra_config
+
 # PATHs
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.config/emacs/bin:$PATH"
