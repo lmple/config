@@ -17,28 +17,28 @@ return {
       formatters_by_ft = {
         python = { "black", "ruff" },
       },
-
     },
   },
 
-  -- Auto-install black and ruff via Mason
+  -- Auto-install Python tools via Mason
   {
     "mason-org/mason.nvim",
     opts = {
-      ensure_installed = { "black", "ruff" },
+      ensure_installed = { "black", "ruff", "mypy", "pylint" },
     },
   },
 
   -- Coq proof assistant
-  { "whonore/Coqtail" },
+  { "whonore/Coqtail", ft = "coq" },
 
   -- TLA+ syntax highlighting
-  { "hwayne/tla.vim" },
+  { "hwayne/tla.vim", ft = "tla" },
 
   -- Jupynium: sync nvim buffer with Jupyter in browser
   {
     "kiyoon/jupynium.nvim",
     build = "pip install --user .",
+    cmd = { "JupyniumStartAndAttachToServer", "JupyniumAttachToServer" },
     dependencies = {
       "rcarriga/nvim-notify",
       "stevearc/dressing.nvim",
@@ -57,11 +57,26 @@ return {
 
   -- Python DAP adapter
   {
-    "mfussenegger/nvim-dap",
-    dependencies = { "mfussenegger/nvim-dap-python" },
+    "mfussenegger/nvim-dap-python",
+    dependencies = { "mfussenegger/nvim-dap" },
+    ft = "python",
     config = function()
       require("dap-python").setup("python")
     end,
+  },
+
+  -- Python virtual environment selector
+  {
+    "linux-cultist/venv-selector.nvim",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      "nvim-telescope/telescope.nvim",
+    },
+    opts = {},
+    keys = {
+      { "<leader>vs", "<cmd>VenvSelect<cr>", desc = "Select Python venv" },
+      { "<leader>vc", "<cmd>VenvSelectCached<cr>", desc = "Select cached Python venv" },
+    },
   },
 
   -- Neotest + Python adapter
