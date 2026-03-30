@@ -1,0 +1,108 @@
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+
+(setq doom-theme 'doom-dracula)
+(setq display-line-numbers-type t)
+(setq org-directory "~/org/")
+
+;; Ctrl+click → go to definition
+(global-set-key [C-down-mouse-1] #'ignore)
+(global-set-key [C-mouse-1] (lambda (event)
+                              (interactive "e")
+                              (goto-char (posn-point (event-start event)))
+                              (xref-find-definitions
+                               (xref-backend-identifier-at-point
+                                (xref-find-backend)))))
+
+;;; Python ─────────────────────────────────────────────────────────────────────
+
+(use-package! pyvenv-auto
+  :hook (python-mode . pyvenv-auto-run))
+
+(use-package! pyenv-mode
+  :hook (python-mode . pyenv-mode)
+  :config
+  (defun my/pyenv-switch ()
+    "Pick a pyenv version with Vertico completion."
+    (interactive)
+    (let ((version (completing-read
+                    "Switch pyenv: "
+                    (pyenv-mode-versions)
+                    nil t)))
+      (pyenv-mode-set version)
+      (message "Switched to %s" version)))
+
+  (map! :mode python-mode
+        "C-c v" #'my/pyenv-switch
+        "C-c V" #'pyenv-mode-unset))
+
+(after! eglot
+  (setq-default eglot-workspace-configuration
+                '(:python.analysis
+                  (:autoImportCompletions t
+                   :useLibraryCodeForTypes t
+                   :typeCheckingMode "basic"))))
+
+(after! apheleia
+  (setf (alist-get 'ruff-isort apheleia-formatters)
+        '("ruff" "check" "--fix" "--select" "I" "--stdin-filename" filepath "-"))
+  (setf (alist-get 'ruff apheleia-formatters)
+        '("ruff" "format" "--stdin-filename" filepath "-"))
+  (setf (alist-get 'python-mode apheleia-mode-alist)
+        '(ruff-isort ruff))
+  (setf (alist-get 'python-ts-mode apheleia-mode-alist)
+        '(ruff-isort ruff)))
+
+(use-package! flymake-ruff
+  :defer t)
+
+(add-hook! '(python-mode-hook python-ts-mode-hook)
+  (defun my/python-flymake-ruff-h ()
+    (flymake-ruff-load)))
+
+(use-package! flymake-collection
+  :defer t
+  :config
+  (setq flymake-collection-mypy-executable (expand-file-name "~/.local/bin/mypy")))
+
+(add-hook! 'python-mode-hook
+  (defun my/python-flymake-mypy-h ()
+    (add-hook 'flymake-diagnostic-functions
+              #'flymake-collection-mypy nil t)))
+
+;;; Java ───────────────────────────────────────────────────────────────────────
+
+(after! eglot-java
+  (setq eglot-java-workspace-folder (expand-file-name "jdtls-workspace/" doom-cache-dir)))
+
+(add-hook! 'java-mode-hook
+  (setq-local c-basic-offset 4
+              tab-width 4))
+
+;;; JavaScript / TypeScript ────────────────────────────────────────────────────
+
+(after! js2-mode
+  (setq js2-basic-offset 2
+        js-indent-level 2))
+
+(after! typescript-mode
+  (setq typescript-indent-level 2))
+
+(after! apheleia
+  (when (executable-find "prettier")
+    (dolist (mode '(js-mode js-ts-mode typescript-mode typescript-ts-mode
+                    tsx-ts-mode web-mode))
+      (setf (alist-get mode apheleia-mode-alist) 'prettier))))
+
+;;; TLA+ ───────────────────────────────────────────────────────────────────────
+
+(use-package! tla-mode
+  :mode ("\\.tla\\'" . tla-mode)
+  :config
+  ;; Point to the TLA+ tools jar if installed (adjust path as needed)
+  (when-let ((tla-jar (or (getenv "TLA_JAR")
+                          (cl-find-if #'file-exists-p
+                                      '("/usr/local/lib/tla2tools.jar"
+                                        "/opt/tla+/tla2tools.jar"
+                                        "~/bin/tla2tools.jar")))))
+    (setq tla-java-path (or (executable-find "java") "java")
+          tla-tlatools-path tla-jar)))
