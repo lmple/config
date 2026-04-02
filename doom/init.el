@@ -14,7 +14,6 @@
  hl-todo
  indent-guides
  ligatures
- minimap
  modeline
  nav-flash
  ophints
