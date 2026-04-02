@@ -83,12 +83,12 @@
  json
  (javascript +lsp +tree-sitter)
  latex
+ lean
  markdown
  (ocaml +lsp)
  org
  plantuml
  graphviz
- (java +lsp)
  (python +lsp +pyright +pyenv +tree-sitter)
  (rust +lsp)
  sh
@@ -98,5 +98,4 @@
  :app
  calendar
  emms
- irc
  )
