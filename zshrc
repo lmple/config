@@ -27,7 +27,6 @@ alias gs='git status'
 alias gc='git commit'
 alias gp='git push'
 alias gl='git log --oneline --graph --all'
-alias nv='nvim'
 
 # extra_config for special variables for personnal or job configs
 [ -f ~/.extra_config ] && source ~/.extra_config
@@ -54,7 +53,7 @@ setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_FIND_NO_DUPS
 
 # Enable command auto-correction
-ENABLE_CORRECTION="true"
+export ENABLE_CORRECTION="true"
 
 # Enable command completions
 autoload -Uz compinit && compinit
