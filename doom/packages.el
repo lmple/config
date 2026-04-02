@@ -9,3 +9,7 @@
 (package! pyvenv-auto)
 (package! flymake-ruff)
 (package! flymake-collection)
+
+;; Claude code
+(package! claude-code-ide
+  :recipe (:host github :repo "manzaltu/claude-code-ide.el"))

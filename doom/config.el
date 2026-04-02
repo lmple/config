@@ -106,3 +106,9 @@
                                         "~/bin/tla2tools.jar")))))
     (setq tla-java-path (or (executable-find "java") "java")
           tla-tlatools-path tla-jar)))
+
+;;;; Claude code ───────────────────────────────────────────────────────────────
+(use-package! claude-code-ide
+  :bind ("C-c C-'" . claude-code-ide-menu)
+  :config
+  (claude-code-ide-emacs-tools-setup)) ; enable Emacs MCP tools
