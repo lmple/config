@@ -1,6 +1,6 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-(setq doom-theme 'doom-dracula)
+(setq doom-theme 'doom-tomorrow-night)
 (setq display-line-numbers-type t)
 (setq org-directory "~/org/")
 
@@ -74,15 +74,6 @@
   (add-hook 'flymake-diagnostic-functions
             #'flymake-collection-mypy nil t))
 (add-hook! '(python-mode-hook python-ts-mode-hook) #'my/python-flymake-mypy-h)
-
-;;; Java ───────────────────────────────────────────────────────────────────────
-
-(after! eglot-java
-  (setq eglot-java-workspace-folder (expand-file-name "jdtls-workspace/" doom-cache-dir)))
-
-(add-hook! 'java-mode-hook
-  (setq-local c-basic-offset 4
-              tab-width 4))
 
 ;;; JavaScript / TypeScript ────────────────────────────────────────────────────
 
