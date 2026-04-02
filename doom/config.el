@@ -43,6 +43,7 @@
                    :typeCheckingMode "basic"))))
 
 (after! apheleia
+  ;; Python — ruff
   (setf (alist-get 'ruff-isort apheleia-formatters)
         '("ruff" "check" "--fix" "--select" "I" "--stdin-filename" filepath "-"))
   (setf (alist-get 'ruff apheleia-formatters)
@@ -50,24 +51,29 @@
   (setf (alist-get 'python-mode apheleia-mode-alist)
         '(ruff-isort ruff))
   (setf (alist-get 'python-ts-mode apheleia-mode-alist)
-        '(ruff-isort ruff)))
+        '(ruff-isort ruff))
+  ;; JS/TS — prettier
+  (when (executable-find "prettier")
+    (dolist (mode '(js-mode js-ts-mode typescript-mode typescript-ts-mode
+                    tsx-ts-mode web-mode))
+      (setf (alist-get mode apheleia-mode-alist) 'prettier))))
 
 (use-package! flymake-ruff
   :defer t)
 
-(add-hook! '(python-mode-hook python-ts-mode-hook)
-  (defun my/python-flymake-ruff-h ()
-    (flymake-ruff-load)))
+(defun my/python-flymake-ruff-h ()
+  (flymake-ruff-load))
+(add-hook! '(python-mode-hook python-ts-mode-hook) #'my/python-flymake-ruff-h)
 
 (use-package! flymake-collection
   :defer t
   :config
   (setq flymake-collection-mypy-executable (expand-file-name "~/.local/bin/mypy")))
 
-(add-hook! 'python-mode-hook
-  (defun my/python-flymake-mypy-h ()
-    (add-hook 'flymake-diagnostic-functions
-              #'flymake-collection-mypy nil t)))
+(defun my/python-flymake-mypy-h ()
+  (add-hook 'flymake-diagnostic-functions
+            #'flymake-collection-mypy nil t))
+(add-hook! '(python-mode-hook python-ts-mode-hook) #'my/python-flymake-mypy-h)
 
 ;;; Java ───────────────────────────────────────────────────────────────────────
 
@@ -86,12 +92,6 @@
 
 (after! typescript-mode
   (setq typescript-indent-level 2))
-
-(after! apheleia
-  (when (executable-find "prettier")
-    (dolist (mode '(js-mode js-ts-mode typescript-mode typescript-ts-mode
-                    tsx-ts-mode web-mode))
-      (setf (alist-get mode apheleia-mode-alist) 'prettier))))
 
 ;;; TLA+ ───────────────────────────────────────────────────────────────────────
 
