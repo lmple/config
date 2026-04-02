@@ -22,11 +22,12 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:
 
 ## pipx
 
+```sh
 pipx install ruff mypy pylint
+```
 
 ## Install config
-```
+
 ```sh
 ./install.sh
 ```
-
