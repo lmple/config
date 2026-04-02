@@ -10,9 +10,6 @@ right_format = ""
 # Don't add blank line before prompt
 add_newline = false
 
-# Increase timeout for slower commands (e.g. pyenv shims)
-command_timeout = 2000
-
 # Fill between left and right
 [fill]
 symbol = "·"
