@@ -13,6 +13,9 @@
                                (xref-backend-identifier-at-point
                                 (xref-find-backend)))))
 
+;; Disable vc for security reasons
+(setq vc-handled-backends nil)
+
 ;;; Python ─────────────────────────────────────────────────────────────────────
 
 (use-package! pyvenv-auto
