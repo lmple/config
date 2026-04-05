@@ -18,7 +18,7 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 # Starship prompt
-export STARSHIP_CONFIG=~/.config/starship.toml
+export STARSHIP_CONFIG="$HOME/.config/starship.toml"
 eval "$(starship init zsh)"
 
 # Aliases
@@ -35,9 +35,8 @@ alias gl='git log --oneline --graph --all'
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.config/emacs/bin:$PATH"
 
-if [[ -z "$TMUX" && -n "$PS1" ]]; then
-  tmux new-session -A -s main
-fi
+## Opencode
+export PATH="$HOME/.opencode/bin:$PATH"
 
 # PyEnv
 export PYENV_ROOT="$HOME/.pyenv"
@@ -58,10 +57,8 @@ export ENABLE_CORRECTION="true"
 # Enable command completions
 autoload -Uz compinit && compinit
 
-# opencode
-export PATH=/home/loic/.opencode/bin:$PATH
 
-
+# RTK
 export RTK_TELEMETRY_DISABLED=1
 
 # BEGIN opam configuration
@@ -75,3 +72,7 @@ export RTK_TELEMETRY_DISABLED=1
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+if [[ -z "$TMUX" && -n "$PS1" ]]; then
+  tmux new-session -A -s main
+fi
