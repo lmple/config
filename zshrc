@@ -61,6 +61,9 @@ autoload -Uz compinit && compinit
 # opencode
 export PATH=/home/loic/.opencode/bin:$PATH
 
+
+export RTK_TELEMETRY_DISABLED=1
+
 # BEGIN opam configuration
 # This is useful if you're using opam as it adds:
 #   - the correct directories to the PATH

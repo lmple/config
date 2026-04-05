@@ -102,7 +102,10 @@
           tla-tlatools-path tla-jar)))
 
 ;;;; Claude code ───────────────────────────────────────────────────────────────
-(use-package! claude-code-ide
-  :bind ("C-c C-'" . claude-code-ide-menu)
-  :config
-  (claude-code-ide-emacs-tools-setup)) ; enable Emacs MCP tools
+(require 'acp)
+(require 'agent-shell)
+(setq agent-shell-show-usage-at-turn-end t)
+(setq agent-shell-show-context-usage-indicator t)
+
+(use-package agent-shell
+  :bind ("C-c C-'" . agent-shell))
