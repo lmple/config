@@ -21,13 +21,18 @@ source $ZSH/oh-my-zsh.sh
 export STARSHIP_CONFIG="$HOME/.config/starship.toml"
 eval "$(starship init zsh)"
 
+# Enable history sharing across terminals
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_FIND_NO_DUPS
+
 # Aliases
 alias ll='ls -lah'
 alias gs='git status'
 alias gc='git commit'
 alias gp='git push'
 alias gl='git log --oneline --graph --all'
-
+alias hx='helix'
 # extra_config for special variables for personnal or job configs
 [ -f ~/.extra_config ] && source ~/.extra_config
 
@@ -46,17 +51,11 @@ eval "$(pyenv init -)"
 # Note: pyenv virtualenv-init is intentionally omitted — its precmd hook
 # deactivates non-pyenv virtualenvs (e.g. uv venvs). Starship handles prompt.
 
-# Enable history sharing across terminals
-setopt SHARE_HISTORY
-setopt HIST_IGNORE_ALL_DUPS
-setopt HIST_FIND_NO_DUPS
-
 # Enable command auto-correction
 export ENABLE_CORRECTION="true"
 
 # Enable command completions
 autoload -Uz compinit && compinit
-
 
 # RTK
 export RTK_TELEMETRY_DISABLED=1
@@ -72,7 +71,3 @@ export RTK_TELEMETRY_DISABLED=1
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-if [[ -z "$TMUX" && -n "$PS1" ]]; then
-  tmux new-session -A -s main
-fi
