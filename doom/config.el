@@ -4,6 +4,10 @@
 (setq display-line-numbers-type t)
 (setq org-directory "~/org/")
 
+(setq doom-font (font-spec :family "FiraCode Nerd Font" :size 13)
+      doom-big-font (font-spec :family "FiraCode Nerd Font" :size 20)
+      doom-variable-pitch-font (font-spec :family "Noto Sans" :size 13))
+
 ;; Ctrl+click → go to definition
 (global-set-key [C-down-mouse-1] #'ignore)
 (global-set-key [C-mouse-1] (lambda (event)
