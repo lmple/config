@@ -89,7 +89,7 @@
  org
  plantuml
  graphviz
- (python +lsp +pyright +pyenv +tree-sitter)
+ (python +lsp +pyright +pyenv)
  (rust +lsp)
  sh
  web
