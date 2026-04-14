@@ -6,12 +6,13 @@ ZSH_THEME=""
 
 # Enable plugins
 plugins=(
-  git
-  zsh-autosuggestions
-  zsh-syntax-highlighting
-  history
-  extract
-  tmux
+    emacs
+    git
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+    history
+    extract
+    tmux
 )
 
 # Load Oh My Zsh
@@ -33,6 +34,7 @@ alias gc='git commit'
 alias gp='git push'
 alias gl='git log --oneline --graph --all'
 alias hx='helix'
+
 # extra_config for special variables for personnal or job configs
 [ -f ~/.extra_config ] && source ~/.extra_config
 
