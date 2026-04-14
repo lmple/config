@@ -112,4 +112,10 @@
 (setq agent-shell-show-context-usage-indicator t)
 
 (use-package agent-shell
-  :bind ("C-c C-'" . agent-shell))
+  :bind ("C-c C-$" . agent-shell))
+
+
+(use-package! claude-code-ide
+  :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
+  :config
+  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools

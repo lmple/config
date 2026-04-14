@@ -14,3 +14,6 @@
 (package! shell-maker)
 (package! acp)
 (package! agent-shell)
+
+(package! claude-code-ide
+  :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
