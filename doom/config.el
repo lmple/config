@@ -2,6 +2,7 @@
 
 (setq doom-theme 'doom-tomorrow-night)
 (setq display-line-numbers-type t)
+(setq font-lock-maximum-decoration t)
 (setq org-directory "~/org/")
 
 (setq doom-font (font-spec :family "FiraCode Nerd Font" :size 13)
@@ -43,11 +44,14 @@
         "C-c V" #'pyenv-mode-unset))
 
 (after! eglot
+  ;; Pyright's semantic tokens override tree-sitter highlights and leave
+  ;; large swaths uncolored when theme faces are missing — disable them.
+  (add-to-list 'eglot-ignored-server-capabilities :semanticTokensProvider)
   (setq-default eglot-workspace-configuration
-                '(:python.analysis
-                  (:autoImportCompletions t
-                   :useLibraryCodeForTypes t
-                   :typeCheckingMode "basic"))))
+                '(:python (:analysis
+                           (:autoImportCompletions t
+                            :useLibraryCodeForTypes t
+                            :typeCheckingMode "basic")))))
 
 (after! apheleia
   ;; Python — ruff
@@ -69,6 +73,8 @@
   :defer t)
 
 (defun my/python-flymake-ruff-h ()
+  ;; Disable flycheck so flymake (eglot + ruff + mypy) is the sole checker
+  (flycheck-mode -1)
   (flymake-ruff-load))
 (add-hook! '(python-mode-hook python-ts-mode-hook) #'my/python-flymake-ruff-h)
 

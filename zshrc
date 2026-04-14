@@ -15,6 +15,12 @@ plugins=(
     tmux
 )
 
+# Enable command auto-correction (must be set before sourcing oh-my-zsh)
+export ENABLE_CORRECTION="true"
+
+# Tmux: auto-start a session on new terminal (must be set before sourcing oh-my-zsh)
+ZSH_TMUX_AUTOSTART=true
+
 # Load Oh My Zsh
 source $ZSH/oh-my-zsh.sh
 
@@ -26,6 +32,8 @@ eval "$(starship init zsh)"
 setopt SHARE_HISTORY
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_FIND_NO_DUPS
+HISTSIZE=50000
+SAVEHIST=100000
 
 # Aliases
 alias ll='ls -lah'
@@ -41,23 +49,12 @@ alias hx='helix'
 # PATHs
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.config/emacs/bin:$PATH"
-
-## Opencode
 export PATH="$HOME/.opencode/bin:$PATH"
 
 # PyEnv
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
-# Note: pyenv virtualenv-init is intentionally omitted — its precmd hook
-# deactivates non-pyenv virtualenvs (e.g. uv venvs). Starship handles prompt.
-
-# Enable command auto-correction
-export ENABLE_CORRECTION="true"
-
-# Enable command completions
-autoload -Uz compinit && compinit
 
 # RTK
 export RTK_TELEMETRY_DISABLED=1
