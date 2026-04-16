@@ -42,8 +42,16 @@ git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
 pipx install ruff mypy pylint
 ```
 
+## NVM
+
+```sh
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+```
+
 ## Install config
 
 ```sh
 ./install.sh
 ```
+
+
