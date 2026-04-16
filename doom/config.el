@@ -111,7 +111,7 @@
     (setq tla-java-path (or (executable-find "java") "java")
           tla-tlatools-path tla-jar)))
 
-;;;; Claude code ───────────────────────────────────────────────────────────────
+;;; Claude code ───────────────────────────────────────────────────────────────
 (require 'acp)
 (require 'agent-shell)
 (setq agent-shell-show-usage-at-turn-end t)
@@ -125,3 +125,25 @@
   :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
   :config
   (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
+
+;;; TLA
+(use-package! polymode)
+
+(use-package tla-ts-mode
+  :mode "\\.tla\\'"
+  :ensure t
+  :config
+                                        ; The grammar is called tlaplus, but the mode is called tla
+  (setq treesit-load-name-override-list '((tla "libtree-sitter-tlaplus" "tree_sitter_tlaplus")))
+  )
+
+;; Load only tla-tools.el, skip tla-pcal-mode.el
+(with-eval-after-load 'polymode
+  (require 'tla-tools))
+
+(add-hook 'tla-ts-mode-hook #'tla-tools-error-regexp-add)
+
+;;; Local extra config
+(let ((extra (expand-file-name "extra_config.el" doom-user-dir)))
+  (when (file-exists-p extra)
+    (load! extra)))

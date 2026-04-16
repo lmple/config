@@ -3,3 +3,5 @@
 *.log
 tmp/
 .claude/
+doom/extra_config.el
+doom/extra_packages.el
