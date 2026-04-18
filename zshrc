@@ -15,12 +15,6 @@ plugins=(
     tmux
 )
 
-# Enable command auto-correction (must be set before sourcing oh-my-zsh)
-export ENABLE_CORRECTION="true"
-
-# Tmux: auto-start a session on new terminal (must be set before sourcing oh-my-zsh)
-ZSH_TMUX_AUTOSTART=true
-
 # Load Oh My Zsh
 source $ZSH/oh-my-zsh.sh
 
@@ -42,6 +36,7 @@ alias gc='git commit'
 alias gp='git push'
 alias gl='git log --oneline --graph --all'
 alias hx='helix'
+alias tlc="java -cp $HOME/.local/bin/tla2tools.jar tlc2.TLC"
 
 # extra_config for special variables for personnal or job configs
 [ -f ~/.extra_config ] && source ~/.extra_config
@@ -50,6 +45,7 @@ alias hx='helix'
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.config/emacs/bin:$PATH"
 export PATH="$HOME/.opencode/bin:$PATH"
+export PATH="$HOME/.cargo/bin/:$PATH"
 
 # PyEnv
 export PYENV_ROOT="$HOME/.pyenv"
