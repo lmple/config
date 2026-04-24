@@ -29,6 +29,11 @@ setopt HIST_FIND_NO_DUPS
 HISTSIZE=50000
 SAVEHIST=100000
 
+# Editor
+export EDITOR="emacs"
+export VISUAL="emacs"
+export GIT_EDITOR="emacs"
+
 # Aliases
 alias ll='ls -lah'
 alias gs='git status'
