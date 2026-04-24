@@ -1,9 +1,6 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
-;;; TLA+ specification language ───────────────────────────────
-(package! tla-mode)
-
 ;;; Python ────────────────────────────────────────────────────
 (package! pyenv-mode)
 (package! pyvenv-auto)
@@ -18,7 +15,9 @@
 (package! claude-code-ide
   :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
 
-;;; TLA
+;;; TLA ───────────────────────────────────────────────────────
+(package! tla-mode)
+
 (package! tla-ts-mode
   :recipe (:host github :repo "Davidbrcz/tla-ts-mode"))
 

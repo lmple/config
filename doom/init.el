@@ -86,7 +86,7 @@
  lean
  markdown
  (ocaml +lsp)
- org
+ (org +brain + dragndrop +gnuplot +journal +jupyter +noter +pandoc +present +pretty +roam2)
  plantuml
  graphviz
  (python +lsp +pyright +pyenv)

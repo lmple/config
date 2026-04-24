@@ -19,7 +19,19 @@
                                 (xref-find-backend)))))
 
 ;; Disable vc for security reasons
+;; provide the name of the branch without vc
 (setq vc-handled-backends nil)
+(defun my/git-branch ()
+  (let ((head-file (locate-dominating-file default-directory ".git/HEAD")))
+    (when head-file
+      (with-temp-buffer
+        (insert-file-contents (expand-file-name ".git/HEAD" head-file))
+        (when (looking-at "ref: refs/heads/\\(.+\\)")
+          (match-string 1))))))
+
+(add-to-list 'global-mode-string
+             '(:eval (when-let ((b (my/git-branch)))
+                       (propertize (format "  %s" b) 'face 'success))))
 
 ;;; Python ─────────────────────────────────────────────────────────────────────
 
@@ -79,11 +91,14 @@
 (add-hook! '(python-mode-hook python-ts-mode-hook) #'my/python-flymake-ruff-h)
 
 (use-package! flymake-collection
-  :defer t
-  :config
-  (setq flymake-collection-mypy-executable (expand-file-name "~/.local/bin/mypy")))
+  :defer t)
 
 (defun my/python-flymake-mypy-h ()
+  ;; Prefer the venv's mypy (pyvenv-auto has already updated exec-path by now);
+  ;; fall back to the global pipx install so checks still run outside a venv.
+  (setq-local flymake-collection-mypy-executable
+              (or (executable-find "mypy")
+                  (expand-file-name "~/.local/bin/mypy")))
   (add-hook 'flymake-diagnostic-functions
             #'flymake-collection-mypy nil t))
 (add-hook! '(python-mode-hook python-ts-mode-hook) #'my/python-flymake-mypy-h)
