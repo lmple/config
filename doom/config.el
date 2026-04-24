@@ -1,6 +1,6 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-(setq doom-theme 'doom-tomorrow-night)
+(setq doom-theme 'doom-dracula)
 (setq display-line-numbers-type t)
 (setq font-lock-maximum-decoration t)
 (setq org-directory "~/org/")

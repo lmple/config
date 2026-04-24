@@ -6,6 +6,7 @@ ZSH_THEME=""
 
 # Enable plugins
 plugins=(
+    aws
     emacs
     git
     zsh-autosuggestions
