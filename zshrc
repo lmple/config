@@ -37,11 +37,6 @@ export GIT_EDITOR="emacs"
 
 # Aliases
 alias ll='ls -lah'
-alias gs='git status'
-alias gc='git commit'
-alias gp='git push'
-alias gl='git log --oneline --graph --all'
-alias hx='helix'
 alias tlc="java -cp $HOME/.local/bin/tla2tools.jar tlc2.TLC"
 
 # extra_config for special variables for personnal or job configs
