@@ -81,9 +81,8 @@
  (gdscript +lsp)
  (haskell +lsp)
  json
- (javascript +lsp +tree-sitter)
+ (javascript +lsp)
  latex
- ;;lean
  markdown
  (ocaml +lsp)
  (org +brain + dragndrop +gnuplot +journal +jupyter +noter +pandoc +present +pretty +roam2)

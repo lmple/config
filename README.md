@@ -1,5 +1,11 @@
 # config
 
+ZSH extra config: `~/.extra_config`
+
+Doom packages extra: `doom/extra_packages.el`
+
+Doom config extra: `doom/extra_config.el`
+
 ## Pyenv
 
 ```sh
