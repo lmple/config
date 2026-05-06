@@ -35,13 +35,6 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:
 curl -sS https://starship.rs/install.sh | sh
 ```
 
-## Doom emacs
-
-```sh
-git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
-~/.config/emacs/bin/doom install
-```
-
 ## pipx
 
 ```sh
@@ -59,5 +52,3 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 ```sh
 ./install.sh
 ```
-
-
