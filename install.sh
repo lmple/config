@@ -7,8 +7,5 @@ ln -s "$(pwd)/starship.toml" "$HOME/.config/"
 # tmux
 ln -s "$(pwd)/tmux.conf" "$HOME/.tmux.conf"
 
-# Helix
-ln -s "$(pwd)/helix" "$HOME/.config/"
-
-# Emacs doom
-ln -s "$(pwd)/doom" "$HOME/.config/"
+# nvim
+ln -s "$(pwd)/nvim" "$HOME/.config/"
