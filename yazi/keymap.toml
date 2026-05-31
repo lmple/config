@@ -1,0 +1,7 @@
+[[manager.prepend_keymap]]
+on = ["<Enter>"]
+run = "open"
+
+[[manager.prepend_keymap]]
+on = ["e"]
+run = "open --interactive"  # opens with hx in the same pane

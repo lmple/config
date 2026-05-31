@@ -2,8 +2,7 @@
 
 (doom!
  :completion
- (corfu +orderless)
- ;;company
+ company
  vertico
 
  :config
