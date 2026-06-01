@@ -29,13 +29,12 @@ HISTSIZE=50000
 SAVEHIST=100000
 
 # Editor
-export EDITOR=hx
-export VISUAL=hx
-export GIT_EDITOR=hx
+export EDITOR=emacs
+export VISUAL=emacs
+export GIT_EDITOR=emacs
 
 # Aliases
 alias ll='ls -lah'
-alias tlc="java -cp $HOME/.local/bin/tla2tools.jar tlc2.TLC"
 
 # extra_config for special variables for personnal or job configs
 [ -f ~/.extra_config ] && source ~/.extra_config
@@ -45,17 +44,6 @@ export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.config/emacs/bin:$PATH"
 export PATH="$HOME/.opencode/bin:$PATH"
 export PATH="$HOME/.cargo/bin/:$PATH"
-
-# yazi with cwd sync — cd into directory on quit
-function y() {
-    local tmp
-    tmp=$(mktemp)
-    yazi --cwd-file="$tmp" "$@"
-    local cwd
-    cwd=$(cat "$tmp")
-    [[ -n "$cwd" && "$cwd" != "$PWD" ]] && cd "$cwd"
-    rm -f "$tmp"
-}
 
 # PyEnv
 export PYENV_ROOT="$HOME/.pyenv"
@@ -80,9 +68,3 @@ export NVM_DIR="$HOME/.nvm"
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-
-# Start zellij automatically (skip in existing session or non-interactive)
-if [[ -z "$ZELLIJ" && $- == *i* ]]; then
-    zellij attach --index 0 2>/dev/null || zellij
-fi
