@@ -1,13 +1,12 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-(setq doom-theme 'ashen)
+(setq doom-theme 'doom-dracula)
 (setq display-line-numbers-type t)
 (setq font-lock-maximum-decoration t)
 (setq org-directory "~/org/")
 
 (setq doom-font (font-spec :family "FiraCode Nerd Font" :size 13)
-      doom-big-font (font-spec :family "FiraCode Nerd Font" :size 20)
-      doom-variable-pitch-font (font-spec :family "Noto Sans" :size 13))
+      doom-big-font (font-spec :family "FiraCode Nerd Font" :size 20))
 
 ;; Ctrl+click → go to definition
 (global-set-key [C-down-mouse-1] #'ignore)
@@ -111,52 +110,6 @@
 
 (after! typescript-mode
   (setq typescript-indent-level 2))
-
-;;; TLA+ ───────────────────────────────────────────────────────────────────────
-
-(use-package! tla-mode
-  :mode ("\\.tla\\'" . tla-mode)
-  :config
-  ;; Point to the TLA+ tools jar if installed (adjust path as needed)
-  (when-let ((tla-jar (or (getenv "TLA_JAR")
-                          (cl-find-if #'file-exists-p
-                                      '("/usr/local/lib/tla2tools.jar"
-                                        "/opt/tla+/tla2tools.jar"
-                                        "~/bin/tla2tools.jar")))))
-    (setq tla-java-path (or (executable-find "java") "java")
-          tla-tlatools-path tla-jar)))
-
-;;; Claude code ───────────────────────────────────────────────────────────────
-(require 'acp)
-(require 'agent-shell)
-(setq agent-shell-show-usage-at-turn-end t)
-(setq agent-shell-show-context-usage-indicator t)
-
-(use-package agent-shell
-  :bind ("C-c C-$" . agent-shell))
-
-
-(use-package! claude-code-ide
-  :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
-  :config
-  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
-
-;;; TLA
-(use-package! polymode)
-
-(use-package tla-ts-mode
-  :mode "\\.tla\\'"
-  :ensure t
-  :config
-                                        ; The grammar is called tlaplus, but the mode is called tla
-  (setq treesit-load-name-override-list '((tla "libtree-sitter-tlaplus" "tree_sitter_tlaplus")))
-  )
-
-;; Load only tla-tools.el, skip tla-pcal-mode.el
-(with-eval-after-load 'polymode
-  (require 'tla-tools))
-
-(add-hook 'tla-ts-mode-hook #'tla-tools-error-regexp-add)
 
 ;;; Local extra config
 (let ((extra (expand-file-name "extra_config.el" doom-user-dir)))
