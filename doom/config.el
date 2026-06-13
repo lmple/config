@@ -32,6 +32,9 @@
              '(:eval (when-let ((b (my/git-branch)))
                        (propertize (format "  %s" b) 'face 'success))))
 
+(map! :leader
+      "o T" #'ghostel-project) ;; replace with your actual ghostty function
+
 ;;; Python ─────────────────────────────────────────────────────────────────────
 
 (use-package! pyvenv-auto
@@ -115,3 +118,12 @@
 (let ((extra (expand-file-name "extra_config.el" doom-user-dir)))
   (when (file-exists-p extra)
     (load! extra)))
+
+;;; GenAI
+
+(use-package! claude-code-ide
+  :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
+  :config
+  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
+
+(setq claude-code-ide-terminal-backend 'ghostel)
