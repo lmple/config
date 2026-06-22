@@ -1,6 +1,6 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-(setq doom-theme 'doom-dracula)
+(setq doom-theme 'doom-gruvbox)
 (setq display-line-numbers-type t)
 (setq font-lock-maximum-decoration t)
 (setq org-directory "~/org/")
@@ -119,11 +119,10 @@
   (when (file-exists-p extra)
     (load! extra)))
 
-;;; GenAI
+;;; Quint
+(load-file "~/sources/quint/editor-plugins/emacs/quint-mode.el")
 
-(use-package! claude-code-ide
-  :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
-  :config
-  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
-
-(setq claude-code-ide-terminal-backend 'ghostel)
+(after! lsp-mode
+  (load-file "~/sources/quint/editor-plugins/emacs/lsp-quint.el")
+  (require 'quint-mode)
+  (add-to-list 'auto-mode-alist '("\\.qnt" . quint-mode)))

@@ -83,6 +83,7 @@
  json
  (javascript +lsp)
  latex
+ lean
  markdown
  (ocaml +lsp)
  (org +brain + dragndrop +gnuplot +journal +jupyter +noter +pandoc +present +pretty +roam2)
