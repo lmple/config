@@ -1,6 +1,6 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-(setq doom-theme 'doom-gruvbox)
+(setq doom-theme 'doom-ayu-dark)
 (setq display-line-numbers-type t)
 (setq font-lock-maximum-decoration t)
 (setq org-directory "~/org/")
@@ -118,6 +118,14 @@
 (let ((extra (expand-file-name "extra_config.el" doom-user-dir)))
   (when (file-exists-p extra)
     (load! extra)))
+
+;; Claude code
+(use-package! claude-code-ide
+  :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
+  :config
+  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
+
+(setq claude-code-ide-terminal-backend 'ghostel)
 
 ;;; Quint
 (load-file "~/sources/quint/editor-plugins/emacs/quint-mode.el")

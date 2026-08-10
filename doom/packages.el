@@ -8,6 +8,10 @@
 (package! flymake-collection)
 (package! ghostel)
 
+;; Claude code
+(package! claude-code-ide
+  :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
+
 ;;; Local extra packages
 (let ((extra (expand-file-name "extra_packages.el" doom-user-dir)))
   (when (file-exists-p extra)
