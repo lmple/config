@@ -7,11 +7,13 @@ ZSH_THEME=""
 # Enable plugins
 plugins=(
     aws
+    emacs
     git
     zsh-autosuggestions
     zsh-syntax-highlighting
     history
     extract
+    tmux
 )
 
 # Load Oh My Zsh

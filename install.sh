@@ -5,7 +5,7 @@ ln -s "$(pwd)/zshrc" "$HOME/.zshrc"
 ln -s "$(pwd)/starship.toml" "$HOME/.config/"
 
 # tmux.conf
-ln -s "$(pwd)/tmux.conf" "$HOME/"
+ln -s "$(pwd)/tmux.conf" "$HOME/.tmux.conf"
 
 # Helix
 ln -s "$(pwd)/helix" "$HOME/.config/"
