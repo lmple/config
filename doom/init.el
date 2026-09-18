@@ -75,7 +75,6 @@
 
  :lang
  (cc +lsp)
- coq
  data
  emacs-lisp
  (gdscript +lsp)
@@ -85,7 +84,6 @@
  latex
  lean
  markdown
- (ocaml +lsp)
  (org +brain + dragndrop +gnuplot +journal +jupyter +noter +pandoc +present +pretty +roam2)
  plantuml
  graphviz
@@ -97,5 +95,4 @@
 
  :app
  calendar
- emms
  )
