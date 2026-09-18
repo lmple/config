@@ -320,7 +320,22 @@ web_client {
 // Choose the theme that is specified in the themes section.
 // Default: default
 // 
-// theme "dracula"
+themes {
+    dracula-red {
+        fg "#f8f8f2"
+        bg "#282a36"
+        black "#21222c"
+        red "#ff5555"
+        green "#ff5555"
+        yellow "#f1fa8c"
+        blue "#bd93f9"
+        magenta "#ff79c6"
+        orange "#ffb86c"
+        cyan "#8be9fd"
+        white "#f8f8f2"
+    }
+}
+theme "dracula-red"
  
 // Theme to use when the host terminal reports a dark color palette.
 // Requires `theme_light` to also be set; otherwise `theme` is used.
