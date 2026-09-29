@@ -1,6 +1,11 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-(setq doom-theme 'doom-tokyo-night)
+;; straight builds ashen-theme's single file without registering it for
+;; `load-theme', so point custom-theme-load-path at the build dir directly.
+(when-let ((dir (car (file-expand-wildcards
+                       (expand-file-name "straight/build-*/ashen-theme" doom-local-dir)))))
+  (add-to-list 'custom-theme-load-path dir))
+(setq doom-theme 'ashen)
 (setq display-line-numbers-type t)
 (setq font-lock-maximum-decoration t)
 (setq org-directory "~/org/")

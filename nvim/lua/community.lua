@@ -14,7 +14,6 @@ return {
   { import = "astrocommunity.pack.typescript" },
   { import = "astrocommunity.pack.prettier" },
   { import = "astrocommunity.pack.eslint" },
-  { import = "astrocommunity.pack.haskell" },
   { import = "astrocommunity.pack.lean" },
   { import = "astrocommunity.pack.python" },
   { import = "astrocommunity.markdown-and-latex.vimtex" },

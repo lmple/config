@@ -78,7 +78,6 @@
  data
  emacs-lisp
  (gdscript +lsp)
- (haskell +lsp)
  json
  (javascript +lsp)
  latex
