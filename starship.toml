@@ -90,6 +90,10 @@ symbol = " "
 style = "fg:yellow bg:234"
 format = "[ 󰔟 $duration ]($style)"
 min_time = 2_000
+# Desktop notification when a long build (Lean, Coq, cabal...) finishes
+# while the terminal is out of sight
+show_notifications = true
+min_time_to_notify = 45_000
 
 # Exit code - the red prompt character only says "failed", not why
 # (e.g. 127 = not found, 130 = Ctrl-C). Hidden on success.
