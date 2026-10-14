@@ -5,13 +5,13 @@ ln -s "$(pwd)/zshrc" "$HOME/.zshrc"
 ln -s "$(pwd)/starship.toml" "$HOME/.config/"
 
 # Alacritty
-ln -s "$(pwd)/alacritty" "$HOME/.config/"
+ln -sfn "$(pwd)/alacritty" "$HOME/.config/alacritty"
 
 # zellij
-ln -s "$(pwd)/zellij" "$HOME/.config/zellij"
+ln -sfn "$(pwd)/zellij" "$HOME/.config/zellij"
 
 # nvim
-ln -s "$(pwd)/nvim" "$HOME/.config/"
+ln -sfn "$(pwd)/nvim" "$HOME/.config/nvim"
 
 # doom emacs
-ln -s "$(pwd)/doom" "$HOME/.config/"
+ln -sfn "$(pwd)/doom" "$HOME/.config/doom"
