@@ -2,7 +2,7 @@
 
 # Prompt format
 format = """
-[╭─](238)$os$hostname$directory$git_branch$git_commit$git_state$git_status$fill$python$nodejs$rust$scala$java$kotlin$lua$ocaml$aws$jobs$cmd_duration$status$time
+[╭─](238)$os$hostname$directory$git_branch$git_commit$git_state$git_status$fill$python$nodejs$rust$haskell${custom.lean}${custom.coq}$scala$java$kotlin$lua$ocaml$aws$jobs$cmd_duration$status$time
 [╰─](238)$character"""
 
 right_format = ""
@@ -129,6 +129,30 @@ format = "[ 󰎙 $version ]($style)"
 disabled = false
 style = "fg:208 bg:234"
 format = "[ 🦀 $version ]($style)"
+
+# Haskell - default symbol is λ, already used for the EndeavourOS icon
+[haskell]
+style = "fg:133 bg:234"
+format = "[ $symbol$version ]($style)"
+symbol = " "
+
+# Lean 4 - no built-in module. Read lean-toolchain instead of running
+# `lean --version`, which goes through elan and may download a toolchain
+# just to draw the prompt. Only detected at the project root.
+[custom.lean]
+detect_files = ["lean-toolchain"]
+command = "cut -d: -f2 lean-toolchain"
+shell = ["sh"]
+style = "fg:white bg:234"
+format = "[ ∀ $output ]($style)"
+
+# Coq/Rocq - no built-in module. Rocq 9 still ships coqc for compatibility.
+[custom.coq]
+detect_files = ["_CoqProject", "_RocqProject"]
+command = "coqc --print-version | cut -d' ' -f1"
+shell = ["sh"]
+style = "fg:208 bg:234"
+format = "[ 🐓 $output ]($style)"
 
 [scala]
 disabled = false
