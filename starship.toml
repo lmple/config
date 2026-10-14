@@ -79,12 +79,6 @@ style = "fg:208 bg:234"
 format = "[ $symbol$profile( $region) ]($style)"
 symbol = " "
 
-[aws.profile_aliases]
-
-# Color by profile name - uncomment and adjust to your profile names
-# [aws.style]
-# Use these in region_aliases or handle via profile_aliases
-
 # Command duration
 [cmd_duration]
 style = "fg:yellow bg:234"
@@ -120,10 +114,7 @@ time_format = "%H:%M:%S"
 success_symbol = "[❯](green)"
 error_symbol = "[❯](red)"
 
-# Disabled modules (not needed)
-[package]
-disabled = true
-
+# Language versions - only shown inside a matching project
 [nodejs]
 disabled = false
 style = "fg:green bg:234"
@@ -163,9 +154,6 @@ disabled = false
 style = "fg:red bg:234"
 format = "[ $version ]($style)"
 
-[golang]
-disabled = true
-
 [java]
 disabled = false
 style = "fg:208 bg:234"
@@ -185,6 +173,3 @@ format = "[ $version ]($style)"
 disabled = false
 style = "fg:208 bg:234"
 format = "[ 🐫 $version ]($style)"
-
-[ruby]
-disabled = true
