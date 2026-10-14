@@ -44,7 +44,7 @@ truncate_to_repo = false
 [git_branch]
 style = "fg:green bg:234"
 format = "[ $symbol$branch ]($style)"
-symbol = " "
+symbol = "\ue0a0 "
 
 # Git status
 [git_status]
@@ -66,7 +66,8 @@ only_detached = true
 # Python - shows pyenv version and virtualenv
 [python]
 style = "fg:37 bg:234"
-format = '[  ${pyenv_prefix}${version}( \($virtualenv\)) ]($style)'
+symbol = "\ue73c "
+format = '[ ${symbol}${pyenv_prefix}${version}( \($virtualenv\)) ]($style)'
 detect_extensions = ["py"]
 detect_files = [".python-version", "pyproject.toml", "requirements.txt", "setup.py", "Pipfile"]
 detect_folders = [".venv", "venv"]
@@ -77,7 +78,7 @@ pyenv_prefix = ""
 [aws]
 style = "fg:208 bg:234"
 format = "[ $symbol$profile( $region) ]($style)"
-symbol = " "
+symbol = "\ue7ad "
 
 # Command duration
 [cmd_duration]
@@ -129,7 +130,7 @@ format = "[ 🦀 $version ]($style)"
 [haskell]
 style = "fg:133 bg:234"
 format = "[ $symbol$version ]($style)"
-symbol = " "
+symbol = "\ue777 "
 
 # Lean 4 - no built-in module. Read lean-toolchain instead of running
 # `lean --version`, which goes through elan and may download a toolchain
