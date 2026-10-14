@@ -15,7 +15,10 @@ return {
   { import = "astrocommunity.pack.prettier" },
   { import = "astrocommunity.pack.eslint" },
   { import = "astrocommunity.pack.lean" },
-  { import = "astrocommunity.pack.python" },
+  -- The full python pack adds black + isort; ruff covers both
+  { import = "astrocommunity.pack.python.base" },
+  { import = "astrocommunity.pack.python.basedpyright" },
+  { import = "astrocommunity.pack.python.ruff" },
   { import = "astrocommunity.markdown-and-latex.vimtex" },
   -- import/override with your plugins folder
 }
