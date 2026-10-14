@@ -26,6 +26,7 @@ Arch = ""
 EndeavourOS = "λ"
 Linux = ""
 Macos = ""
+Ubuntu = "\uf31b"
 
 # Hostname - only over SSH, so a remote shell can't be mistaken for a local one
 [hostname]
