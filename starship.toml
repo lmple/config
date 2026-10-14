@@ -2,7 +2,7 @@
 
 # Prompt format
 format = """
-[╭─](238)$os$directory$git_branch$git_commit$git_state$git_status$fill$python$nodejs$rust$scala$java$kotlin$lua$ocaml$aws$cmd_duration$time
+[╭─](238)$os$hostname$directory$git_branch$git_commit$git_state$git_status$fill$python$nodejs$rust$scala$java$kotlin$lua$ocaml$aws$jobs$cmd_duration$status$time
 [╰─](238)$character"""
 
 right_format = ""
@@ -26,6 +26,12 @@ Arch = ""
 EndeavourOS = "λ"
 Linux = ""
 Macos = ""
+
+# Hostname - only over SSH, so a remote shell can't be mistaken for a local one
+[hostname]
+ssh_only = true
+style = "fg:208 bg:234"
+format = "[ $ssh_symbol$hostname ]($style)"
 
 # Directory
 [directory]
@@ -84,6 +90,19 @@ symbol = " "
 style = "fg:yellow bg:234"
 format = "[ 󰔟 $duration ]($style)"
 min_time = 2_000
+
+# Exit code - the red prompt character only says "failed", not why
+# (e.g. 127 = not found, 130 = Ctrl-C). Hidden on success.
+[status]
+disabled = false
+style = "fg:red bg:234"
+format = "[ ✘ $status ]($style)"
+
+# Background jobs - easy to forget a process suspended with Ctrl-Z
+[jobs]
+style = "fg:blue bg:234"
+format = "[ $symbol$number ]($style)"
+number_threshold = 1
 
 # Time
 [time]
