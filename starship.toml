@@ -2,7 +2,7 @@
 
 # Prompt format
 format = """
-[╭─](238)$os$directory$git_branch$git_status$fill$python$nodejs$rust$scala$java$kotlin$lua$ocaml$aws$cmd_duration$time
+[╭─](238)$os$directory$git_branch$git_commit$git_state$git_status$fill$python$nodejs$rust$scala$java$kotlin$lua$ocaml$aws$cmd_duration$time
 [╰─](238)$character"""
 
 right_format = ""
@@ -44,6 +44,18 @@ symbol = " "
 [git_status]
 style = "fg:red bg:234"
 format = "[$all_status$ahead_behind]($style)"
+
+# Git state - surfaces an in-progress rebase/merge/cherry-pick, which the
+# branch name alone hides
+[git_state]
+style = "fg:yellow bg:234"
+format = '[ $state( $progress_current/$progress_total) ]($style)'
+
+# Git commit - only shown on a detached HEAD, where there is no branch name
+[git_commit]
+style = "fg:purple bg:234"
+format = "[ $hash ]($style)"
+only_detached = true
 
 # Python - shows pyenv version and virtualenv
 [python]
