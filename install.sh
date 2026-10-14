@@ -4,6 +4,9 @@ ln -s "$(pwd)/zshrc" "$HOME/.zshrc"
 # Starship
 ln -s "$(pwd)/starship.toml" "$HOME/.config/"
 
+# Alacritty
+ln -s "$(pwd)/alacritty" "$HOME/.config/"
+
 # zellij
 ln -s "$(pwd)/zellij" "$HOME/.config/zellij"
 
