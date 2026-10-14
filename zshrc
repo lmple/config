@@ -15,7 +15,7 @@ plugins=(
 )
 
 # Load Oh My Zsh
-source $ZSH/oh-my-zsh.sh
+source "$ZSH/oh-my-zsh.sh"
 
 # Starship prompt
 export STARSHIP_CONFIG="$HOME/.config/starship.toml"
@@ -35,6 +35,7 @@ export GIT_EDITOR=emacs
 
 # Aliases
 alias ll='ls -lah'
+alias nv='nvim'
 
 # extra_config for special variables for personnal or job configs
 [ -f ~/.extra_config ] && source ~/.extra_config

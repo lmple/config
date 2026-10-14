@@ -23,7 +23,7 @@ format = "[$symbol ]($style)"
 
 [os.symbols]
 Arch = ""
-EndeavourOS = "λ"
+EndeavourOS = ""
 Linux = ""
 Macos = ""
 Ubuntu = "\uf31b"
@@ -70,7 +70,13 @@ style = "fg:37 bg:234"
 symbol = "\ue73c "
 format = '[ ${symbol}${pyenv_prefix}${version}( \($virtualenv\)) ]($style)'
 detect_extensions = ["py"]
-detect_files = [".python-version", "pyproject.toml", "requirements.txt", "setup.py", "Pipfile"]
+detect_files = [
+  ".python-version",
+  "pyproject.toml",
+  "requirements.txt",
+  "setup.py",
+  "Pipfile",
+]
 detect_folders = [".venv", "venv"]
 pyenv_version_name = false
 pyenv_prefix = ""
@@ -151,27 +157,12 @@ shell = ["sh"]
 style = "fg:208 bg:234"
 format = "[ 🐓 $output ]($style)"
 
-[scala]
-disabled = false
-style = "fg:red bg:234"
-format = "[ $version ]($style)"
-
 [java]
 disabled = false
 style = "fg:208 bg:234"
-format = "[ $version ]($style)"
-
-[kotlin]
-disabled = false
-style = "fg:133 bg:234"
 format = "[ $version ]($style)"
 
 [lua]
 disabled = false
 style = "fg:27 bg:234"
 format = "[ $version ]($style)"
-
-[ocaml]
-disabled = false
-style = "fg:208 bg:234"
-format = "[ 🐫 $version ]($style)"

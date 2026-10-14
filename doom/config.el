@@ -1,10 +1,6 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-;; straight builds ashen-theme's single file without registering it for
-;; `load-theme', so point custom-theme-load-path at the build dir directly.
-(when-let ((dir (car (file-expand-wildcards
-                       (expand-file-name "straight/build-*/ashen-theme" doom-local-dir)))))
-  (add-to-list 'custom-theme-load-path dir))
+;; ashen is vendored in themes/, which Doom puts on custom-theme-load-path.
 (setq doom-theme 'ashen)
 (setq display-line-numbers-type t)
 (setq font-lock-maximum-decoration t)
@@ -51,7 +47,7 @@
   (defun my/pyenv-switch ()
     "Pick a pyenv version with Vertico completion."
     (interactive)
-    (let ((version (completing-read
+    (let ((version version (completing-read
                     "Switch pyenv: "
                     (pyenv-mode-versions)
                     nil t)))
