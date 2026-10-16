@@ -7,11 +7,13 @@ ZSH_THEME=""
 # Enable plugins
 plugins=(
     aws
+    emacs
+    extract
     git
+    history
+    tmux
     zsh-autosuggestions
     zsh-syntax-highlighting
-    history
-    extract
 )
 
 # Load Oh My Zsh
@@ -51,13 +53,8 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 
-# GHCup (Haskell)
-[ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env"
-
 # RTK
 export RTK_TELEMETRY_DISABLED=1
-
-eval "$(zellij setup --generate-auto-start zsh)"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm

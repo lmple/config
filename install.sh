@@ -4,11 +4,11 @@ ln -s "$(pwd)/zshrc" "$HOME/.zshrc"
 # Starship
 ln -s "$(pwd)/starship.toml" "$HOME/.config/starship.toml"
 
+# tmux
+ln -s "$(pwd)/tmux.conf" "$HOME/.tmux.conf"
+
 # Alacritty
 ln -sfn "$(pwd)/alacritty" "$HOME/.config/alacritty"
-
-# Zellij
-ln -sfn "$(pwd)/zellij" "$HOME/.config/zellij"
 
 # nvim
 ln -sfn "$(pwd)/nvim" "$HOME/.config/nvim"

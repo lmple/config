@@ -75,13 +75,13 @@
 
  :lang
  (cc +lsp)
+ coq
  data
  emacs-lisp
  (gdscript +lsp)
  json
  (javascript +lsp)
  latex
- lean
  markdown
  (org +brain + dragndrop +gnuplot +journal +jupyter +noter +pandoc +present +pretty +roam2)
  plantuml
