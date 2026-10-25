@@ -4,8 +4,8 @@ ln -s "$(pwd)/zshrc" "$HOME/.zshrc"
 # Starship
 ln -s "$(pwd)/starship.toml" "$HOME/.config/starship.toml"
 
-# tmux
-ln -s "$(pwd)/tmux.conf" "$HOME/.tmux.conf"
+# Zellij
+ln -sfn "$(pwd)/zellij" "$HOME/.config/zellij"
 
 # Alacritty
 ln -sfn "$(pwd)/alacritty" "$HOME/.config/alacritty"
