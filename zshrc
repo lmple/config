@@ -7,6 +7,7 @@ ZSH_THEME=""
 # Enable plugins
 plugins=(
     aws
+    emacs
     extract
     git
     history
