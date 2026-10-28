@@ -47,7 +47,7 @@
   (defun my/pyenv-switch ()
     "Pick a pyenv version with Vertico completion."
     (interactive)
-    (let ((version version (completing-read
+    (let ((version (completing-read
                     "Switch pyenv: "
                     (pyenv-mode-versions)
                     nil t)))
