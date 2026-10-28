@@ -2,7 +2,6 @@
 ;;; $DOOMDIR/packages.el
 
 ;;; Python ────────────────────────────────────────────────────
-(package! pyenv-mode)
 (package! pyvenv-auto)
 (package! flymake-ruff)
 (package! flymake-collection)
