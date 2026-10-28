@@ -30,7 +30,7 @@ HISTSIZE=50000
 SAVEHIST=100000
 
 # Editor
-export EDITOR="nvim"
+export EDITOR="emacs"
 export VISUAL="$EDITOR"
 export GIT_EDITOR="$EDITOR"
 
