@@ -75,15 +75,15 @@
         "C-c v" #'my/pyenv-switch
         "C-c V" #'pyenv-mode-unset))
 
-(after! eglot
-  ;; Pyright's semantic tokens override tree-sitter highlights and leave
-  ;; large swaths uncolored when theme faces are missing — disable them.
-  (add-to-list 'eglot-ignored-server-capabilities :semanticTokensProvider)
-  (setq-default eglot-workspace-configuration
-                '(:python (:analysis
-                           (:autoImportCompletions t
-                            :useLibraryCodeForTypes t
-                            :typeCheckingMode "basic")))))
+;; Pyright's semantic tokens would override tree-sitter highlights, but
+;; lsp-mode leaves `lsp-semantic-tokens-enable' off by default (lean4-mode
+;; turns it on locally), so nothing needs disabling here.
+(after! lsp-pyright
+  (setq lsp-pyright-type-checking-mode "basic"
+        lsp-pyright-auto-import-completions t)
+  ;; lsp-pyright has no defcustom for this one, so register it directly.
+  (lsp-register-custom-settings
+   '(("python.analysis.useLibraryCodeForTypes" t t))))
 
 (after! apheleia
   ;; Python — ruff
