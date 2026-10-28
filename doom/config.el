@@ -182,4 +182,14 @@
       (if (eq major-mode 'quint-mode)
           (let ((non-essential nil)) (apply fn args))
         (apply fn args)))
+    ;; The server never completes plain names, so fall back to Quint's
+    ;; keywords (reusing quint-mode.el's lists) and words from Quint buffers.
+    (after! cape-keyword
+      (add-to-list 'cape-keyword-list
+                   (cons 'quint-mode (append quint-declarations quint-keywords
+                                             quint-types quint-constants))))
+    (add-hook! 'quint-mode-hook
+      (defun my/quint-add-names-capf-h ()
+        (add-hook 'completion-at-point-functions
+                  (cape-capf-super #'cape-keyword #'cape-dabbrev) 20 t)))
     (add-hook 'quint-mode-local-vars-hook #'lsp! 'append)))
