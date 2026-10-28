@@ -75,7 +75,6 @@
 
  :lang
  (cc +lsp)
- coq
  data
  emacs-lisp
  (gdscript +lsp)
