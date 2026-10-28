@@ -1,17 +1,19 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
-;;; Python ────────────────────────────────────────────────────
+;;; Terminal
+(package! ghostel)
+
+;;; Python
 (package! pyvenv-auto)
 (package! flymake-ruff)
 (package! flymake-collection)
-(package! ghostel)
 
-;; AI
+;;; AI
 (package! claude-code-ide
   :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
 
-;; Lean 4
+;;; Lean 4
 (package! lean4-mode
   :recipe (:host github
            :repo "leanprover-community/lean4-mode"
