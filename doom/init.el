@@ -88,7 +88,7 @@
  graphviz
  (python +lsp +pyright +pyenv)
  (rust +lsp)
- sh
+ (sh +lsp)
  web
  yaml
 
