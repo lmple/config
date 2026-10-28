@@ -36,6 +36,14 @@
 (map! :leader
       "o T" #'ghostel-project) ;; replace with your actual ghostty function
 
+;;; Org ────────────────────────────────────────────────────────────────────────
+;; Doom turns these prompts off, which lets an untrusted .org file run code via
+;; an elisp: link, C-c C-c, or export. Re-enable them; this runs after Doom's
+;; org-load-hook setup, so it wins.
+(after! org
+  (setq org-confirm-babel-evaluate t
+        org-link-elisp-confirm-function #'yes-or-no-p))
+
 ;;; Python ─────────────────────────────────────────────────────────────────────
 
 (use-package! pyvenv-auto
