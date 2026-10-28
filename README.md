@@ -39,7 +39,50 @@ sudo pacman -S --needed texlive-basic texlive-latexextra texlab zathura zathura-
   languagetool plantuml jupyter-notebook
 ```
 
-Toolchains not in the official repos:
+## Ubuntu 26.04 dependencies
+
+Most packages live in `universe`, which is enabled by default on desktop installs.
+
+```sh
+# Base tooling, plus the -dev libraries needed to build pdf-tools and pyenv Pythons
+sudo apt install git build-essential curl wget unzip pkg-config autoconf automake \
+  libpoppler-glib-dev libpng-dev zlib1g-dev libssl-dev libbz2-dev libreadline-dev \
+  libsqlite3-dev libncurses-dev xz-utils tk-dev libffi-dev liblzma-dev libxml2-dev
+
+# Shell: Ubuntu ships fd as fdfind, link it so both editors find it as fd
+sudo apt install zsh starship pyenv direnv fzf ripgrep fd-find
+mkdir -p ~/.local/bin && ln -sf "$(command -v fdfind)" ~/.local/bin/fd
+
+# Terminal: FiraCode Nerd Font is not packaged, install it per user
+sudo apt install alacritty tmux wl-clipboard xclip
+mkdir -p ~/.local/share/fonts/FiraCodeNerd
+curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.tar.xz \
+  | tar -xJ -C ~/.local/share/fonts/FiraCodeNerd && fc-cache -f
+
+# Editors (use emacs-gtk instead of emacs-pgtk on X11)
+sudo apt install emacs-pgtk neovim python3-pynvim tree-sitter-cli lazygit
+
+# Languages and LSP servers; zellij is not packaged, so build it with cargo
+sudo apt install pipx rustup shellcheck shfmt clang clangd
+rustup default stable
+rustup component add rust-analyzer
+cargo install --locked zellij
+
+# Node-based LSP servers are not packaged (needs Node from NVM below);
+# lua-language-server and stylua come from Mason (nvim/lua/plugins/mason.lua)
+npm install -g bash-language-server typescript-language-server typescript prettier
+
+# Doom modules: spell, pass, graphviz, org +pandoc/+gnuplot
+sudo apt install aspell aspell-en pass graphviz pandoc gnuplot
+```
+
+Optional, heavy (LanguageTool is not packaged, Doom's grammar module just warns without it):
+
+```sh
+sudo apt install texlive-base texlive-latex-extra texlab zathura plantuml jupyter-notebook
+```
+
+## Toolchains (both distros)
 
 ```sh
 # Lean 4
