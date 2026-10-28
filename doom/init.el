@@ -60,7 +60,7 @@
  (eval +overlay)
  lookup
  llm
- (lsp +eglot)
+ lsp
  magit
  make
  pass
