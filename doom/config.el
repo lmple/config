@@ -145,6 +145,16 @@
 
 (setq claude-code-ide-terminal-backend 'ghostel)
 
+;;; Lean 4
+;; The Lean server sends workspace/inlayHint/refresh, which lsp-mode's request
+;; dispatcher doesn't know and warns about on every re-elaboration. It still
+;; replies nil (the correct response), so only the warning needs to go.
+(after! lsp-mode
+  (defadvice! my/lsp-ignore-inlay-hint-refresh-a (message &rest args)
+    :before-until #'lsp-warn
+    (and (equal message "Unknown request method: %s")
+         (equal (car args) "workspace/inlayHint/refresh"))))
+
 ;;; Quint
 ;; The plugins come from a local quint checkout that isn't present on every
 ;; machine, so skip them instead of aborting startup when it's missing.
