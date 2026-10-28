@@ -105,7 +105,13 @@
   :defer t)
 
 (defun my/python-flymake-ruff-h ()
-  ;; Disable flycheck so flymake (eglot + ruff + mypy) is the sole checker
+  ;; Disable flycheck so flymake (pyright + ruff + mypy) is the sole checker.
+  ;; lsp-mode defaults to flycheck, so point it at flymake for this buffer;
+  ;; Doom starts lsp from the local-vars hook, after this has run.
+  (setq-local lsp-diagnostics-provider :flymake)
+  ;; eglot used to drop the built-in pyflakes backend; ruff already covers
+  ;; those rules, so drop it here too to avoid duplicate diagnostics.
+  (remove-hook 'flymake-diagnostic-functions #'python-flymake t)
   (flycheck-mode -1)
   (flymake-ruff-load))
 (add-hook! '(python-mode-hook python-ts-mode-hook) #'my/python-flymake-ruff-h)
