@@ -83,7 +83,7 @@
  (javascript +lsp)
  latex
  markdown
- (org +brain + dragndrop +gnuplot +journal +jupyter +noter +pandoc +present +pretty +roam2)
+ (org +brain +dragndrop +gnuplot +journal +jupyter +noter +pandoc +present +pretty +roam2)
  plantuml
  graphviz
  (python +lsp +pyright +pyenv)
