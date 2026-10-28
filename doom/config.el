@@ -174,4 +174,12 @@
     ;; is loaded anyway instead of pulling it into startup.
     (after! lsp-mode
       (load lsp-quint-file nil t))
+    ;; The server declares "." as a trigger character but answers only
+    ;; requests marked as invoked, so lsp-mode's "."-triggered requests always
+    ;; come back empty. Report them as invoked in Quint buffers.
+    (defadvice! my/quint-lsp-completion-invoked-a (fn &rest args)
+      :around #'lsp-completion--get-context
+      (if (eq major-mode 'quint-mode)
+          (let ((non-essential nil)) (apply fn args))
+        (apply fn args)))
     (add-hook 'quint-mode-local-vars-hook #'lsp! 'append)))
