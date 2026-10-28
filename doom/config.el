@@ -44,6 +44,15 @@
   (setq org-confirm-babel-evaluate t
         org-link-elisp-confirm-function #'yes-or-no-p))
 
+;;; LaTeX ──────────────────────────────────────────────────────────────────────
+;; Doom picks the first installed viewer from this list and evince comes before
+;; pdf-tools by default; keep compiled PDFs (with SyncTeX) inside Emacs.
+(setq +latex-viewers '(pdf-tools))
+
+;; Org's default sends .pdf to the system app, bypassing pdf-tools.
+(after! org
+  (setf (alist-get "\\.pdf\\'" org-file-apps nil nil #'equal) 'emacs))
+
 ;;; Python ─────────────────────────────────────────────────────────────────────
 
 (use-package! pyvenv-auto
