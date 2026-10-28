@@ -131,12 +131,11 @@
 ;;; Quint
 ;; The plugins come from a local quint checkout that isn't present on every
 ;; machine, so skip them instead of aborting startup when it's missing.
-(let ((quint-mode-file (expand-file-name "~/sources/quint/editor-plugins/emacs/quint-mode.el"))
-      (lsp-quint-file (expand-file-name "~/sources/quint/editor-plugins/emacs/lsp-quint.el")))
+(let ((quint-mode-file (expand-file-name "~/sources/quint/editor-plugins/emacs/quint-mode.el")))
   (when (file-exists-p quint-mode-file)
     (load quint-mode-file nil t)
-    (after! lsp-mode
-      (when (file-exists-p lsp-quint-file)
-        (load lsp-quint-file nil t))
-      (require 'quint-mode)
-      (add-to-list 'auto-mode-alist '("\\.qnt" . quint-mode)))))
+    (add-to-list 'auto-mode-alist '("\\.qnt\\'" . quint-mode))
+    ;; init.el uses (lsp +eglot) and lsp-quint.el only targets lsp-mode, which
+    ;; Doom never loads here, so register the server with eglot directly.
+    (set-eglot-client! 'quint-mode '("quint-language-server" "--stdio"))
+    (add-hook 'quint-mode-local-vars-hook #'lsp! 'append)))
