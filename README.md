@@ -16,7 +16,7 @@ sudo pacman -S --needed git base-devel curl wget unzip
 sudo pacman -S --needed zsh starship pyenv direnv fzf ripgrep fd
 
 # Terminal: zshrc auto-starts zellij; alacritty and Doom use FiraCode Nerd Font
-sudo pacman -S --needed alacritty ttf-firacode-nerd zellij tmux wl-clipboard xclip
+sudo pacman -S --needed alacritty ttf-firacode-nerd zellij wl-clipboard xclip
 
 # Editors (Mason in nvim also needs Node from NVM below)
 sudo pacman -S --needed emacs neovim python-pynvim tree-sitter-cli lazygit
@@ -54,7 +54,7 @@ sudo apt install zsh starship pyenv direnv fzf ripgrep fd-find
 mkdir -p ~/.local/bin && ln -sf "$(command -v fdfind)" ~/.local/bin/fd
 
 # Terminal: FiraCode Nerd Font is not packaged, install it per user
-sudo apt install alacritty tmux wl-clipboard xclip
+sudo apt install alacritty wl-clipboard xclip
 mkdir -p ~/.local/share/fonts/FiraCodeNerd
 curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.tar.xz \
   | tar -xJ -C ~/.local/share/fonts/FiraCodeNerd && fc-cache -f
