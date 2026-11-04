@@ -2,23 +2,27 @@
 
 # Prompt format
 format = """
-[╭─](238)$os$hostname$directory$git_branch$git_commit$git_state$git_status$fill$python$nodejs$rust$haskell${custom.lean}${custom.coq}$scala$java$kotlin$lua$ocaml$aws$jobs$cmd_duration$status$time
-[╰─](238)$character"""
+[╭─](comment)$os$hostname$directory$git_branch$git_commit$git_state$git_status$fill$python$nodejs$rust$haskell${custom.lean}${custom.coq}$scala$java$kotlin$lua$ocaml$aws$jobs$cmd_duration$status$time
+[╰─](comment)$character"""
 
 right_format = ""
 
 # Don't add blank line before prompt
 add_newline = false
 
+# Dracula palette (https://github.com/dracula/starship). Its keys override
+# Starship's colour names, so "green", "red"... resolve to exact Dracula hex.
+palette = "dracula"
+
 # Fill between left and right
 [fill]
 symbol = "·"
-style = "238"
+style = "comment"
 
 # OS icon
 [os]
 disabled = false
-style = "fg:255 bg:234"
+style = "fg:foreground bg:current_line"
 format = "[$symbol ]($style)"
 
 [os.symbols]
@@ -31,42 +35,42 @@ Ubuntu = "\uf31b"
 # Hostname - only over SSH, so a remote shell can't be mistaken for a local one
 [hostname]
 ssh_only = true
-style = "fg:208 bg:234"
+style = "fg:red bg:current_line"
 format = "[ $ssh_symbol$hostname ]($style)"
 
 # Directory
 [directory]
-style = "fg:39 bg:234"
+style = "fg:green bg:current_line"
 format = "[ $path ]($style)"
 truncation_length = 0
 truncate_to_repo = false
 
 # Git branch
 [git_branch]
-style = "fg:green bg:234"
+style = "fg:pink bg:current_line"
 format = "[ $symbol$branch ]($style)"
 symbol = "\ue0a0 "
 
 # Git status
 [git_status]
-style = "fg:red bg:234"
+style = "fg:red bg:current_line"
 format = "[$all_status$ahead_behind]($style)"
 
 # Git state - surfaces an in-progress rebase/merge/cherry-pick, which the
 # branch name alone hides
 [git_state]
-style = "fg:yellow bg:234"
+style = "fg:yellow bg:current_line"
 format = '[ $state( $progress_current/$progress_total) ]($style)'
 
 # Git commit - only shown on a detached HEAD, where there is no branch name
 [git_commit]
-style = "fg:purple bg:234"
+style = "fg:purple bg:current_line"
 format = "[ $hash ]($style)"
 only_detached = true
 
 # Python - shows pyenv version and virtualenv
 [python]
-style = "fg:37 bg:234"
+style = "fg:cyan bg:current_line"
 symbol = "\ue73c "
 format = '[ ${symbol}${pyenv_prefix}${version}( \($virtualenv\)) ]($style)'
 detect_extensions = ["py"]
@@ -83,13 +87,13 @@ pyenv_prefix = ""
 
 # AWS profile
 [aws]
-style = "fg:208 bg:234"
+style = "fg:orange bg:current_line"
 format = "[ $symbol$profile( $region) ]($style)"
 symbol = "\ue7ad "
 
 # Command duration
 [cmd_duration]
-style = "fg:yellow bg:234"
+style = "fg:yellow bg:current_line"
 format = "[ 󰔟 $duration ]($style)"
 min_time = 2_000
 # Desktop notification when a long build (Lean, Coq, cabal...) finishes
@@ -101,19 +105,19 @@ min_time_to_notify = 45_000
 # (e.g. 127 = not found, 130 = Ctrl-C). Hidden on success.
 [status]
 disabled = false
-style = "fg:red bg:234"
+style = "fg:red bg:current_line"
 format = "[ ✘ $status ]($style)"
 
 # Background jobs - easy to forget a process suspended with Ctrl-Z
 [jobs]
-style = "fg:blue bg:234"
+style = "fg:purple bg:current_line"
 format = "[ $symbol$number ]($style)"
 number_threshold = 1
 
 # Time
 [time]
 disabled = false
-style = "fg:white bg:234"
+style = "fg:foreground bg:current_line"
 format = "[ $time ]($style)"
 time_format = "%H:%M:%S"
 
@@ -125,12 +129,12 @@ error_symbol = "[❯](red)"
 # Language versions - only shown inside a matching project
 [nodejs]
 disabled = false
-style = "fg:green bg:234"
+style = "fg:green bg:current_line"
 format = "[ 󰎙 $version ]($style)"
 
 [rust]
 disabled = false
-style = "fg:208 bg:234"
+style = "fg:orange bg:current_line"
 format = "[ 🦀 $version ]($style)"
 
 # Lean 4 - no built-in module. Read lean-toolchain instead of running
@@ -140,15 +144,29 @@ format = "[ 🦀 $version ]($style)"
 detect_files = ["lean-toolchain"]
 command = "cut -d: -f2 lean-toolchain"
 shell = ["sh"]
-style = "fg:white bg:234"
+style = "fg:foreground bg:current_line"
 format = "[ ∀ $output ]($style)"
 
 [java]
 disabled = false
-style = "fg:208 bg:234"
+style = "fg:orange bg:current_line"
 format = "[ $version ]($style)"
 
 [lua]
 disabled = false
-style = "fg:27 bg:234"
+style = "fg:purple bg:current_line"
 format = "[ $version ]($style)"
+
+# Dracula palette, referenced by `palette` at the top
+[palettes.dracula]
+background = "#282a36"
+current_line = "#44475a"
+foreground = "#f8f8f2"
+comment = "#6272a4"
+cyan = "#8be9fd"
+green = "#50fa7b"
+orange = "#ffb86c"
+pink = "#ff79c6"
+purple = "#bd93f9"
+red = "#ff5555"
+yellow = "#f1fa8c"
