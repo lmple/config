@@ -34,9 +34,15 @@ sudo pacman -S --needed aspell aspell-en aspell-fr pass graphviz pandoc-cli gnup
 Optional, heavy (several GB, mostly TeX Live):
 
 ```sh
-# LaTeX (Doom latex, nvim vimtex), grammar checking, PlantUML, Jupyter (ein, jupynium)
-sudo pacman -S --needed texlive-basic texlive-latexextra texlab zathura zathura-pdf-mupdf \
-  languagetool plantuml jupyter-notebook
+# LaTeX (Doom latex, nvim vimtex): the texlive group is the full TeX Live minus
+# languages, so add French. It brings latexmk (both editors compile with it) and
+# chktex (Doom's checker) via texlive-binextra. biber backs biblatex, and the perl
+# modules let texlab format with latexindent.
+sudo pacman -S --needed texlive texlive-langfrench biber texlab \
+  perl-yaml-tiny perl-file-homedir zathura zathura-pdf-mupdf
+
+# Grammar checking, PlantUML, Jupyter (ein, jupynium)
+sudo pacman -S --needed languagetool plantuml jupyter-notebook
 ```
 
 ## Ubuntu 26.04 dependencies
@@ -79,7 +85,12 @@ sudo apt install aspell aspell-en aspell-fr pass graphviz pandoc gnuplot
 Optional, heavy (LanguageTool is not packaged, Doom's grammar module just warns without it):
 
 ```sh
-sudo apt install texlive-base texlive-latex-extra texlab zathura plantuml jupyter-notebook
+# LaTeX (Doom latex, nvim vimtex): texlive-full is the full TeX Live, every language
+# included, and already pulls in latexmk, chktex and biber
+sudo apt install texlive-full texlab zathura
+
+# PlantUML, Jupyter (ein, jupynium)
+sudo apt install plantuml jupyter-notebook
 ```
 
 ## Toolchains (both distros)
