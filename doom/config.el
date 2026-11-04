@@ -1,7 +1,6 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-;; ashen is vendored in themes/, which Doom puts on custom-theme-load-path.
-(setq doom-theme 'ashen)
+(setq doom-theme 'doom-dracula)
 (setq display-line-numbers-type t)
 (setq font-lock-maximum-decoration t)
 (setq org-directory "~/org/")
