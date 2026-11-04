@@ -93,6 +93,38 @@ sudo apt install texlive-full texlab zathura
 sudo apt install plantuml jupyter-notebook
 ```
 
+## Firewall (ufw)
+
+Deny unsolicited inbound traffic, allow all outbound. EndeavourOS enables firewalld
+out of the box; two firewalls rewriting the same nftables rules conflict, so turn it
+off before enabling ufw.
+
+```sh
+# Arch / EndeavourOS
+sudo pacman -S --needed ufw
+sudo systemctl disable --now firewalld   # only if installed (EndeavourOS default)
+sudo systemctl enable --now ufw          # loads the rules at boot
+
+# Ubuntu ships ufw installed but inactive
+sudo apt install ufw
+```
+
+```sh
+# Both distros
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+# KDE Connect / GSConnect pair and transfer over 1714-1764
+sudo ufw allow 1714:1764/tcp
+sudo ufw allow 1714:1764/udp
+
+# Only if this machine runs an SSH server: rate-limit repeated login attempts
+# sudo ufw limit ssh
+
+sudo ufw enable
+sudo ufw status verbose
+```
+
 ## Toolchains (both distros)
 
 ```sh
