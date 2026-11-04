@@ -1,35 +1,64 @@
-# Colors (Ashen)
-# Author: Daniel Fichtinger
+# Colors (Dracula)
+# https://draculatheme.com/alacritty
 # License: MIT
 
-# Default Colors
 [colors.primary]
-background = '#121212'
-foreground = '#f5f5f5'
+background = "#282a36"
+foreground = "#f8f8f2"
+bright_foreground = "#ffffff"
 
-# Selection Colors
 [colors.cursor]
-cursor = '#f5f5f5'
-text = '#121212'
+text = "#282a36"
+cursor = "#f8f8f2"
 
-# Normal Colors
+[colors.vi_mode_cursor]
+text = "CellBackground"
+cursor = "CellForeground"
+
+[colors.search.matches]
+foreground = "#44475a"
+background = "#50fa7b"
+
+[colors.search.focused_match]
+foreground = "#44475a"
+background = "#ffb86c"
+
+[colors.footer_bar]
+background = "#282a36"
+foreground = "#f8f8f2"
+
+[colors.hints.start]
+foreground = "#282a36"
+background = "#f1fa8c"
+
+[colors.hints.end]
+foreground = "#f1fa8c"
+background = "#282a36"
+
+[colors.line_indicator]
+foreground = "None"
+background = "None"
+
+[colors.selection]
+text = "CellForeground"
+background = "#44475a"
+
 [colors.normal]
-black = '#121212'
-red = '#B14242'
-green = '#D87C4A'
-yellow = '#E49A44'
-blue = '#4A8B8B'
-magenta = '#a7a7a7'
-cyan = '#b4b4b4'
-white = '#d5d5d5'
+black = "#21222c"
+red = "#ff5555"
+green = "#50fa7b"
+yellow = "#f1fa8c"
+blue = "#bd93f9"
+magenta = "#ff79c6"
+cyan = "#8be9fd"
+white = "#f8f8f2"
 
-# Bright Colors
 [colors.bright]
-black = '#949494'
-red = '#B14242'
-green = '#D87C4A'
-yellow = '#E49A44'
-blue = '#4A8B8B'
-magenta = '#a7a7a7'
-cyan = '#b4b4b4'
-white = '#d5d5d5'
+black = "#6272a4"
+red = "#ff6e6e"
+green = "#69ff94"
+yellow = "#ffffa5"
+blue = "#d6acff"
+magenta = "#ff92df"
+cyan = "#a4ffff"
+white = "#ffffff"
