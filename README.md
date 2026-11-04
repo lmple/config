@@ -27,8 +27,8 @@ sudo pacman -S --needed python-pipx rustup shellcheck shfmt bash-language-server
 rustup default stable
 rustup component add rust-analyzer
 
-# Doom modules: spell, pass, graphviz, org +pandoc/+gnuplot, pdf (poppler-glib)
-sudo pacman -S --needed aspell aspell-en pass graphviz pandoc-cli gnuplot poppler-glib
+# Doom modules: spell (English + French dictionaries), pass, graphviz, org +pandoc/+gnuplot, pdf (poppler-glib)
+sudo pacman -S --needed aspell aspell-en aspell-fr pass graphviz pandoc-cli gnuplot poppler-glib
 ```
 
 Optional, heavy (several GB, mostly TeX Live):
@@ -72,8 +72,8 @@ cargo install --locked zellij
 # lua-language-server and stylua come from Mason (nvim/lua/plugins/mason.lua)
 npm install -g bash-language-server typescript-language-server typescript prettier
 
-# Doom modules: spell, pass, graphviz, org +pandoc/+gnuplot
-sudo apt install aspell aspell-en pass graphviz pandoc gnuplot
+# Doom modules: spell (English + French dictionaries), pass, graphviz, org +pandoc/+gnuplot
+sudo apt install aspell aspell-en aspell-fr pass graphviz pandoc gnuplot
 ```
 
 Optional, heavy (LanguageTool is not packaged, Doom's grammar module just warns without it):
