@@ -35,6 +35,43 @@
 (map! :leader
       "o T" #'ghostel-project) ;; replace with your actual ghostty function
 
+;; ghostel's own URL detection stops at newlines, including the ones it inserts
+;; for soft wraps (marked `ghostel-wrap'), so a long URL opens truncated.
+;; Dropping those newlines first rejoins it. Inside zellij this can't help:
+;; zellij draws finished rows (zellij-org/zellij#3436), use its Alt u picker.
+(defun my/buffer-urls ()
+  "Return the URLs in the current buffer, newest first, soft wraps undone."
+  (let ((text (buffer-string))
+        (urls '()))
+    (with-temp-buffer
+      (insert text)
+      (goto-char (point-min))
+      (while (search-forward "\n" nil t)
+        (when (get-text-property (match-beginning 0) 'ghostel-wrap)
+          (replace-match "")))
+      (goto-char (point-min))
+      (while (re-search-forward
+              "https?://[^ \t\n\r\"'<>`]*[^ \t\n\r\"'<>`.,;:!?)]" nil t)
+        (push (match-string-no-properties 0) urls)))
+    (delete-dups urls)))
+
+(defun my/browse-url-in-buffer ()
+  "Pick a URL from the current buffer, newest first, and open it."
+  (interactive)
+  (let ((urls (or (my/buffer-urls) (user-error "No URLs in this buffer"))))
+    (browse-url
+     (completing-read
+      "Open URL: "
+      ;; Keep newest-first: completion UIs re-sort plain lists by default
+      (lambda (string pred action)
+        (if (eq action 'metadata)
+            '(metadata (display-sort-function . identity))
+          (complete-with-action action urls string pred)))
+      nil t))))
+
+(map! :leader
+      :desc "URL in buffer" "o u" #'my/browse-url-in-buffer)
+
 ;; ghostel isn't loaded yet, so without this the `let's below would bind
 ;; `ghostel-buffer-name' lexically: ghostel would never see it, and its
 ;; defcustom errors when autoloaded inside such a binding.
