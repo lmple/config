@@ -72,7 +72,8 @@ style = "fg:purple bg:current_line"
 format = "[ $hash ]($style)"
 only_detached = true
 
-# Python - shows pyenv version and virtualenv
+# Python - shows the interpreter version (not the pyenv version name)
+# and the active virtualenv
 [python]
 style = "fg:cyan bg:current_line"
 symbol = "\ue73c "
