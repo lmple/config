@@ -140,7 +140,7 @@ format = "[ 󰎙 $version ]($style)"
 [rust]
 disabled = false
 style = "fg:orange bg:current_line"
-format = "[ 🦀 $version ]($style)"
+format = "[  $version ]($style)"
 
 # Lean 4 - no built-in module. Read lean-toolchain instead of running
 # `lean --version`, which goes through elan and may download a toolchain
