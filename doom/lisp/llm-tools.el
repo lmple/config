@@ -1,13 +1,48 @@
 ;;; lisp/llm-tools.el -*- lexical-binding: t; -*-
 
 ;; Tools let the local model look around on its own. Reading never asks;
-;; writing asks before every call (gptel's `:confirm').
+;; writing asks before every call (gptel's `:confirm'). Because reading never
+;; asks, a prompt injected into any file or note the model reads could ask
+;; for credentials, so no tool touches remote files or the paths below.
 (defconst my/gptel-tool-max-chars 32000
   "Cap on text a tool returns, ~8k tokens: half the 16k context window.")
 
-(defun my/gptel-tool-path (path)
-  "Expand PATH against the current project root, or `default-directory'."
-  (expand-file-name path (or (doom-project-root) default-directory)))
+(defconst my/gptel-tool-denied-paths
+  '("~/.ssh/" "~/.gnupg/" "~/.password-store/" "~/.aws/"
+    "~/.extra_config" "~/.authinfo" "~/.netrc")
+  "Files, and directories (ending in /), that the tools refuse.
+They hold keys and credentials.")
+
+(defconst my/gptel-tool-denied-regexp "\\.\\(gpg\\|age\\)\\'"
+  "File names the tools refuse: encrypted files.
+Emacs decrypts .gpg files as it reads them when gpg-agent has the
+passphrase cached, so the model would get the plaintext.")
+
+(defun my/gptel-tool-denied-p (file)
+  "Non-nil if FILE, an absolute local path, is one the tools refuse.
+Symlinks are resolved first, so a link into ~/.ssh is refused too."
+  (let ((true (file-truename file)))
+    (or (string-match-p my/gptel-tool-denied-regexp true)
+        (seq-some (lambda (denied)
+                    (let ((target (file-truename (expand-file-name denied))))
+                      (if (directory-name-p denied)
+                          (string-prefix-p (file-name-as-directory target)
+                                           (file-name-as-directory true))
+                        (string= target true))))
+                  my/gptel-tool-denied-paths))))
+
+(defun my/gptel-tool-path (path &optional root)
+  "Expand PATH against ROOT, by default the project root or `default-directory'.
+Signal an error for a remote path, since TRAMP would open a connection,
+and for one `my/gptel-tool-denied-p' refuses."
+  (let ((root (or root (doom-project-root) default-directory)))
+    ;; Check before expanding: TRAMP connects to expand a remote ~.
+    (when (or (file-remote-p path) (file-remote-p root))
+      (error "Remote paths are off limits: %s" path))
+    (let ((file (expand-file-name path root)))
+      (when (my/gptel-tool-denied-p file)
+        (error "%s holds credentials and is off limits" file))
+      file)))
 
 (defun my/gptel-tool-cap (text)
   "Return TEXT cut to `my/gptel-tool-max-chars', saying so when cut."
@@ -52,9 +87,13 @@ against the current project root. Long files are cut off."
           :function
           (my/gptel-tool-safely
            (lambda (path)
-             (with-temp-buffer
-               (insert-file-contents (my/gptel-tool-path path))
-               (my/gptel-tool-cap (buffer-string))))))
+             (let ((file (my/gptel-tool-path path)))
+               (with-temp-buffer
+                 ;; No file handlers, so nothing gets decrypted, decompressed
+                 ;; or fetched over the network, whatever the checks missed.
+                 (let ((file-name-handler-alist nil))
+                   (insert-file-contents file))
+                 (my/gptel-tool-cap (buffer-string)))))))
 
          (gptel-make-tool
           :name "list_directory"
@@ -112,7 +151,7 @@ lines as path:line:text with absolute paths, which read_file accepts as is."
            (lambda (pattern &optional path)
              ;; Notes are prose, so lowercase patterns should match any case;
              ;; the org type keeps attachments and exports out of the results.
-             (my/gptel-rg pattern (expand-file-name (or path ".") org-directory)
+             (my/gptel-rg pattern (my/gptel-tool-path (or path ".") org-directory)
                           "--smart-case" "--type=org"))))
 
          (gptel-make-tool
@@ -145,6 +184,11 @@ unsaved changes. Use list_buffers to find buffer names."
            (lambda (name)
              (let ((buffer (or (get-buffer name)
                                (error "No buffer named %s" name))))
+               ;; A buffer visiting a .gpg file holds its decrypted text.
+               (when-let* ((file (buffer-file-name buffer))
+                           ((not (file-remote-p file)))
+                           ((my/gptel-tool-denied-p file)))
+                 (error "Buffer %s visits %s, which is off limits" name file))
                (with-current-buffer buffer
                  (my/gptel-tool-cap
                   (buffer-substring-no-properties (point-min) (point-max))))))))

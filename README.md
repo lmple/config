@@ -109,6 +109,10 @@ unit file:
   `list_buffers`, `read_buffer` (including unsaved changes): run without asking.
 - `write_file`: gptel shows the proposed call in the buffer and waits; `C-c C-c`
   runs it, `C-c C-k` rejects it.
+- Off limits to every tool, since reading never asks and a prompt injected into a
+  file could ask for secrets: remote (TRAMP) paths, `.gpg`/`.age` files (Emacs
+  would decrypt them), and the credential paths in `my/gptel-tool-denied-paths`
+  (`~/.ssh`, `~/.gnupg`, `~/.password-store`, `~/.aws`, `~/.extra_config`, ...).
 
 ### Add or change a model
 
