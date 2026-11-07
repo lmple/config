@@ -35,6 +35,50 @@
 (map! :leader
       "o T" #'ghostel-project) ;; replace with your actual ghostty function
 
+;; ghostel isn't loaded yet, so without this the `let's below would bind
+;; `ghostel-buffer-name' lexically: ghostel would never see it, and its
+;; defcustom errors when autoloaded inside such a binding.
+(defvar ghostel-buffer-name)
+
+(defun my/project-terminals (&optional dir)
+  "Pick a file in the project at DIR, then open Claude and a shell beside it.
+DIR defaults to `default-directory'.  The file goes on the left, Claude
+top-right and the shell bottom-right.  Cancelling the picker with
+\\[keyboard-quit] skips the file and puts Claude and the shell side by side.
+Claude is only started in a newly created buffer, so switching back to a
+project reuses its session."
+  (interactive)
+  (let* ((default-directory (or dir default-directory))
+         (existing (buffer-list))
+         (file-window (progn
+                        (delete-other-windows)
+                        ;; Catch C-g here so cancelling only skips the file
+                        ;; instead of aborting the terminals as well.
+                        (condition-case nil
+                            (progn (doom-project-find-file default-directory)
+                                   (selected-window))
+                          (quit nil)))))
+    (when file-window
+      (select-window (split-window-right)))
+    ;; `ghostel-project' prefixes the name with the project, giving
+    ;; *<project>-claude* and *<project>-shell*, and reuses them on later calls.
+    (let ((claude (let ((ghostel-buffer-name "*claude*"))
+                    (ghostel-project))))
+      ;; Typed into the shell rather than exec'd, so quitting Claude leaves
+      ;; a usable shell instead of killing the buffer.
+      (unless (memq claude existing)
+        (with-current-buffer claude
+          (ghostel-send-string "claude\r"))))
+    (select-window (if file-window (split-window-below) (split-window-right)))
+    (let ((ghostel-buffer-name "*shell*"))
+      (ghostel-project))
+    (when file-window
+      (select-window file-window))))
+
+;; Runs after `C-c p p' instead of Doom's default, `doom-project-find-file',
+;; which `my/project-terminals' still calls first.
+(setq +workspaces-switch-project-function #'my/project-terminals)
+
 ;;; Org ────────────────────────────────────────────────────────────────────────
 ;; Doom turns these prompts off, which lets an untrusted .org file run code via
 ;; an elisp: link, C-c C-c, or export. Re-enable them; this runs after Doom's
