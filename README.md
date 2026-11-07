@@ -99,8 +99,9 @@ unit file:
 
 ### gptel tools
 
-- `read_file`, `list_directory`, `search_project` (ripgrep), `list_buffers`,
-  `read_buffer` (including unsaved changes): run without asking.
+- `read_file`, `list_directory`, `search_project` (ripgrep), `search_org`
+  (ripgrep over `org-directory` from any buffer, org files only, smart case),
+  `list_buffers`, `read_buffer` (including unsaved changes): run without asking.
 - `write_file`: gptel shows the proposed call in the buffer and waits; `C-c C-c`
   runs it, `C-c C-k` rejects it.
 

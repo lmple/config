@@ -411,6 +411,29 @@ path is given."
            (lambda (pattern &optional path)
              (my/gptel-rg pattern (my/gptel-tool-path (or path "."))))))
 
+         ;; search_project follows the current project, so from a code repo it
+         ;; can't reach the notes; this one always searches `org-directory'.
+         (gptel-make-tool
+          :name "search_org"
+          :category "local"
+          :description (format "Search the user's org notes in %s for a regular
+expression with ripgrep. Only .org and .org_archive files are searched, and the
+match ignores case unless the pattern has a capital letter. Returns matching
+lines as path:line:text with absolute paths, which read_file accepts as is."
+                               (abbreviate-file-name
+                                (expand-file-name org-directory)))
+          :args '((:name "pattern" :type string
+                   :description "Regular expression (ripgrep syntax)")
+                  (:name "path" :type string :optional t
+                   :description "Subdirectory or file of the notes to search instead of all of them, relative to the notes directory"))
+          :function
+          (my/gptel-tool-safely
+           (lambda (pattern &optional path)
+             ;; Notes are prose, so lowercase patterns should match any case;
+             ;; the org type keeps attachments and exports out of the results.
+             (my/gptel-rg pattern (expand-file-name (or path ".") org-directory)
+                          "--smart-case" "--type=org"))))
+
          (gptel-make-tool
           :name "list_buffers"
           :category "local"
