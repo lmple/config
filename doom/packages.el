@@ -9,10 +9,6 @@
 (package! flymake-ruff)
 (package! flymake-collection)
 
-;;; AI
-(package! claude-code-ide
-  :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
-
 ;;; Lean 4
 (package! lean4-mode
   :recipe (:host github
