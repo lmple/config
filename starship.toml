@@ -26,11 +26,11 @@ style = "fg:foreground bg:current_line"
 format = "[$symbol ]($style)"
 
 [os.symbols]
-Arch = ""
+Arch = "\uf303"
 EndeavourOS = "\uf322"
 Manjaro = "\uf312"
-Linux = ""
-Macos = ""
+Linux = "\uf17c"
+Macos = "\uf179"
 Ubuntu = "\uf31b"
 
 # Hostname - only over SSH, so a remote shell can't be mistaken for a local one
@@ -44,7 +44,7 @@ format = "[ $ssh_symbol$hostname ]($style)"
 style = "fg:green bg:current_line"
 # Read-only marker explains a failed write before it is attempted
 format = "[ $path ]($style)([$read_only ]($read_only_style))"
-read_only = "󰌾"
+read_only = "\U000f033e"
 read_only_style = "fg:red bg:current_line"
 truncation_length = 0
 truncate_to_repo = false
@@ -100,7 +100,7 @@ symbol = "\ue7ad "
 # Command duration
 [cmd_duration]
 style = "fg:yellow bg:current_line"
-format = "[ 󰔟 $duration ]($style)"
+format = "[ \U000f051f $duration ]($style)"
 min_time = 2_000
 # Desktop notification when a long build (e.g. a Lean build) finishes
 # while the terminal is out of sight
@@ -136,12 +136,12 @@ error_symbol = "[❯](red)"
 [nodejs]
 disabled = false
 style = "fg:green bg:current_line"
-format = "[ 󰎙 $version ]($style)"
+format = "[ \U000f0399 $version ]($style)"
 
 [rust]
 disabled = false
 style = "fg:orange bg:current_line"
-format = "[  $version ]($style)"
+format = "[ \ue7a8 $version ]($style)"
 
 # Lean 4 - no built-in module. Read lean-toolchain instead of running
 # `lean --version`, which goes through elan and may download a toolchain
@@ -156,7 +156,7 @@ format = "[ ∀ $output ]($style)"
 [java]
 disabled = false
 style = "fg:orange bg:current_line"
-symbol = " "
+symbol = "\ue738 "
 format = "[ $symbol$version ]($style)"
 
 # Dracula palette, referenced by `palette` at the top
