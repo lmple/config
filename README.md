@@ -4,7 +4,11 @@ ZSH extra config: `~/.extra_config`
 
 Doom packages extra: `doom/extra_packages.el`
 
-Doom config extra: `doom/extra_config.el`
+Doom config extra: `doom/extra_config.el`, loaded last so its settings win
+
+Doom config layout: `doom/config.el` keeps the core settings (theme, fonts, modeline)
+and loads one file per topic from `doom/lisp/`: `terminals`, `documents` (org,
+LaTeX), `lang-python`, `lang-js`, `llm`, `llm-tools`, `lang-lean`, `lang-quint`.
 
 ## Setup
 
@@ -59,7 +63,8 @@ models to maintain.
 | `llama/home.ini` | 8 GB | `gemma-4-12b` |
 | `llama/work.ini` | 24 GB | `gemma-4-26b-a4b` (default), `qwen3-coder-30b`, `gemma-4-31b` |
 
-The Emacs side is the `;;; LLM` section of `doom/config.el`.
+The Emacs side is `doom/lisp/llm.el` (backend, model list) and
+`doom/lisp/llm-tools.el` (the [tools](#gptel-tools)).
 
 ### Install
 
