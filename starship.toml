@@ -150,7 +150,8 @@ format = "[ ∀ $output ]($style)"
 [java]
 disabled = false
 style = "fg:orange bg:current_line"
-format = "[ $version ]($style)"
+symbol = " "
+format = "[ $symbol$version ]($style)"
 
 # Dracula palette, referenced by `palette` at the top
 [palettes.dracula]
