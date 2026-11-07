@@ -20,7 +20,7 @@ usage() {
 Usage: ./deps.sh [options]
 
 Without options, installs the base set: distro packages, oh-my-zsh, Node (NVM),
-npm/pipx tools, Lean, TLA+, Quint and SDKMAN.
+npm/pipx tools, Lean, Quint and SDKMAN.
 
   --heavy       Also install TeX Live, LanguageTool, PlantUML, Jupyter (several GB)
   --firewall    Also install and configure ufw (deny inbound, allow KDE Connect)
@@ -78,21 +78,21 @@ pkgs_arch() {
   log "Arch packages"
   # Base tooling (base-devel builds pdf-tools, tree-sitter grammars and AUR packages)
   pacman_install git base-devel curl wget unzip
-  # Shell: zshrc loads starship, pyenv and direnv; fzf/ripgrep/fd back fuzzy search in both editors
+  # Shell: zshrc loads starship, pyenv and direnv; fzf/ripgrep/fd back fuzzy search in Emacs
   pacman_install zsh starship pyenv direnv fzf ripgrep fd
   # Terminal: zshrc auto-starts zellij; alacritty and Doom use FiraCode Nerd Font
   pacman_install alacritty ttf-firacode-nerd zellij wl-clipboard xclip
-  # Editors (Mason in nvim also needs Node from NVM)
-  pacman_install neovim python-pynvim tree-sitter-cli lazygit
+  # Terminal git UI, alongside magit
+  pacman_install lazygit
   # emacs-wayland is the pure-GTK build for Wayland (KDE); swap in emacs on X11.
   # Skip when any variant already provides emacs: they conflict with each other,
   # and pacman would ask to remove the installed one.
   if ! pacman -T emacs >/dev/null; then
     pacman_install emacs-wayland
   fi
-  # Languages and LSP servers: Doom (sh +lsp), (cc +lsp), (javascript +lsp), nvim lua/bash packs
+  # Languages and LSP servers: Doom (sh +lsp), (cc +lsp), (javascript +lsp)
   pacman_install python-pipx rustup shellcheck shfmt bash-language-server \
-    clang typescript-language-server prettier lua-language-server stylua
+    clang typescript-language-server prettier
   run rustup default stable
   run rustup component add rust-analyzer
   # Doom modules: spell (English + French dictionaries), pass, graphviz, org +pandoc/+gnuplot, pdf (poppler-glib)
@@ -105,7 +105,7 @@ pkgs_ubuntu() {
   apt_install git build-essential curl wget unzip pkg-config autoconf automake \
     libpoppler-glib-dev libpng-dev zlib1g-dev libssl-dev libbz2-dev libreadline-dev \
     libsqlite3-dev libncurses-dev xz-utils tk-dev libffi-dev liblzma-dev libxml2-dev
-  # Shell: Ubuntu ships fd as fdfind, link it so both editors find it as fd
+  # Shell: Ubuntu ships fd as fdfind, link it so Emacs finds it as fd
   apt_install zsh starship pyenv direnv fzf ripgrep fd-find
   run mkdir -p "$HOME/.local/bin"
   run_sh 'ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"'
@@ -115,8 +115,8 @@ pkgs_ubuntu() {
     run mkdir -p "$HOME/.local/share/fonts/FiraCodeNerd"
     run_sh 'curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.tar.xz | tar -xJ -C "$HOME/.local/share/fonts/FiraCodeNerd" && fc-cache -f'
   fi
-  # Editors; emacs-pgtk is for Wayland, swap in emacs-gtk on X11
-  apt_install emacs-pgtk neovim python3-pynvim tree-sitter-cli lazygit
+  # emacs-pgtk is for Wayland, swap in emacs-gtk on X11; lazygit is a terminal git UI
+  apt_install emacs-pgtk lazygit
   # Languages and LSP servers; zellij is not packaged, so build it with cargo
   apt_install pipx rustup shellcheck shfmt clang clangd
   run rustup default stable
@@ -160,8 +160,7 @@ npm_globals() {
   local distro=$1
   log "npm global packages"
   if [[ "$distro" == ubuntu ]]; then
-    # Not packaged on Ubuntu; lua-language-server and stylua come from Mason
-    # (nvim/lua/plugins/mason.lua) there
+    # Not packaged on Ubuntu
     with_nvm 'npm install -g bash-language-server typescript-language-server typescript prettier'
   fi
   # Quint and its language server
@@ -174,16 +173,10 @@ pipx_tools() {
 }
 
 toolchains() {
-  log "Lean and TLA+"
+  log "Lean"
   # elan adds itself to PATH via ~/.profile and ~/.zprofile, not the repo's zshrc
   if [[ ! -d "$HOME/.elan" ]]; then
     run_sh 'curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y'
-  fi
-  # nvim/lua/plugins/tlaplus.lua expects the jar here (Java comes from SDKMAN)
-  local jar="$HOME/.local/lib/tlaplus/tla2tools.jar"
-  if [[ ! -f "$jar" ]]; then
-    run mkdir -p "$(dirname "$jar")"
-    run curl -fsSL -o "$jar" https://github.com/tlaplus/tlaplus/releases/latest/download/tla2tools.jar
   fi
 }
 
@@ -212,19 +205,19 @@ heavy() {
   local distro=$1
   log "Heavy extras"
   if [[ "$distro" == arch ]]; then
-    # LaTeX (Doom latex, nvim vimtex): the texlive group is the full TeX Live minus
-    # languages, so add French. It brings latexmk (both editors compile with it) and
-    # chktex (Doom's checker) via texlive-binextra. biber backs biblatex, and the perl
+    # LaTeX (Doom latex): the texlive group is the full TeX Live minus languages,
+    # so add French. It brings latexmk and chktex (Doom's checker) via
+    # texlive-binextra. biber backs biblatex, and the perl
     # modules let texlab format with latexindent.
     pacman_install texlive texlive-langfrench biber texlab \
-      perl-yaml-tiny perl-file-homedir zathura zathura-pdf-mupdf
-    # Grammar checking, PlantUML, Jupyter (ein, jupynium)
+      perl-yaml-tiny perl-file-homedir
+    # Grammar checking, PlantUML, Jupyter (ein)
     pacman_install languagetool plantuml jupyter-notebook
   else
     # texlive-full is the full TeX Live, every language included, and already
     # pulls in latexmk, chktex and biber
-    apt_install texlive-full texlab zathura
-    # PlantUML, Jupyter (ein, jupynium); LanguageTool is not packaged, Doom's
+    apt_install texlive-full texlab
+    # PlantUML, Jupyter (ein); LanguageTool is not packaged, Doom's
     # grammar module just warns without it
     apt_install plantuml jupyter-notebook
   fi

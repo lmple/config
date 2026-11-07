@@ -9,7 +9,7 @@ Doom config extra: `doom/extra_config.el`
 ## Setup
 
 ```sh
-./deps.sh                     # packages, oh-my-zsh, Node, Lean, TLA+, Quint, SDKMAN, ...
+./deps.sh                     # packages, oh-my-zsh, Node, Lean, Quint, SDKMAN, ...
 ./install.sh                  # symlink the configs into ~ and ~/.config
 ./deps.sh --skip-base --doom  # Doom Emacs, once ~/.config/doom points at this repo
 ```
