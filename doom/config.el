@@ -344,6 +344,20 @@ Otherwise a missing file would abort the whole request."
         (apply fn args)
       (error (format "Error: %s" (error-message-string err))))))
 
+(defun my/gptel-rg (pattern target &rest flags)
+  "Search TARGET for PATTERN with ripgrep, adding FLAGS.
+Return matches as path:line:text, capped by `my/gptel-tool-cap'."
+  (with-temp-buffer
+    (pcase (apply #'call-process "rg" nil t nil
+                  ;; rg drops the path for a single file unless asked, so
+                  ;; force path:line:text.
+                  (append '("--with-filename" "--line-number" "--color=never"
+                            "--max-columns=300")
+                          flags (list "-e" pattern target)))
+      (0 (my/gptel-tool-cap (buffer-string)))
+      (1 (format "No matches for %s in %s" pattern target))
+      (_ (format "Error: rg failed: %s" (buffer-string))))))
+
 (after! gptel
   (setq gptel-tools
         (list
@@ -395,16 +409,7 @@ path is given."
           :function
           (my/gptel-tool-safely
            (lambda (pattern &optional path)
-             (let ((target (my/gptel-tool-path (or path "."))))
-               (with-temp-buffer
-                 (pcase (call-process "rg" nil t nil
-                                      ;; rg drops the path for a single file
-                                      ;; unless asked, so force path:line:text.
-                                      "--with-filename" "--line-number" "--color=never"
-                                      "--max-columns=300" "-e" pattern target)
-                   (0 (my/gptel-tool-cap (buffer-string)))
-                   (1 (format "No matches for %s in %s" pattern target))
-                   (_ (format "Error: rg failed: %s" (buffer-string)))))))))
+             (my/gptel-rg pattern (my/gptel-tool-path (or path "."))))))
 
          (gptel-make-tool
           :name "list_buffers"
