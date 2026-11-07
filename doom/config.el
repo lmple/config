@@ -36,13 +36,12 @@
 (load! "lisp/documents")
 (load! "lisp/lang-python")
 (load! "lisp/lang-js")
+(load! "lisp/llm")
+(load! "lisp/llm-tools")
+(load! "lisp/lang-lean")
+(load! "lisp/lang-quint")
 
 ;;; Local extra config
 (let ((extra (expand-file-name "extra_config.el" doom-user-dir)))
   (when (file-exists-p extra)
     (load! extra)))
-
-(load! "lisp/llm")
-(load! "lisp/llm-tools")
-(load! "lisp/lang-lean")
-(load! "lisp/lang-quint")
