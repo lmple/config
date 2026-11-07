@@ -74,6 +74,9 @@ llama-server --models-preset ~/sources/config/llama/work.ini --models-max 1 \
   (by default it accepts any origin and has no API key).
 - The first time a model is used, it is downloaded into `~/.cache/huggingface`
   (15-18 GB for the work models), and that first request waits for the download.
+
+### gptel tools
+
 - `read_file`, `list_directory`, `search_project` (ripgrep), `list_buffers`,
   `read_buffer` (including unsaved changes): run without asking.
 - `write_file`: gptel shows the proposed call in the buffer and waits; `C-c C-c`
