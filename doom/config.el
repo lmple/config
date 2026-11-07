@@ -213,7 +213,7 @@ project reuses its session."
           ;; The name must match llama-server's --alias. The context window,
           ;; in thousands of tokens, matches its --fit-ctx 16384.
           :models '((gemma-4-12b
-                     :description "Gemma 4 12B (Q4_K_M) via llama-server"
+                     :description "Gemma 4 12B (Q4_0) via llama-server"
                      :capabilities (tool-use)
                      :context-window 16)))))
 

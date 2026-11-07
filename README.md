@@ -133,12 +133,13 @@ when needed; the first run downloads the model into `~/.cache/huggingface`.
 
 ```sh
 # Arch / EndeavourOS (AUR)
-yay -S llama.cpp-cuda
+paru -S llama.cpp-cuda
 
-# Fits an 8 GB GPU: --fit picks GPU layers for a 16k context, and the q8_0 KV
-# cache saves memory. Bound to 127.0.0.1 and CORS-restricted to localhost, so
-# neither other machines nor web pages in the browser can reach it.
-llama-server -hf ggml-org/gemma-4-12B-it-GGUF:Q4_K_M --alias gemma-4-12b \
+# The repo only publishes Q4_0, Q8_0 and BF16; Q4_0 is the one that fits an 8 GB
+# GPU. --fit picks GPU layers for a 16k context, and the q8_0 KV cache saves
+# memory. Bound to 127.0.0.1 and CORS-restricted to localhost, so neither other
+# machines nor web pages in the browser can reach it.
+llama-server -hf ggml-org/gemma-4-12B-it-GGUF:Q4_0 --alias gemma-4-12b \
   --host 127.0.0.1 --port 8080 --cors-origins localhost --no-cors-credentials \
   --no-mmproj -np 1 --fit-ctx 16384 -ctk q8_0 -ctv q8_0
 ```
