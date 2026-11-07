@@ -36,6 +36,17 @@ Opt-in extras, combinable:
 - The NVM, SDKMAN and oh-my-zsh installers are kept from editing `~/.zshrc`, which is
   this repo's `zshrc` and already loads them.
 
+## Long URLs
+
+Zellij links a wrapped URL only up to the end of its first row
+([zellij#3436](https://github.com/zellij-org/zellij/issues/3436)), so use a picker:
+
+| Where | Key |
+| --- | --- |
+| Zellij, any terminal | `Alt u`: Enter opens, `Ctrl-y` copies |
+| Emacs buffer (ghostel outside Zellij) | `C-c o u` |
+| Alacritty | `Shift`+click (Shift is needed inside Zellij), `Ctrl+Shift+O` opens, `Ctrl+Shift+Y` copies |
+
 ## Local LLM (llama.cpp)
 
 Doom's gptel talks to a local `llama-server` on port 8080, run in router mode: one
