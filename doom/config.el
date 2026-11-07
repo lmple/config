@@ -192,14 +192,6 @@ project reuses its session."
   (when (file-exists-p extra)
     (load! extra)))
 
-;; Claude code
-(use-package! claude-code-ide
-  :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
-  :config
-  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
-
-(setq claude-code-ide-terminal-backend 'ghostel)
-
 ;;; LLM ────────────────────────────────────────────────────────────────────────
 ;; gptel talks to a local llama-server, started by hand in router mode with a
 ;; machine's presets (llama/home.ini or llama/work.ini, see README), through
