@@ -54,7 +54,8 @@ symbol = "\ue0a0 "
 # Git status
 [git_status]
 style = "fg:red bg:current_line"
-format = "[$all_status$ahead_behind]($style)"
+# Outer conditional group drops the padding too when the tree is clean
+format = "([ $all_status$ahead_behind ]($style))"
 
 # Git state - surfaces an in-progress rebase/merge/cherry-pick, which the
 # branch name alone hides
