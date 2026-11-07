@@ -230,12 +230,13 @@ project reuses its session."
     (load! extra)))
 
 ;;; LLM ────────────────────────────────────────────────────────────────────────
-;; gptel talks to a local llama-server, started by hand in router mode with a
-;; machine's presets (llama/home.ini or llama/work.ini, see README), through
+;; gptel talks to a local llama-server, run in router mode by the
+;; llama-server@home or llama-server@work user service (systemd/, see README)
+;; with that machine's presets (llama/home.ini or llama/work.ini), through
 ;; the OpenAI-compatible API it exposes. The model list comes from the server,
 ;; so the presets file is the only list to edit.
 (defconst my/gptel-llama-host "localhost:8080"
-  "Where llama-server listens, as in the README's router command.")
+  "Where llama-server listens, as set in systemd/llama-server@.service.")
 
 (defun my/gptel-llama-backend (models)
   "Register the llama-cpp gptel backend offering MODELS, a list of symbols.

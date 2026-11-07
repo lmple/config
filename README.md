@@ -69,15 +69,26 @@ The Emacs side is the `;;; LLM` section of `doom/config.el`.
 
 ### Start the server
 
-```sh
-# Home (8 GB GPU)
-llama-server --models-preset ~/sources/config/llama/home.ini --models-max 1 \
-  --host 127.0.0.1 --port 8080 --cors-origins localhost --no-cors-credentials
+`systemd/llama-server@.service` runs the server as a systemd user service. Its
+instance name is the presets file: `@home` reads `llama/home.ini`, `@work` reads
+`llama/work.ini` (through the `~/.config/llama` link from `install.sh`). On each
+machine, enable its instance once; after that it starts at every login:
 
-# Work (24 GB GPU)
-llama-server --models-preset ~/sources/config/llama/work.ini --models-max 1 \
-  --host 127.0.0.1 --port 8080 --cors-origins localhost --no-cors-credentials
+```sh
+systemctl --user daemon-reload
+systemctl --user enable --now llama-server@home   # work machine: llama-server@work
 ```
+
+| Task | Command (`@work` on the work machine) |
+| --- | --- |
+| State | `systemctl --user status llama-server@home` |
+| Logs, first download | `journalctl --user -u llama-server@home -f` |
+| Reload the presets | `systemctl --user restart llama-server@home` |
+| Free the GPU for now | `systemctl --user stop llama-server@home` |
+| Stop starting at login | `systemctl --user disable --now llama-server@home` |
+
+While it runs, the `load-on-startup` model stays in VRAM. The flags, set in the
+unit file:
 
 - `--models-max 1` keeps a single model in VRAM: switching unloads the previous one.
 - `--host 127.0.0.1` keeps other machines out, and `--cors-origins localhost
@@ -95,7 +106,8 @@ llama-server --models-preset ~/sources/config/llama/work.ini --models-max 1 \
 
 ### Add or change a model
 
-Add a section to the machine's presets file and restart the server. The section name
+Add a section to the machine's presets file and restart the server
+(`systemctl --user restart llama-server@home`, or `@work`). The section name
 is the model name gptel shows; the other keys are `llama-server` flags without the
 leading dashes, and `[*]` holds the settings every model shares.
 

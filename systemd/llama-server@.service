@@ -1,0 +1,18 @@
+# llama-server in router mode for gptel, as a systemd user service.
+# The instance picks the machine's presets: llama-server@home uses
+# llama/home.ini, llama-server@work uses llama/work.ini (see README).
+[Unit]
+Description=llama.cpp router server (%i presets) for gptel
+
+[Service]
+# Absolute path on purpose: an old hand-built /usr/local/bin copy would
+# otherwise win (see deps.sh --llama). The presets are read through the
+# ~/.config/llama link from install.sh, so the repo can live anywhere.
+ExecStart=/usr/bin/llama-server --models-preset %h/.config/llama/%i.ini \
+  --models-max 1 --host 127.0.0.1 --port 8080 \
+  --cors-origins localhost --no-cors-credentials
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
