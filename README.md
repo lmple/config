@@ -125,6 +125,28 @@ sudo ufw enable
 sudo ufw status verbose
 ```
 
+## Local LLM (llama.cpp)
+
+Doom's gptel (`C-c o l l`) talks to a local `llama-server` on port 8080, serving
+Gemma 4 12B under the name `gemma-4-12b` (see `doom/config.el`). Start it by hand
+when needed; the first run downloads the model into `~/.cache/huggingface`.
+
+```sh
+# Arch / EndeavourOS (AUR)
+yay -S llama.cpp-cuda
+
+# Fits an 8 GB GPU: --fit picks GPU layers for a 16k context, and the q8_0 KV
+# cache saves memory. Bound to 127.0.0.1 and CORS-restricted to localhost, so
+# neither other machines nor web pages in the browser can reach it.
+llama-server -hf ggml-org/gemma-4-12B-it-GGUF:Q4_K_M --alias gemma-4-12b \
+  --host 127.0.0.1 --port 8080 --cors-origins localhost --no-cors-credentials \
+  --no-mmproj -np 1 --fit-ctx 16384 -ctk q8_0 -ctv q8_0
+```
+
+Gemma 4 needs a recent build (version 8589 fails with "unknown model architecture:
+'gemma4'"; 10217 works). Check `llama-server --version`: an older copy in
+`/usr/local/bin` takes precedence over the package's `/usr/bin`.
+
 ## Toolchains (both distros)
 
 ```sh
