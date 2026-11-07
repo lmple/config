@@ -98,6 +98,8 @@ pkgs_arch() {
   run rustup component add rust-analyzer
   # Doom modules: spell (English + French dictionaries), pass, graphviz, org +pandoc/+gnuplot, pdf (poppler-glib)
   pacman_install aspell aspell-en aspell-fr pass graphviz pandoc-cli gnuplot poppler-glib
+  # Doom web: tidy formats HTML (stylelint and js-beautify come from npm)
+  pacman_install tidy
 }
 
 pkgs_ubuntu() {
@@ -125,6 +127,8 @@ pkgs_ubuntu() {
   run cargo install --locked zellij
   # Doom modules: spell (English + French dictionaries), pass, graphviz, org +pandoc/+gnuplot
   apt_install aspell aspell-en aspell-fr pass graphviz pandoc gnuplot
+  # Doom web: tidy formats HTML (stylelint and js-beautify come from npm)
+  apt_install tidy
 }
 
 oh_my_zsh() {
@@ -166,6 +170,8 @@ npm_globals() {
   fi
   # Quint and its language server
   with_nvm 'npm install -g @informalsystems/quint @informalsystems/quint-language-server'
+  # Doom web: CSS linting and JS/CSS/HTML formatting, from npm on both distros
+  with_nvm 'npm install -g stylelint js-beautify'
 }
 
 pipx_tools() {
