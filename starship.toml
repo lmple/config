@@ -41,7 +41,10 @@ format = "[ $ssh_symbol$hostname ]($style)"
 # Directory
 [directory]
 style = "fg:green bg:current_line"
-format = "[ $path ]($style)"
+# Read-only marker explains a failed write before it is attempted
+format = "[ $path ]($style)([$read_only ]($read_only_style))"
+read_only = "󰌾"
+read_only_style = "fg:red bg:current_line"
 truncation_length = 0
 truncate_to_repo = false
 
