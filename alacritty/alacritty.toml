@@ -36,6 +36,31 @@ dynamic_title = true
 [env]
 TERM = "xterm-256color"
 
+# URL hints. Defining hints.enabled replaces Alacritty's default list, so the
+# first entry restates the default open-URL hint (Alacritty 0.17).
+# - Inside zellij, hold Shift to click: zellij captures the mouse otherwise.
+# - Inside zellij, a wrapped URL is linked only up to the row end
+#   (zellij-org/zellij#3436); use the zellij picker (Alt u) for those.
+# - Outside zellij, Alacritty follows soft-wrapped lines, so long URLs work.
+[[hints.enabled]]
+command = "xdg-open"
+hyperlinks = true
+post_processing = true
+persist = false
+mouse.enabled = true
+binding = { key = "O", mods = "Control|Shift" }
+regex = "(ipfs:|ipns:|magnet:|mailto:|gemini://|gopher://|https://|http://|news:|file:|git://|ssh:|ftp://)[^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`\\\\]+"
+
+# Same matches, copied to the clipboard instead of opened (e.g. to paste a
+# login URL into a browser profile other than the default one).
+[[hints.enabled]]
+action = "Copy"
+hyperlinks = true
+post_processing = true
+mouse.enabled = false
+binding = { key = "Y", mods = "Control|Shift" }
+regex = "(ipfs:|ipns:|magnet:|mailto:|gemini://|gopher://|https://|http://|news:|file:|git://|ssh:|ftp://)[^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`\\\\]+"
+
 [keyboard]
 bindings = [
   { key = "V", mods = "Control|Shift", action = "Paste" },
