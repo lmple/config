@@ -78,8 +78,9 @@ pkgs_arch() {
   log "Arch packages"
   # Base tooling (base-devel builds pdf-tools, tree-sitter grammars and AUR packages)
   pacman_install git base-devel curl wget unzip
-  # Shell: zshrc loads starship, pyenv and direnv; fzf/ripgrep/fd back fuzzy search in Emacs
-  pacman_install zsh starship pyenv direnv fzf ripgrep fd
+  # Shell: zshrc loads starship, pyenv and direnv; fzf/ripgrep/fd back fuzzy search in Emacs;
+  # jq parses zellij's pane list for zellij/url-picker.sh
+  pacman_install zsh starship pyenv direnv fzf ripgrep fd jq
   # Terminal: zshrc auto-starts zellij; alacritty and Doom use FiraCode Nerd Font
   pacman_install alacritty ttf-firacode-nerd zellij wl-clipboard xclip
   # Terminal git UI, alongside magit
@@ -106,7 +107,7 @@ pkgs_ubuntu() {
     libpoppler-glib-dev libpng-dev zlib1g-dev libssl-dev libbz2-dev libreadline-dev \
     libsqlite3-dev libncurses-dev xz-utils tk-dev libffi-dev liblzma-dev libxml2-dev
   # Shell: Ubuntu ships fd as fdfind, link it so Emacs finds it as fd
-  apt_install zsh starship pyenv direnv fzf ripgrep fd-find
+  apt_install zsh starship pyenv direnv fzf ripgrep fd-find jq
   run mkdir -p "$HOME/.local/bin"
   run_sh 'ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"'
   # Terminal: FiraCode Nerd Font is not packaged, install it per user

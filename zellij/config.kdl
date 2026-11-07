@@ -171,6 +171,15 @@ keybinds clear-defaults=true {
         bind "Alt o" { MoveTab "right"; }
         bind "Alt p" { TogglePaneInGroup; }
         bind "Alt Shift p" { ToggleGroupMarking; }
+        // URL picker: Zellij links wrapped URLs only up to the row end (zellij#3436),
+        // so read them from the pane dump instead. bash -c expands $HOME, KDL doesn't.
+        bind "Alt u" {
+            Run "bash" "-c" "exec \"$HOME/.config/zellij/url-picker.sh\"" {
+                floating true
+                close_on_exit true
+                name "URLs"
+            }
+        }
         bind "Ctrl q" { Quit; }
     }
     shared_except "locked" "move" {
