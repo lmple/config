@@ -77,11 +77,17 @@
 ;; defcustom errors when autoloaded inside such a binding.
 (defvar ghostel-buffer-name)
 
+(defvar my/project-claude-share 0.65
+  "Fraction of the Claude/shell split that Claude's window gets.
+The shell keeps the rest, which is still enough for a few commands.")
+
 (defun my/project-terminals (&optional dir)
   "Pick a file in the project at DIR, then open Claude and a shell beside it.
 DIR defaults to `default-directory'.  The file goes on the left, Claude
 top-right and the shell bottom-right.  Cancelling the picker with
 \\[keyboard-quit] skips the file and puts Claude and the shell side by side.
+Either way Claude gets `my/project-claude-share' of the space it shares
+with the shell.
 Claude is only started in a newly created buffer, so switching back to a
 project reuses its session."
   (interactive)
@@ -106,7 +112,14 @@ project reuses its session."
       (unless (memq claude existing)
         (with-current-buffer claude
           (ghostel-send-string "claude\r"))))
-    (select-window (if file-window (split-window-below) (split-window-right)))
+    ;; Claude's window is still selected, and a positive SIZE goes to the
+    ;; selected (top or left) window, so this sizes Claude, not the shell.
+    (select-window
+     (if file-window
+         (split-window-below
+          (round (* my/project-claude-share (window-total-height))))
+       (split-window-right
+        (round (* my/project-claude-share (window-total-width))))))
     (let ((ghostel-buffer-name "*shell*"))
       (ghostel-project))
     (when file-window
