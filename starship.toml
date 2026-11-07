@@ -2,7 +2,7 @@
 
 # Prompt format
 format = """
-[╭─](comment)$os$hostname$directory$git_branch$git_commit$git_state$git_status$fill$python$nodejs$rust$haskell${custom.lean}$scala$java$kotlin$lua$ocaml$aws$jobs$cmd_duration$status$time
+[╭─](comment)$os$hostname$directory$git_branch$git_commit$git_state$git_status$fill$python$nodejs$rust${custom.lean}$java$aws$jobs$cmd_duration$status$time
 [╰─](comment)$character"""
 
 right_format = ""
@@ -150,11 +150,6 @@ format = "[ ∀ $output ]($style)"
 [java]
 disabled = false
 style = "fg:orange bg:current_line"
-format = "[ $version ]($style)"
-
-[lua]
-disabled = false
-style = "fg:purple bg:current_line"
 format = "[ $version ]($style)"
 
 # Dracula palette, referenced by `palette` at the top
