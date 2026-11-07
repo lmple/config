@@ -100,6 +100,9 @@ pkgs_arch() {
   pacman_install aspell aspell-en aspell-fr pass graphviz pandoc-cli gnuplot poppler-glib
   # Doom web: tidy formats HTML (stylelint and js-beautify come from npm)
   pacman_install tidy
+  # Doom org +dragndrop: doctor wants maim/scrot/gnome-screenshot, but on Wayland
+  # config.el takes screenshots with spectacle; scrot only quiets the warning
+  pacman_install scrot
 }
 
 pkgs_ubuntu() {
@@ -129,6 +132,9 @@ pkgs_ubuntu() {
   apt_install aspell aspell-en aspell-fr pass graphviz pandoc gnuplot
   # Doom web: tidy formats HTML (stylelint and js-beautify come from npm)
   apt_install tidy
+  # Doom org +dragndrop: doctor wants maim/scrot/gnome-screenshot, but on Wayland
+  # config.el takes screenshots with spectacle; scrot only quiets the warning
+  apt_install scrot
 }
 
 oh_my_zsh() {
