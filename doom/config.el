@@ -200,6 +200,23 @@ project reuses its session."
 
 (setq claude-code-ide-terminal-backend 'ghostel)
 
+;;; LLM ────────────────────────────────────────────────────────────────────────
+;; gptel talks to a local llama-server, started by hand (see README), through
+;; the OpenAI-compatible API it exposes.
+(after! gptel
+  (setq gptel-model 'gemma-4-12b
+        gptel-backend
+        (gptel-make-openai "llama-cpp"
+          :stream t
+          :protocol "http"
+          :host "localhost:8080"
+          ;; The name must match llama-server's --alias. The context window,
+          ;; in thousands of tokens, matches its --fit-ctx 16384.
+          :models '((gemma-4-12b
+                     :description "Gemma 4 12B (Q4_K_M) via llama-server"
+                     :capabilities (tool-use)
+                     :context-window 16)))))
+
 ;;; Lean 4
 ;; The Lean server sends workspace/inlayHint/refresh, which lsp-mode's request
 ;; dispatcher doesn't know and warns about on every re-elaboration. It still
