@@ -2,7 +2,7 @@
 
 # Prompt format
 format = """
-[╭─](comment)$os$hostname$directory$git_branch$git_commit$git_state$git_status$fill$python$nodejs$rust$haskell${custom.lean}${custom.coq}$scala$java$kotlin$lua$ocaml$aws$jobs$cmd_duration$status$time
+[╭─](comment)$os$hostname$directory$git_branch$git_commit$git_state$git_status$fill$python$nodejs$rust$haskell${custom.lean}$scala$java$kotlin$lua$ocaml$aws$jobs$cmd_duration$status$time
 [╰─](comment)$character"""
 
 right_format = ""
@@ -96,7 +96,7 @@ symbol = "\ue7ad "
 style = "fg:yellow bg:current_line"
 format = "[ 󰔟 $duration ]($style)"
 min_time = 2_000
-# Desktop notification when a long build (Lean, Coq, cabal...) finishes
+# Desktop notification when a long build (e.g. a Lean build) finishes
 # while the terminal is out of sight
 show_notifications = true
 min_time_to_notify = 45_000
