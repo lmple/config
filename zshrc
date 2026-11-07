@@ -78,6 +78,8 @@ eval "$(starship init zsh)"
 setopt SHARE_HISTORY
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_FIND_NO_DUPS
+# A leading space keeps a command out of the history, e.g. one with a token in it
+setopt HIST_IGNORE_SPACE
 HISTSIZE=50000
 SAVEHIST=100000
 
