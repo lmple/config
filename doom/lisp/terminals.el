@@ -45,18 +45,24 @@
 ;; defcustom errors when autoloaded inside such a binding.
 (defvar ghostel-buffer-name)
 
-(defvar my/project-claude-share 0.65
-  "Fraction of the Claude/shell split that Claude's window gets.
+(defvar my/project-agent "claude"
+  "Command of the coding agent `my/project-terminals' starts, e.g. \"pi\".
+It also names the agent's buffer, *<project>-<command>*, so a buffer left
+from another agent isn't reused for this one.  Set it per machine in
+extra_config.el.")
+
+(defvar my/project-agent-share 0.65
+  "Fraction of the agent/shell split that the agent's window gets.
 The shell keeps the rest, which is still enough for a few commands.")
 
 (defun my/project-terminals (&optional dir)
-  "Pick a file in the project at DIR, then open Claude and a shell beside it.
-DIR defaults to `default-directory'.  The file goes on the left, Claude
-top-right and the shell bottom-right.  Cancelling the picker with
-\\[keyboard-quit] skips the file and puts Claude and the shell side by side.
-Either way Claude gets `my/project-claude-share' of the space it shares
-with the shell.
-Claude is only started in a newly created buffer, so switching back to a
+  "Pick a file in the project at DIR, then open the agent and a shell beside it.
+DIR defaults to `default-directory'.  The file goes on the left, the agent
+\(`my/project-agent') top-right and the shell bottom-right.  Cancelling the
+picker with \\[keyboard-quit] skips the file and puts the agent and the
+shell side by side.  Either way the agent gets `my/project-agent-share' of
+the space it shares with the shell.
+The agent is only started in a newly created buffer, so switching back to a
 project reuses its session."
   (interactive)
   (let* ((default-directory (or dir default-directory))
@@ -72,22 +78,22 @@ project reuses its session."
     (when file-window
       (select-window (split-window-right)))
     ;; `ghostel-project' prefixes the name with the project, giving
-    ;; *<project>-claude* and *<project>-shell*, and reuses them on later calls.
-    (let ((claude (let ((ghostel-buffer-name "*claude*"))
-                    (ghostel-project))))
-      ;; Typed into the shell rather than exec'd, so quitting Claude leaves
+    ;; *<project>-<agent>* and *<project>-shell*, and reuses them on later calls.
+    (let ((agent (let ((ghostel-buffer-name (format "*%s*" my/project-agent)))
+                   (ghostel-project))))
+      ;; Typed into the shell rather than exec'd, so quitting the agent leaves
       ;; a usable shell instead of killing the buffer.
-      (unless (memq claude existing)
-        (with-current-buffer claude
-          (ghostel-send-string "claude\r"))))
-    ;; Claude's window is still selected, and a positive SIZE goes to the
-    ;; selected (top or left) window, so this sizes Claude, not the shell.
+      (unless (memq agent existing)
+        (with-current-buffer agent
+          (ghostel-send-string (concat my/project-agent "\r")))))
+    ;; The agent's window is still selected, and a positive SIZE goes to the
+    ;; selected (top or left) window, so this sizes the agent, not the shell.
     (select-window
      (if file-window
          (split-window-below
-          (round (* my/project-claude-share (window-total-height))))
+          (round (* my/project-agent-share (window-total-height))))
        (split-window-right
-        (round (* my/project-claude-share (window-total-width))))))
+        (round (* my/project-agent-share (window-total-width))))))
     (let ((ghostel-buffer-name "*shell*"))
       (ghostel-project))
     (when file-window
