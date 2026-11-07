@@ -83,7 +83,13 @@ pkgs_arch() {
   # Terminal: zshrc auto-starts zellij; alacritty and Doom use FiraCode Nerd Font
   pacman_install alacritty ttf-firacode-nerd zellij wl-clipboard xclip
   # Editors (Mason in nvim also needs Node from NVM)
-  pacman_install emacs neovim python-pynvim tree-sitter-cli lazygit
+  pacman_install neovim python-pynvim tree-sitter-cli lazygit
+  # emacs-wayland is the pure-GTK build for Wayland (KDE); swap in emacs on X11.
+  # Skip when any variant already provides emacs: they conflict with each other,
+  # and pacman would ask to remove the installed one.
+  if ! pacman -T emacs >/dev/null; then
+    pacman_install emacs-wayland
+  fi
   # Languages and LSP servers: Doom (sh +lsp), (cc +lsp), (javascript +lsp), nvim lua/bash packs
   pacman_install python-pipx rustup shellcheck shfmt bash-language-server \
     clang typescript-language-server prettier lua-language-server stylua

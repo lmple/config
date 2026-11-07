@@ -27,8 +27,10 @@ Opt-in extras, combinable:
 
 `--dry-run` prints the commands without running them; `--help` lists every flag.
 
-- Ubuntu: most packages live in `universe` (enabled by default on desktop). On X11,
-  swap `emacs-pgtk` for `emacs-gtk` in `deps.sh`.
+- Emacs is the Wayland build (`emacs-wayland` on Arch, `emacs-pgtk` on Ubuntu); on
+  X11, swap in `emacs` / `emacs-gtk` in `deps.sh`. On Arch it is skipped if any
+  installed package already provides `emacs`.
+- Ubuntu: most packages live in `universe` (enabled by default on desktop).
 - `--firewall` on EndeavourOS disables firewalld first: two firewalls rewriting the
   same nftables rules conflict.
 - The NVM, SDKMAN and oh-my-zsh installers are kept from editing `~/.zshrc`, which is
