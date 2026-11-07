@@ -32,6 +32,16 @@
              '(:eval (when-let ((b (my/git-branch)))
                        (propertize (format "  %s" b) 'face 'success))))
 
+;; Doom only reverts buffers on buffer/window/frame switch, so a file changed
+;; by an external tool (Claude Code, git) stays stale while it is on screen.
+;; File notifications (inotify) make the global mode cheap: no polling.
+;; `after!' because Doom's own autorevert :config sets use-notify to nil when
+;; the package loads, which would override a plain setq here.
+(after! autorevert
+  (setq auto-revert-use-notify t
+        auto-revert-avoid-polling t))
+(global-auto-revert-mode +1)
+
 (load! "lisp/terminals")
 (load! "lisp/documents")
 (load! "lisp/lang-python")
