@@ -88,7 +88,6 @@ export GIT_EDITOR="$EDITOR"
 
 # Aliases
 alias ll='ls -lah'
-alias nv='nvim'
 
 # extra_config for special variables for personnal or job configs
 [ -f ~/.extra_config ] && source ~/.extra_config

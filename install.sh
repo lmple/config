@@ -10,8 +10,5 @@ ln -sfn "$(pwd)/zellij" "$HOME/.config/zellij"
 # Alacritty
 ln -sfn "$(pwd)/alacritty" "$HOME/.config/alacritty"
 
-# nvim
-ln -sfn "$(pwd)/nvim" "$HOME/.config/nvim"
-
 # Doom Emacs
 ln -sfn "$(pwd)/doom" "$HOME/.config/doom"
