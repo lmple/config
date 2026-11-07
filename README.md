@@ -127,37 +127,106 @@ sudo ufw status verbose
 
 ## Local LLM (llama.cpp)
 
-Doom's gptel (`C-c o l l`) talks to a local `llama-server` on port 8080, run in
-router mode: it serves every model in a presets file and loads whichever one gptel
-asks for. gptel reads the list from the server, so pick a model in its menu
-(`C-c o l m`); to add or change models, edit the presets file and restart the server.
+Doom's gptel talks to a local `llama-server` on port 8080, run in router mode: one
+server offers every model in a presets file and loads whichever one gptel asks for.
+gptel reads that list from the server, so the presets file is the only list of
+models to maintain.
 
-- `llama/home.ini` (8 GB GPU): gemma-4-12B
-- `llama/work.ini` (24 GB GPU): gemma-4-26B-A4B (default), Qwen3-Coder-30B-A3B,
-  gemma-4-31B
+| File | GPU | Models (gptel names) |
+| --- | --- | --- |
+| `llama/home.ini` | 8 GB | `gemma-4-12b` |
+| `llama/work.ini` | 24 GB | `gemma-4-26b-a4b` (default), `qwen3-coder-30b`, `gemma-4-31b` |
 
-Start it by hand when needed. The first time a model is used, it is downloaded into
-`~/.cache/huggingface`.
+The Emacs side is the `;;; LLM` section of `doom/config.el`.
+
+### Install
 
 ```sh
 # Arch / EndeavourOS (AUR)
 paru -S llama.cpp-cuda
+llama-server --version   # 10217 works; 8589 fails with "unknown model architecture: 'gemma4'"
+```
 
-# Pick the presets for this machine. --models-max 1 keeps a single model in VRAM,
-# unloading the previous one on a switch. Bound to 127.0.0.1 and CORS-restricted
-# to localhost, so neither other machines nor web pages in the browser can reach it.
+An older hand-built copy in `/usr/local/bin` takes precedence over the package's
+`/usr/bin`; remove it if `--version` shows an old build.
+
+### Start the server
+
+Start it by hand in a terminal and leave it running; `Ctrl-C` stops it. It is ready
+once it prints `listening on http://127.0.0.1:8080`, and the default model
+(`load-on-startup`) loads right after: about 10 s for the home 12B once downloaded,
+longer for the bigger work models.
+
+```sh
+# Home (8 GB GPU)
 llama-server --models-preset ~/sources/config/llama/home.ini --models-max 1 \
+  --host 127.0.0.1 --port 8080 --cors-origins localhost --no-cors-credentials
+
+# Work (24 GB GPU)
+llama-server --models-preset ~/sources/config/llama/work.ini --models-max 1 \
   --host 127.0.0.1 --port 8080 --cors-origins localhost --no-cors-credentials
 ```
 
-The work context sizes are estimates: on first use of each model, check
-`curl -s 'localhost:8080/props?model=<name>' | grep -o '"n_ctx":[0-9]*'` and
-`nvidia-smi`, and
-lower `c` in `llama/work.ini` if a model doesn't fit in VRAM.
+- `--models-max 1` keeps a single model in VRAM: switching unloads the previous one.
+- `--host 127.0.0.1` keeps other machines out, and `--cors-origins localhost
+  --no-cors-credentials` stops web pages open in the browser from using the server
+  (by default it accepts any origin and has no API key).
+- The first time a model is used, it is downloaded into `~/.cache/huggingface`
+  (15-18 GB for the work models), and that first request waits for the download.
 
-Gemma 4 needs a recent build (version 8589 fails with "unknown model architecture:
-'gemma4'"; 10217 works). Check `llama-server --version`: an older copy in
-`/usr/local/bin` takes precedence over the package's `/usr/bin`.
+### Use it from Emacs
+
+| Key | Action |
+| --- | --- |
+| `C-c o l l` | Open a gptel chat buffer |
+| `C-c RET` | Send, in a chat buffer |
+| `C-c o l s` | Send from any buffer: the region, or the text up to point |
+| `C-c o l m` | Menu: pick the model (refreshed from the server on every open), tools, options |
+| `C-c o l r` | Rewrite the region |
+| `C-c o l a` / `C-c o l f` | Add the region / a file to the context |
+
+The model can use these tools on its own. Relative paths resolve against the project
+of the buffer gptel was opened from, and output is capped at 32,000 characters.
+
+- `read_file`, `list_directory`, `search_project` (ripgrep), `list_buffers`,
+  `read_buffer` (including unsaved changes): run without asking.
+- `write_file`: gptel shows the proposed call in the buffer and waits; `C-c C-c`
+  runs it, `C-c C-k` rejects it.
+
+### Add or change a model
+
+Add a section to the machine's presets file and restart the server. The section name
+is the model name gptel shows; the other keys are `llama-server` flags without the
+leading dashes, and `[*]` holds the settings every model shares.
+
+```ini
+[my-model]
+hf-repo = ggml-org/<repo>-GGUF:<quant>   ; the quants a repo offers are listed on Hugging Face
+c = 32768                                ; context size; keep it at 16384 or more
+load-on-startup = true                   ; optional, one model per file: the default
+```
+
+Keep every context at 16384 or more: the tools cap their output for a 16k context.
+The work context sizes are estimates, so on first use of each model, check what it
+got and whether it fits in VRAM, and lower `c` if it spills onto the CPU:
+
+```sh
+curl -s 'localhost:8080/props?model=gemma-4-26b-a4b' | grep -o '"n_ctx":[0-9]*'
+nvidia-smi --query-gpu=memory.used,memory.total --format=csv
+```
+
+### Troubleshooting
+
+- **gptel says "Curl failed with exit code 7"**: nothing is listening on port 8080;
+  start the server.
+- **A model is missing from gptel's menu**: check what the server offers with
+  `curl -s localhost:8080/v1/models`. Only `source: preset` entries are shown (the
+  server also lists everything in the Hugging Face cache); after editing a presets
+  file, restart the server.
+- **The first answer after switching model is slow**: the server is loading it
+  (downloading it, the first time); later requests are fast.
+- **`no GGUF files found in repository`**: the quant in `hf-repo` isn't published
+  (any more); pick one the repo lists in that error.
 
 ## Toolchains (both distros)
 
