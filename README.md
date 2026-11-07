@@ -54,18 +54,9 @@ The Emacs side is the `;;; LLM` section of `doom/config.el`.
 
 ```sh
 ./deps.sh --skip-base --llama   # Arch / EndeavourOS, from the AUR
-llama-server --version          # 10217 works; 8589 fails with "unknown model architecture: 'gemma4'"
 ```
 
-An older hand-built copy in `/usr/local/bin` takes precedence over the package's
-`/usr/bin`; remove it if `--version` shows an old build.
-
 ### Start the server
-
-Start it by hand in a terminal and leave it running; `Ctrl-C` stops it. It is ready
-once it prints `listening on http://127.0.0.1:8080`, and the default model
-(`load-on-startup`) loads right after: about 10 s for the home 12B once downloaded,
-longer for the bigger work models.
 
 ```sh
 # Home (8 GB GPU)
@@ -83,21 +74,6 @@ llama-server --models-preset ~/sources/config/llama/work.ini --models-max 1 \
   (by default it accepts any origin and has no API key).
 - The first time a model is used, it is downloaded into `~/.cache/huggingface`
   (15-18 GB for the work models), and that first request waits for the download.
-
-### Use it from Emacs
-
-| Key | Action |
-| --- | --- |
-| `C-c o l l` | Open a gptel chat buffer |
-| `C-c RET` | Send, in a chat buffer |
-| `C-c o l s` | Send from any buffer: the region, or the text up to point |
-| `C-c o l m` | Menu: pick the model (refreshed from the server on every open), tools, options |
-| `C-c o l r` | Rewrite the region |
-| `C-c o l a` / `C-c o l f` | Add the region / a file to the context |
-
-The model can use these tools on its own. Relative paths resolve against the project
-of the buffer gptel was opened from, and output is capped at 32,000 characters.
-
 - `read_file`, `list_directory`, `search_project` (ripgrep), `list_buffers`,
   `read_buffer` (including unsaved changes): run without asking.
 - `write_file`: gptel shows the proposed call in the buffer and waits; `C-c C-c`
@@ -124,16 +100,3 @@ got and whether it fits in VRAM, and lower `c` if it spills onto the CPU:
 curl -s 'localhost:8080/props?model=gemma-4-26b-a4b' | grep -o '"n_ctx":[0-9]*'
 nvidia-smi --query-gpu=memory.used,memory.total --format=csv
 ```
-
-### Troubleshooting
-
-- **gptel says "Curl failed with exit code 7"**: nothing is listening on port 8080;
-  start the server.
-- **A model is missing from gptel's menu**: check what the server offers with
-  `curl -s localhost:8080/v1/models`. Only `source: preset` entries are shown (the
-  server also lists everything in the Hugging Face cache); after editing a presets
-  file, restart the server.
-- **The first answer after switching model is slow**: the server is loading it
-  (downloading it, the first time); later requests are fast.
-- **`no GGUF files found in repository`**: the quant in `hf-repo` isn't published
-  (any more); pick one the repo lists in that error.
