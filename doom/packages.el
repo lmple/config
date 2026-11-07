@@ -8,6 +8,11 @@
 (package! pyvenv-auto)
 (package! flymake-ruff)
 (package! flymake-collection)
+;; Doom enables nose-mode in every test_*.py file, and its local-leader keys
+;; (t a, t r) shadow python-pytest's. nose is dead on modern Python and tests
+;; run with pytest. doom doctor still warns about nosetests: its check is
+;; unconditional.
+(package! nose :disable t)
 
 ;;; Lean 4
 (package! lean4-mode
