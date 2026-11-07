@@ -127,22 +127,33 @@ sudo ufw status verbose
 
 ## Local LLM (llama.cpp)
 
-Doom's gptel (`C-c o l l`) talks to a local `llama-server` on port 8080, serving
-Gemma 4 12B under the name `gemma-4-12b` (see `doom/config.el`). Start it by hand
-when needed; the first run downloads the model into `~/.cache/huggingface`.
+Doom's gptel (`C-c o l l`) talks to a local `llama-server` on port 8080, run in
+router mode: it serves every model in a presets file and loads whichever one gptel
+asks for. gptel reads the list from the server, so pick a model in its menu
+(`C-c o l m`); to add or change models, edit the presets file and restart the server.
+
+- `llama/home.ini` (8 GB GPU): gemma-4-12B
+- `llama/work.ini` (24 GB GPU): gemma-4-26B-A4B (default), Qwen3-Coder-30B-A3B,
+  gemma-4-31B
+
+Start it by hand when needed. The first time a model is used, it is downloaded into
+`~/.cache/huggingface`.
 
 ```sh
 # Arch / EndeavourOS (AUR)
 paru -S llama.cpp-cuda
 
-# The repo only publishes Q4_0, Q8_0 and BF16; Q4_0 is the one that fits an 8 GB
-# GPU. --fit picks GPU layers for a 16k context, and the q8_0 KV cache saves
-# memory. Bound to 127.0.0.1 and CORS-restricted to localhost, so neither other
-# machines nor web pages in the browser can reach it.
-llama-server -hf ggml-org/gemma-4-12B-it-GGUF:Q4_0 --alias gemma-4-12b \
-  --host 127.0.0.1 --port 8080 --cors-origins localhost --no-cors-credentials \
-  --no-mmproj -np 1 --fit-ctx 16384 -ctk q8_0 -ctv q8_0
+# Pick the presets for this machine. --models-max 1 keeps a single model in VRAM,
+# unloading the previous one on a switch. Bound to 127.0.0.1 and CORS-restricted
+# to localhost, so neither other machines nor web pages in the browser can reach it.
+llama-server --models-preset ~/sources/config/llama/home.ini --models-max 1 \
+  --host 127.0.0.1 --port 8080 --cors-origins localhost --no-cors-credentials
 ```
+
+The work context sizes are estimates: on first use of each model, check
+`curl -s 'localhost:8080/props?model=<name>' | grep -o '"n_ctx":[0-9]*'` and
+`nvidia-smi`, and
+lower `c` in `llama/work.ini` if a model doesn't fit in VRAM.
 
 Gemma 4 needs a recent build (version 8589 fails with "unknown model architecture:
 'gemma4'"; 10217 works). Check `llama-server --version`: an older copy in
