@@ -79,6 +79,12 @@ project reuses its session."
 ;; which `my/project-terminals' still calls first.
 (setq +workspaces-switch-project-function #'my/project-terminals)
 
+;; Doom reuses and renames the current workspace on project switch when it
+;; holds no file buffers, which is always true of a fresh `main' because
+;; *scratch* never counts. Always open a new workspace so `main' and its
+;; *scratch* stay put.
+(setq +workspaces-on-switch-project-behavior t)
+
 ;;; Org ────────────────────────────────────────────────────────────────────────
 ;; Doom turns these prompts off, which lets an untrusted .org file run code via
 ;; an elisp: link, C-c C-c, or export. Re-enable them; this runs after Doom's
