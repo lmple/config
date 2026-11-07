@@ -79,7 +79,7 @@
  emacs-lisp
  (gdscript +lsp)
  json
- (javascript +lsp)
+ (javascript +lsp +tree-sitter)
  latex
  markdown
  (org +brain +dragndrop +gnuplot +journal +jupyter +noter +pandoc +present +pretty +roam2)
