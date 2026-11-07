@@ -82,7 +82,7 @@
  (javascript +lsp +tree-sitter)
  latex
  markdown
- (org +brain +dragndrop +gnuplot +journal +jupyter +noter +pandoc +present +pretty +roam2)
+ (org +brain +dragndrop +gnuplot +journal +jupyter +noter +pandoc +present +pretty +roam)
  plantuml
  graphviz
  (python +lsp +pyright +pyenv)
