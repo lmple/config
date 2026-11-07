@@ -77,7 +77,6 @@
  (cc +lsp)
  data
  emacs-lisp
- (gdscript +lsp)
  json
  (javascript +lsp +tree-sitter)
  latex
