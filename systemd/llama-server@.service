@@ -8,9 +8,12 @@ Description=llama.cpp router server (%i presets) for gptel
 # Absolute path on purpose: an old hand-built /usr/local/bin copy would
 # otherwise win (see deps.sh --llama). The presets are read through the
 # ~/.config/llama link from install.sh, so the repo can live anywhere.
+# The API key file lives outside the repo (see README); without it the server
+# refuses to start rather than run open to every local process.
 ExecStart=/usr/bin/llama-server --models-preset %h/.config/llama/%i.ini \
   --models-max 1 --host 127.0.0.1 --port 8080 \
-  --cors-origins localhost --no-cors-credentials
+  --cors-origins localhost --no-cors-credentials \
+  --api-key-file %h/.config/llama-server/api-key
 Restart=on-failure
 RestartSec=5
 

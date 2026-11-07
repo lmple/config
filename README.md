@@ -77,9 +77,12 @@ The Emacs side is `doom/lisp/llm.el` (backend, model list) and
 `systemd/llama-server@.service` runs the server as a systemd user service. Its
 instance name is the presets file: `@home` reads `llama/home.ini`, `@work` reads
 `llama/work.ini` (through the `~/.config/llama` link from `install.sh`). On each
-machine, enable its instance once; after that it starts at every login:
+machine, create the API key the server and gptel share (outside the repo, never
+committed), then enable its instance once; after that it starts at every login:
 
 ```sh
+mkdir -p ~/.config/llama-server
+(umask 077 && openssl rand -hex 32 > ~/.config/llama-server/api-key)
 systemctl --user daemon-reload
 systemctl --user enable --now llama-server@home   # work machine: llama-server@work
 ```
@@ -98,7 +101,11 @@ unit file:
 - `--models-max 1` keeps a single model in VRAM: switching unloads the previous one.
 - `--host 127.0.0.1` keeps other machines out, and `--cors-origins localhost
   --no-cors-credentials` stops web pages open in the browser from using the server
-  (by default it accepts any origin and has no API key).
+  (by default it accepts any origin).
+- `--api-key-file ~/.config/llama-server/api-key` makes every request, the model
+  list included, carry the key, so other local processes and web pages can't use
+  the server. gptel reads the same file (`my/gptel-llama-key-file`); without it
+  the server doesn't start.
 - The first time a model is used, it is downloaded into `~/.cache/huggingface`
   (15-18 GB for the work models), and that first request waits for the download.
 

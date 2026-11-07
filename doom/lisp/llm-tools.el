@@ -9,7 +9,7 @@
 
 (defconst my/gptel-tool-denied-paths
   '("~/.ssh/" "~/.gnupg/" "~/.password-store/" "~/.aws/"
-    "~/.extra_config" "~/.authinfo" "~/.netrc")
+    "~/.config/llama-server/" "~/.extra_config" "~/.authinfo" "~/.netrc")
   "Files, and directories (ending in /), that the tools refuse.
 They hold keys and credentials.")
 
