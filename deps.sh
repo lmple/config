@@ -63,7 +63,7 @@ detect_distro() {
   # shellcheck source=/dev/null
   id="$(. /etc/os-release && printf '%s' "$ID")"
   case "$id" in
-    arch | endeavouros) printf 'arch\n' ;;
+    arch | endeavouros | manjaro) printf 'arch\n' ;;
     ubuntu) printf 'ubuntu\n' ;;
     *) die "unsupported distro '$id' (set DEPS_DISTRO=arch|ubuntu to force)" ;;
   esac

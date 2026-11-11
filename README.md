@@ -18,7 +18,7 @@ LaTeX), `lang-python`, `lang-js`, `llm`, `llm-tools`, `lang-lean`, `lang-quint`.
 ./deps.sh --skip-base --doom  # Doom Emacs, once ~/.config/doom points at this repo
 ```
 
-`deps.sh` detects Arch/EndeavourOS or Ubuntu 26.04 and is safe to re-run: package
+`deps.sh` detects Arch/EndeavourOS/Manjaro or Ubuntu 26.04 and is safe to re-run: package
 installs skip what is present and each installer skips if its directory exists.
 Opt-in extras, combinable:
 
@@ -69,7 +69,7 @@ The Emacs side is `doom/lisp/llm.el` (backend, model list) and
 ### Install
 
 ```sh
-./deps.sh --skip-base --llama   # Arch / EndeavourOS, from the AUR
+./deps.sh --skip-base --llama   # Arch / EndeavourOS / Manjaro, from the AUR
 ```
 
 ### Start the server
