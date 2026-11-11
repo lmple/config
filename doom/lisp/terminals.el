@@ -47,6 +47,17 @@
 ;; defcustom errors when autoloaded inside such a binding.
 (defvar ghostel-buffer-name)
 
+(defun my/project-ghostel (name)
+  "Switch to the project's ghostel terminal NAME, creating it if needed.
+The terminal starts in the root of the project at `default-directory' and its
+buffer is *<project>-NAME*.  Returns the buffer."
+  ;; Not `ghostel-project': it keys a terminal by project root alone, so a
+  ;; second call returns the first terminal whatever `ghostel-buffer-name'
+  ;; says.  Plain `ghostel' keys it by buffer name, one slot per NAME.
+  (let* ((default-directory (project-root (project-current t)))
+         (ghostel-buffer-name (project-prefixed-buffer-name name)))
+    (ghostel)))
+
 (defvar my/project-agent "claude"
   "Command of the coding agent `my/project-terminals' starts, e.g. \"pi\".
 It also names the agent's buffer, *<project>-<command>*, so a buffer left
@@ -79,10 +90,8 @@ project reuses its session."
                           (quit nil)))))
     (when file-window
       (select-window (split-window-right)))
-    ;; `ghostel-project' prefixes the name with the project, giving
-    ;; *<project>-<agent>* and *<project>-shell*, and reuses them on later calls.
-    (let ((agent (let ((ghostel-buffer-name (format "*%s*" my/project-agent)))
-                   (ghostel-project))))
+    ;; *<project>-<agent>* and *<project>-shell*, reused on later calls.
+    (let ((agent (my/project-ghostel my/project-agent)))
       ;; Typed into the shell rather than exec'd, so quitting the agent leaves
       ;; a usable shell instead of killing the buffer.
       (unless (memq agent existing)
@@ -96,8 +105,7 @@ project reuses its session."
           (round (* my/project-agent-share (window-total-height))))
        (split-window-right
         (round (* my/project-agent-share (window-total-width))))))
-    (let ((ghostel-buffer-name "*shell*"))
-      (ghostel-project))
+    (my/project-ghostel "shell")
     (when file-window
       (select-window file-window))))
 
