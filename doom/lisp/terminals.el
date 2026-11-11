@@ -1,7 +1,9 @@
 ;;; lisp/terminals.el -*- lexical-binding: t; -*-
 
+;; Always a fresh terminal at the project root, never a switch to an open one:
+;; the workspace's agent and shell already cover the reusable terminals.
 (map! :leader
-      "o T" #'ghostel-project) ;; replace with your actual ghostty function
+      :desc "New project terminal" "o T" #'ghostel-project-new)
 
 ;; ghostel's own URL detection stops at newlines, including the ones it inserts
 ;; for soft wraps (marked `ghostel-wrap'), so a long URL opens truncated.
