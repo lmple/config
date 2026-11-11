@@ -53,7 +53,7 @@ Zellij links a wrapped URL only up to the end of its first row
 
 ## Local LLM (llama.cpp)
 
-Doom's gptel talks to a local `llama-server` on port 8080, run in router mode: one
+Doom's gptel talks to a local `llama-server` on port 9091, run in router mode: one
 server offers every model in a presets file and loads whichever one gptel asks for.
 gptel reads that list from the server, so the presets file is the only list of
 models to maintain.
@@ -140,6 +140,6 @@ The work context sizes are estimates, so on first use of each model, check what 
 got and whether it fits in VRAM, and lower `c` if it spills onto the CPU:
 
 ```sh
-curl -s 'localhost:8080/props?model=gemma-4-26b-a4b' | grep -o '"n_ctx":[0-9]*'
+curl -s 'localhost:9091/props?model=gemma-4-26b-a4b' | grep -o '"n_ctx":[0-9]*'
 nvidia-smi --query-gpu=memory.used,memory.total --format=csv
 ```

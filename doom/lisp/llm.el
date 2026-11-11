@@ -6,7 +6,7 @@
 ;; with that machine's presets (llama/home.ini or llama/work.ini), through
 ;; the OpenAI-compatible API it exposes. The model list comes from the server,
 ;; so the presets file is the only list to edit.
-(defconst my/gptel-llama-host "localhost:8080"
+(defconst my/gptel-llama-host "localhost:9091"
   "Where llama-server listens, as set in systemd/llama-server@.service.")
 
 (defconst my/gptel-llama-key-file "~/.config/llama-server/api-key"
