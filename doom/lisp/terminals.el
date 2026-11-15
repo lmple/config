@@ -1,9 +1,19 @@
 ;;; lisp/terminals.el -*- lexical-binding: t; -*-
 
-;; An Emacs started from a zellij pane (the `emacs' alias starts the daemon
-;; there) inherits that pane's variables. zshrc then took every ghostel shell
-;; for one already in zellij, and `zellij action' targeted a stale session.
-(dolist (var '("ZELLIJ" "ZELLIJ_SESSION_NAME" "ZELLIJ_PANE_ID"))
+;; Emacs inherits the environment of whatever shell started it (the `emacs'
+;; alias starts the daemon there), and passes it on to every terminal.
+;; - From a zellij pane: zshrc took every ghostel shell for one already in
+;;   zellij, and `zellij action' targeted a stale session.
+;; - From inside Claude Code (e.g. `! emacs'): every agent in a terminal took
+;;   itself for that session's child and turned transcript saving off, and the
+;;   session's messaging token reached every subprocess.
+;; Settings like CLAUDE_CODE_DISABLE_* are not markers and stay.
+(dolist (var '("ZELLIJ" "ZELLIJ_SESSION_NAME" "ZELLIJ_PANE_ID"
+               "CLAUDECODE" "CLAUDE_PID" "CLAUDE_EFFORT"
+               "CLAUDE_CODE_CHILD_SESSION" "CLAUDE_CODE_SESSION_ID"
+               "CLAUDE_CODE_SESSION_ATTENDED" "CLAUDE_CODE_ENTRYPOINT"
+               "CLAUDE_CODE_EXECPATH" "CLAUDE_CODE_MESSAGING_SOCKET"
+               "CLAUDE_CODE_MESSAGING_TOKEN"))
   (setenv var nil))
 
 ;; Always a fresh terminal at the project root, never a switch to an open one:
