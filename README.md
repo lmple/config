@@ -40,6 +40,23 @@ Opt-in extras, combinable:
 - The NVM, SDKMAN and oh-my-zsh installers are kept from editing `~/.zshrc`, which is
   this repo's `zshrc` and already loads them.
 
+## Terminals and crashes
+
+Every terminal runs in a zellij session, so its processes live on the zellij
+server rather than in the window, and a crash only detaches them:
+
+| Where | Session | After a crash |
+| --- | --- | --- |
+| Emacs project terminals (`C-c p p`) | `emacs-<project>-<name>-<hash>`, buffer `<project> :: <name>` | `C-c p p` the project again: same agent, same shell |
+| Alacritty | random name | a new window attaches the first live session with no client |
+| `C-c o T` | none, plain zsh | gone with Emacs |
+
+The agent starts only when its session is created, so a reattach never starts it
+twice. Killing a buffer or window detaches too, so sessions last until you end
+them: `Ctrl q` inside zellij, or `zellij ls` then `zellij kill-session <name>`.
+Inside Emacs, `C-c`, `C-x` and `C-h` stay with Emacs, so zellij's move mode
+(`Ctrl h`) is out of reach there.
+
 ## Long URLs
 
 Zellij links a wrapped URL only up to the end of its first row
@@ -48,7 +65,7 @@ Zellij links a wrapped URL only up to the end of its first row
 | Where | Key |
 | --- | --- |
 | Zellij, any terminal | `Alt u`: Enter opens, `Ctrl-y` copies |
-| Emacs buffer (ghostel outside Zellij) | `C-c o u` |
+| Emacs buffer outside Zellij (`C-c o T` terminals) | `C-c o u` |
 | Alacritty | `Shift`+click (Shift is needed inside Zellij), `Ctrl+Shift+O` opens, `Ctrl+Shift+Y` copies |
 
 ## Local LLM (llama.cpp)
