@@ -124,6 +124,23 @@ export DO_NOT_TRACK=1
 # Zellij auto-start, written out rather than `zellij setup --generate-auto-start`:
 # that one only checks $ZELLIJ, so an Emacs started from a zellij pane inherited
 # it and every ghostel terminal silently got a plain shell.
+
+# Print a live session no client is attached to, such as the one a crashed
+# Alacritty left behind, so a new window picks it up instead of starting
+# another. emacs-* sessions belong to Emacs, which reattaches them itself.
+my_zellij_orphan() {
+    local session
+    for session in ${(f)"$(zellij list-sessions --no-formatting 2>/dev/null \
+        | awk '!/EXITED/ && $1 !~ /^emacs-/ { print $1 }')"}; do
+        # A header line, then one line per attached client
+        if (( $(zellij --session "$session" action list-clients 2>/dev/null | wc -l) == 1 )); then
+            print -r -- "$session"
+            return 0
+        fi
+    done
+    return 1
+}
+
 if [[ -z "$ZELLIJ" ]]; then
     if [[ -n "$MY_ZELLIJ_SESSION" ]]; then
         # An Emacs project terminal: a named session that outlives Emacs, so a
@@ -132,7 +149,12 @@ if [[ -z "$ZELLIJ" ]]; then
         zellij attach --create "$MY_ZELLIJ_SESSION" && exit
     elif [[ "${INSIDE_EMACS%%,*}" != ghostel ]]; then
         # Ad-hoc ghostel terminals (C-c o T) skip this and stay plain zsh.
-        zellij
+        if my_zellij_orphan_session="$(my_zellij_orphan)"; then
+            zellij attach "$my_zellij_orphan_session"
+        else
+            zellij
+        fi
+        unset my_zellij_orphan_session
     fi
 fi
 
