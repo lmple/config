@@ -229,3 +229,32 @@ is only started when its session is created."
 ;; *scratch* never counts. Always open a new workspace so `main' and its
 ;; *scratch* stay put.
 (setq +workspaces-on-switch-project-behavior t)
+
+(defun my/show-home-terminal (frame)
+  "Put the ~/ terminal to the right of *scratch* in FRAME's main workspace.
+Only when FRAME shows nothing but the fallback buffer there, so a frame
+opened on a file, a later frame (Doom gives those a workspace of their
+own), or a layout already arranged is left alone.  The terminal, buffer
+\"~ :: shell\", runs in zellij session emacs-home-shell, which has no
+project hash, so `my/project-reattach-terminals' never takes it."
+  (when (frame-live-p frame)
+    (with-selected-frame frame
+      (when (and (bound-and-true-p persp-mode)
+                 (equal (+workspace-current-name) +workspaces-main)
+                 (one-window-p t)
+                 (eq (window-buffer) (doom-fallback-buffer)))
+        (let ((scratch-window (selected-window)))
+          (select-window (split-window-right))
+          (my/ghostel-session (expand-file-name "~/") "~ :: shell"
+                              "emacs-home-shell")
+          (select-window scratch-window))))))
+
+(defun my/show-home-terminal-soon-h ()
+  "Run `my/show-home-terminal' on the selected frame once Emacs is idle."
+  ;; Deferred so Doom has put the frame in its workspace and emacsclient has
+  ;; shown the files it was given, both of which the check depends on.
+  (run-at-time 0 nil #'my/show-home-terminal (selected-frame)))
+
+;; A daemon has no frame at startup; each emacsclient frame comes later.
+(add-hook (if (daemonp) 'server-after-make-frame-hook 'window-setup-hook)
+          #'my/show-home-terminal-soon-h)

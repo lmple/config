@@ -48,6 +48,7 @@ server rather than in the window, and a crash only detaches them:
 | Where | Session | After a crash |
 | --- | --- | --- |
 | Emacs agent and shell (`C-c p p`) | `emacs-<project>-<name>-<hash>`, buffer `<project> :: <name>` | `C-c p p` the project again: same agent, same shell |
+| Emacs `main` workspace, beside `*scratch*` | `emacs-home-shell`, buffer `~ :: shell`, in `~/` | reattached on the next start |
 | Emacs `C-c o T` | the same, with `term-1`, `term-2`, ... as names | `C-c o z` reattaches every one the project still has |
 | Alacritty | random name | a new window attaches the first live session with no client |
 | `M-x ghostel` | none, plain zsh | gone with Emacs |
