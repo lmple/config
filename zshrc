@@ -148,7 +148,7 @@ if [[ -z "$ZELLIJ" ]]; then
         # buffer, but stay on an error so it can be read.
         zellij attach --create "$MY_ZELLIJ_SESSION" && exit
     elif [[ "${INSIDE_EMACS%%,*}" != ghostel ]]; then
-        # Ad-hoc ghostel terminals (C-c o T) skip this and stay plain zsh.
+        # Plain ghostel terminals (M-x ghostel) skip this and stay plain zsh.
         if my_zellij_orphan_session="$(my_zellij_orphan)"; then
             zellij attach "$my_zellij_orphan_session"
         else

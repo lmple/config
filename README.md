@@ -47,9 +47,10 @@ server rather than in the window, and a crash only detaches them:
 
 | Where | Session | After a crash |
 | --- | --- | --- |
-| Emacs project terminals (`C-c p p`) | `emacs-<project>-<name>-<hash>`, buffer `<project> :: <name>` | `C-c p p` the project again: same agent, same shell |
+| Emacs agent and shell (`C-c p p`) | `emacs-<project>-<name>-<hash>`, buffer `<project> :: <name>` | `C-c p p` the project again: same agent, same shell |
+| Emacs `C-c o T` | the same, with `term-1`, `term-2`, ... as names | `C-c o z` reattaches every one the project still has |
 | Alacritty | random name | a new window attaches the first live session with no client |
-| `C-c o T` | none, plain zsh | gone with Emacs |
+| `M-x ghostel` | none, plain zsh | gone with Emacs |
 
 The agent starts only when its session is created, so a reattach never starts it
 twice. Killing a buffer or window detaches too, so sessions last until you end
@@ -65,7 +66,7 @@ Zellij links a wrapped URL only up to the end of its first row
 | Where | Key |
 | --- | --- |
 | Zellij, any terminal | `Alt u`: Enter opens, `Ctrl-y` copies |
-| Emacs buffer outside Zellij (`C-c o T` terminals) | `C-c o u` |
+| Emacs buffer outside Zellij (`M-x ghostel`) | `C-c o u` |
 | Alacritty | `Shift`+click (Shift is needed inside Zellij), `Ctrl+Shift+O` opens, `Ctrl+Shift+Y` copies |
 
 ## Local LLM (llama.cpp)
