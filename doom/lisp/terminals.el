@@ -105,25 +105,31 @@ BUFFER is \"<project> :: NAME\" and SESSION names its zellij session."
                 (ignore-errors
                   (process-lines "zellij" "list-sessions" "--no-formatting")))))
 
-(defun my/project-ghostel (name &optional command)
-  "Switch to the project's ghostel terminal NAME, creating it if needed.
-The terminal starts in the root of the project at `default-directory', in
-buffer \"<project> :: NAME\", and runs in a zellij session of its own.  The
-session outlives Emacs, so after a crash this reattaches to it.  COMMAND, if
-non-nil, runs in the session when it is created, not on a reattach.
-Returns the buffer."
+(defun my/ghostel-session (dir buffer session &optional command)
+  "Switch to ghostel terminal BUFFER, creating it in DIR if needed.
+The terminal runs in zellij session SESSION, which outlives Emacs, so after
+a crash this reattaches to it.  COMMAND, if non-nil, runs in the session
+when it is created, not on a reattach.  Returns the buffer."
   ;; Not `ghostel-project': it keys a terminal by project root alone, so a
   ;; second call returns the first terminal whatever `ghostel-buffer-name'
-  ;; says.  Plain `ghostel' keys it by buffer name, one slot per NAME.
-  (let* ((default-directory (project-root (project-current t)))
-         (names (my/project-terminal-names name))
-         (ghostel-buffer-name (car names))
+  ;; says.  Plain `ghostel' keys it by buffer name, one slot per BUFFER.
+  (let* ((default-directory dir)
+         (ghostel-buffer-name buffer)
          ;; Read by zshrc's zellij auto-start
          (ghostel-environment
-          (append (list (concat "MY_ZELLIJ_SESSION=" (cdr names)))
+          (append (list (concat "MY_ZELLIJ_SESSION=" session))
                   (and command (list (concat "MY_ZELLIJ_RUN=" command)))
                   (bound-and-true-p ghostel-environment))))
     (ghostel)))
+
+(defun my/project-ghostel (name &optional command)
+  "Switch to the project's ghostel terminal NAME, creating it if needed.
+The terminal starts in the root of the project at `default-directory', in
+buffer \"<project> :: NAME\", with its own zellij session and COMMAND as
+in `my/ghostel-session'.  Returns the buffer."
+  (let ((default-directory (project-root (project-current t))))
+    (pcase-let ((`(,buffer . ,session) (my/project-terminal-names name)))
+      (my/ghostel-session default-directory buffer session command))))
 
 (defun my/project-ghostel-new ()
   "Open a new project terminal, \"<project> :: term-N\", in its own session.
