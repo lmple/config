@@ -8,15 +8,16 @@
 
 ;; Always a fresh terminal at the project root, never a switch to an open one:
 ;; the workspace's agent and shell already cover the reusable terminals.
+;; Defined below, with the other terminals backed by zellij sessions.
 (map! :leader
-      :desc "New project terminal" "o T" #'ghostel-project-new)
+      :desc "New project terminal" "o T" #'my/project-ghostel-new)
 
 ;; ghostel's own URL detection stops at newlines, including the ones it inserts
 ;; for soft wraps (marked `ghostel-wrap'), so a long URL opens truncated.
 ;; Dropping those newlines first rejoins it. Inside zellij, where project
 ;; terminals run, this can't help: zellij draws finished rows
-;; (zellij-org/zellij#3436), use its Alt u picker. It still works in ad-hoc
-;; terminals (C-c o T), which skip zellij.
+;; (zellij-org/zellij#3436), use its Alt u picker. It still works in plain
+;; ghostel terminals (M-x ghostel), which skip zellij.
 (defun my/buffer-urls ()
   "Return the URLs in the current buffer, newest first, soft wraps undone."
   (let ((text (buffer-string))
@@ -56,23 +57,43 @@
 (defvar ghostel-buffer-name)
 (defvar ghostel-environment)
 
+(defun my/zellij-safe-name (string)
+  "Return STRING with what zellij session names can't hold replaced by -."
+  (replace-regexp-in-string "[^A-Za-z0-9_-]" "-" string))
+
+(defun my/project-zellij-affixes ()
+  "Return (PREFIX . SUFFIX) around NAME in the project's zellij sessions.
+Sessions are emacs-<project>-NAME-<hash>, for the project at
+`default-directory'."
+  (let ((project (project-current t)))
+    ;; The hash keeps projects with the same directory name apart, the emacs-
+    ;; prefix keeps zshrc's reattach of crashed terminals off them, and the
+    ;; truncation keeps zellij's socket path under its limit.
+    (cons (my/zellij-safe-name
+           (format "emacs-%s-" (truncate-string-to-width
+                                (project-name project) 32)))
+          (concat "-" (substring (md5 (expand-file-name
+                                       (project-root project)))
+                                 0 6)))))
+
 (defun my/project-terminal-names (name)
   "Return (BUFFER . SESSION) for project terminal NAME at `default-directory'.
-BUFFER is \"<project> :: NAME\".  SESSION names its zellij session,
-emacs-<project>-NAME-<hash>."
-  (let* ((project (project-current t))
-         (pname (project-name project))
-         (root (expand-file-name (project-root project))))
-    (cons (format "%s :: %s" pname name)
-          ;; The hash keeps projects with the same directory name apart, the
-          ;; emacs- prefix keeps zshrc's reattach of crashed terminals off it,
-          ;; and the truncation keeps zellij's socket path under its limit.
-          (replace-regexp-in-string
-           "[^A-Za-z0-9_-]" "-"
-           (format "emacs-%s-%s-%s"
-                   (truncate-string-to-width pname 32)
-                   (truncate-string-to-width name 16)
-                   (substring (md5 root) 0 6))))))
+BUFFER is \"<project> :: NAME\" and SESSION names its zellij session."
+  (pcase-let ((`(,prefix . ,suffix) (my/project-zellij-affixes)))
+    (cons (format "%s :: %s" (project-name (project-current t)) name)
+          (concat prefix
+                  (my/zellij-safe-name (truncate-string-to-width name 16))
+                  suffix))))
+
+(defun my/zellij-live-sessions ()
+  "Return the names of the zellij sessions that are running, not exited."
+  (delq nil
+        (mapcar (lambda (line)
+                  (and (not (string-search "EXITED" line))
+                       (car (split-string line))))
+                ;; zellij exits non-zero when there is no session at all
+                (ignore-errors
+                  (process-lines "zellij" "list-sessions" "--no-formatting")))))
 
 (defun my/project-ghostel (name &optional command)
   "Switch to the project's ghostel terminal NAME, creating it if needed.
@@ -93,6 +114,48 @@ Returns the buffer."
                   (and command (list (concat "MY_ZELLIJ_RUN=" command)))
                   (bound-and-true-p ghostel-environment))))
     (ghostel)))
+
+(defun my/project-ghostel-new ()
+  "Open a new project terminal, \"<project> :: term-N\", in its own session.
+N is the lowest number taken by neither a buffer nor a live session, so a
+session that survived a crash is left for \\[my/project-reattach-terminals]."
+  (interactive)
+  (let ((live (my/zellij-live-sessions)))
+    (named-let next ((n 1))
+      (let* ((name (format "term-%d" n))
+             (names (my/project-terminal-names name)))
+        (if (or (get-buffer (car names)) (member (cdr names) live))
+            (next (1+ n))
+          (my/project-ghostel name))))))
+
+(defun my/project-reattach-terminals ()
+  "Reattach the project's live zellij sessions that have no buffer.
+After an Emacs crash, this brings back every project terminal that is
+still running, each in its \"<project> :: NAME\" buffer, without
+changing the windows.  Agents are not started again: they are still
+running in their sessions."
+  (interactive)
+  (pcase-let* ((`(,prefix . ,suffix) (my/project-zellij-affixes))
+               (names (delq nil
+                            (mapcar (lambda (session)
+                                      (and (string-prefix-p prefix session)
+                                           (string-suffix-p suffix session)
+                                           (> (length session)
+                                              (+ (length prefix) (length suffix)))
+                                           (substring session (length prefix)
+                                                      (- (length suffix)))))
+                                    (my/zellij-live-sessions))))
+               (detached (seq-remove
+                          (lambda (name)
+                            (get-buffer (car (my/project-terminal-names name))))
+                          names)))
+    (save-window-excursion (mapc #'my/project-ghostel detached))
+    (message (if detached
+                 (format "Reattached %s" (string-join detached ", "))
+               "No detached terminals in this project"))))
+
+(map! :leader
+      :desc "Reattach project terminals" "o z" #'my/project-reattach-terminals)
 
 (defvar my/project-agent "claude"
   "Command of the coding agent `my/project-terminals' starts, e.g. \"pi\".
