@@ -121,7 +121,20 @@ export HF_HUB_DISABLE_TELEMETRY=1
 # Catch-all convention honoured by many CLIs (consoledonottrack.com)
 export DO_NOT_TRACK=1
 
-eval "$(zellij setup --generate-auto-start zsh)"
+# Zellij auto-start, written out rather than `zellij setup --generate-auto-start`:
+# that one only checks $ZELLIJ, so an Emacs started from a zellij pane inherited
+# it and every ghostel terminal silently got a plain shell.
+if [[ -z "$ZELLIJ" ]]; then
+    if [[ -n "$MY_ZELLIJ_SESSION" ]]; then
+        # An Emacs project terminal: a named session that outlives Emacs, so a
+        # crash only detaches it. Exit with zellij (detach, quit) to close the
+        # buffer, but stay on an error so it can be read.
+        zellij attach --create "$MY_ZELLIJ_SESSION" && exit
+    elif [[ "${INSIDE_EMACS%%,*}" != ghostel ]]; then
+        # Ad-hoc ghostel terminals (C-c o T) skip this and stay plain zsh.
+        zellij
+    fi
+fi
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
