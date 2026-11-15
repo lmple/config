@@ -1,5 +1,11 @@
 ;;; lisp/terminals.el -*- lexical-binding: t; -*-
 
+;; An Emacs started from a zellij pane (the `emacs' alias starts the daemon
+;; there) inherits that pane's variables. zshrc then took every ghostel shell
+;; for one already in zellij, and `zellij action' targeted a stale session.
+(dolist (var '("ZELLIJ" "ZELLIJ_SESSION_NAME" "ZELLIJ_PANE_ID"))
+  (setenv var nil))
+
 ;; Always a fresh terminal at the project root, never a switch to an open one:
 ;; the workspace's agent and shell already cover the reusable terminals.
 (map! :leader
