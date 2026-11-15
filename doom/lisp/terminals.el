@@ -13,8 +13,10 @@
 
 ;; ghostel's own URL detection stops at newlines, including the ones it inserts
 ;; for soft wraps (marked `ghostel-wrap'), so a long URL opens truncated.
-;; Dropping those newlines first rejoins it. Inside zellij this can't help:
-;; zellij draws finished rows (zellij-org/zellij#3436), use its Alt u picker.
+;; Dropping those newlines first rejoins it. Inside zellij, where project
+;; terminals run, this can't help: zellij draws finished rows
+;; (zellij-org/zellij#3436), use its Alt u picker. It still works in ad-hoc
+;; terminals (C-c o T), which skip zellij.
 (defun my/buffer-urls ()
   "Return the URLs in the current buffer, newest first, soft wraps undone."
   (let ((text (buffer-string))
@@ -48,26 +50,54 @@
 (map! :leader
       :desc "URL in buffer" "o u" #'my/browse-url-in-buffer)
 
-;; ghostel isn't loaded yet, so without this the `let's below would bind
-;; `ghostel-buffer-name' lexically: ghostel would never see it, and its
-;; defcustom errors when autoloaded inside such a binding.
+;; ghostel isn't loaded yet, so without these the `let's below would bind
+;; them lexically: ghostel would never see them, and its defcustoms error
+;; when autoloaded inside such a binding.
 (defvar ghostel-buffer-name)
+(defvar ghostel-environment)
 
-(defun my/project-ghostel (name)
+(defun my/project-terminal-names (name)
+  "Return (BUFFER . SESSION) for project terminal NAME at `default-directory'.
+BUFFER is \"<project> :: NAME\".  SESSION names its zellij session,
+emacs-<project>-NAME-<hash>."
+  (let* ((project (project-current t))
+         (pname (project-name project))
+         (root (expand-file-name (project-root project))))
+    (cons (format "%s :: %s" pname name)
+          ;; The hash keeps projects with the same directory name apart, the
+          ;; emacs- prefix keeps zshrc's reattach of crashed terminals off it,
+          ;; and the truncation keeps zellij's socket path under its limit.
+          (replace-regexp-in-string
+           "[^A-Za-z0-9_-]" "-"
+           (format "emacs-%s-%s-%s"
+                   (truncate-string-to-width pname 32)
+                   (truncate-string-to-width name 16)
+                   (substring (md5 root) 0 6))))))
+
+(defun my/project-ghostel (name &optional command)
   "Switch to the project's ghostel terminal NAME, creating it if needed.
-The terminal starts in the root of the project at `default-directory' and its
-buffer is *<project>-NAME*.  Returns the buffer."
+The terminal starts in the root of the project at `default-directory', in
+buffer \"<project> :: NAME\", and runs in a zellij session of its own.  The
+session outlives Emacs, so after a crash this reattaches to it.  COMMAND, if
+non-nil, runs in the session when it is created, not on a reattach.
+Returns the buffer."
   ;; Not `ghostel-project': it keys a terminal by project root alone, so a
   ;; second call returns the first terminal whatever `ghostel-buffer-name'
   ;; says.  Plain `ghostel' keys it by buffer name, one slot per NAME.
   (let* ((default-directory (project-root (project-current t)))
-         (ghostel-buffer-name (project-prefixed-buffer-name name)))
+         (names (my/project-terminal-names name))
+         (ghostel-buffer-name (car names))
+         ;; Read by zshrc's zellij auto-start
+         (ghostel-environment
+          (append (list (concat "MY_ZELLIJ_SESSION=" (cdr names)))
+                  (and command (list (concat "MY_ZELLIJ_RUN=" command)))
+                  (bound-and-true-p ghostel-environment))))
     (ghostel)))
 
 (defvar my/project-agent "claude"
   "Command of the coding agent `my/project-terminals' starts, e.g. \"pi\".
-It also names the agent's buffer, *<project>-<command>*, so a buffer left
-from another agent isn't reused for this one.  Set it per machine in
+It also names the agent's buffer, \"<project> :: <command>\", and its zellij
+session, so neither is reused for another agent.  Set it per machine in
 extra_config.el.")
 
 (defvar my/project-agent-share 0.65
@@ -81,11 +111,11 @@ DIR defaults to `default-directory'.  The file goes on the left, the agent
 picker with \\[keyboard-quit] skips the file and puts the agent and the
 shell side by side.  Either way the agent gets `my/project-agent-share' of
 the space it shares with the shell.
-The agent is only started in a newly created buffer, so switching back to a
-project reuses its session."
+The agent and the shell run in zellij sessions that outlive Emacs: switching
+back to a project, even after an Emacs crash, reattaches them, and the agent
+is only started when its session is created."
   (interactive)
   (let* ((default-directory (or dir default-directory))
-         (existing (buffer-list))
          (file-window (progn
                         (delete-other-windows)
                         ;; Catch C-g here so cancelling only skips the file
@@ -96,13 +126,9 @@ project reuses its session."
                           (quit nil)))))
     (when file-window
       (select-window (split-window-right)))
-    ;; *<project>-<agent>* and *<project>-shell*, reused on later calls.
-    (let ((agent (my/project-ghostel my/project-agent)))
-      ;; Typed into the shell rather than exec'd, so quitting the agent leaves
-      ;; a usable shell instead of killing the buffer.
-      (unless (memq agent existing)
-        (with-current-buffer agent
-          (ghostel-send-string (concat my/project-agent "\r")))))
+    ;; Run by the session's shell rather than exec'd, so quitting the agent
+    ;; leaves a usable shell instead of ending the session.
+    (my/project-ghostel my/project-agent my/project-agent)
     ;; The agent's window is still selected, and a positive SIZE goes to the
     ;; selected (top or left) window, so this sizes the agent, not the shell.
     (select-window
