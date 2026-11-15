@@ -136,6 +136,26 @@ if [[ -z "$ZELLIJ" ]]; then
     fi
 fi
 
+# Inside a session Emacs created for its agent, the first pane runs
+# MY_ZELLIJ_RUN as if typed: it lands in history, and quitting it leaves this
+# shell. Reattaching to a live session spawns no shell, so it never runs twice,
+# and unsetting it keeps the agent and later panes from inheriting it.
+if [[ -n "$ZELLIJ" && -n "$MY_ZELLIJ_RUN" ]]; then
+    if [[ "$ZELLIJ_PANE_ID" == 0 ]]; then
+        typeset -g my_zellij_run="$MY_ZELLIJ_RUN"
+        my_zellij_run_once() {
+            add-zle-hook-widget -d line-init my_zellij_run_once
+            BUFFER="$my_zellij_run"
+            unset my_zellij_run
+            zle accept-line
+        }
+        # The hook API, not zle-line-init itself, which plugins may own
+        autoload -Uz add-zle-hook-widget
+        add-zle-hook-widget line-init my_zellij_run_once
+    fi
+    unset MY_ZELLIJ_RUN
+fi
+
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
