@@ -534,7 +534,9 @@ default_layout "compact"
 //   - detach (Default)
 //   - quit
 // 
-// on_force_close "quit"
+// Kept explicit: a crashed Emacs or Alacritty only detaches its sessions,
+// which is what lets them be reattached (see zshrc and doom/lisp/terminals.el)
+on_force_close "detach"
  
 // Configure the scroll back buffer size
 // This is the number of lines zellij stores for each pane in the scroll back
