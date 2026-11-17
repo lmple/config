@@ -22,7 +22,8 @@
  tabs
  treemacs
  unicode
- (vc-gutter +pretty)
+ ;; No vc-gutter: config.el turns vc's backends off, and diff-hl needs one,
+ ;; so the gutter never drew anything.
  vi-tilde-fringe
  window-select
  workspaces
