@@ -95,11 +95,14 @@ alias ll='ls -lah'
 [ -f ~/.extra_config ] && source ~/.extra_config
 
 # PATHs
+# Unique entries only: every zellij pane is a nested shell that inherits PATH
+# and would otherwise prepend each of these again.
+typeset -U path PATH
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.config/emacs/bin:$PATH"
 export PATH="$HOME/.opencode/bin:$PATH"
 export PATH="$HOME/.pi/agent/bin:$PATH"
-export PATH="$HOME/.cargo/bin/:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
 
 # PyEnv
 export PYENV_ROOT="$HOME/.pyenv"
