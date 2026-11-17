@@ -10,6 +10,11 @@ Doom config layout: `doom/config.el` keeps the core settings (theme, fonts, mode
 and loads one file per topic from `doom/lisp/`: `terminals`, `documents` (org,
 LaTeX), `lang-python`, `lang-js`, `llm`, `llm-tools`, `lang-lean`, `lang-quint`.
 
+Doom environment: started from the desktop menu, Emacs never runs zshrc, so it
+loads a snapshot of the shell environment instead. After changing PATH in `zshrc`
+or installing a new Node, run `doom sync --env` from a shell and restart Emacs.
+`doom/cli.el` keeps zellij and Claude Code session variables out of the snapshot.
+
 ## Setup
 
 ```sh
