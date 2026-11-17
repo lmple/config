@@ -2,8 +2,54 @@
 
 ;;; Python ─────────────────────────────────────────────────────────────────────
 
+;;; Trust ──────────────────────────────────────────────────────────────────────
+;; Opening a .py file used to run the project's own code: pyvenv-auto activated
+;; any .venv it found, so mypy came from .venv/bin, and mypy imports the plugins
+;; the project's config names. Language servers run project code too, which is
+;; why lsp-mode asks once per project. Reuse that answer for the venv and mypy:
+;; one decision per project, kept in lsp-mode's session file. Ruff (pipx, no
+;; plugins) runs either way.
+
 (use-package! pyvenv-auto
-  :hook (python-mode . pyvenv-auto-run))
+  :commands pyvenv-auto-run)
+
+(defun my/python-project-trusted-p (file)
+  "Non-nil if FILE's project may run its venv, mypy and language server.
+Projects lsp-mode already imported are trusted and blocklisted ones aren't;
+for any other, ask once and record the answer the way lsp-mode's own prompt
+does, so it doesn't ask again.  Quitting the question records nothing."
+  (require 'lsp-mode)
+  (let ((session (lsp-session)))
+    (cond
+     ((or (null file) (file-remote-p file) noninteractive) nil)
+     ((lsp-find-session-folder session file) t)
+     ((seq-some (lambda (dir) (lsp-f-ancestor-of? dir file))
+                (lsp-session-folders-blocklist session))
+      nil)
+     (t
+      ;; The root lsp-mode itself would suggest, so both agree on the project.
+      (let ((root (lsp-f-canonical (lsp--suggest-project-root))))
+        (condition-case nil
+            (if (y-or-n-p
+                 (format "Trust %s? It runs its venv, mypy and language server "
+                         (abbreviate-file-name root)))
+                (progn (lsp-workspace-folders-add root) t)
+              ;; lsp--calculate-root skips blocklisted files, so Doom's lsp!
+              ;; then starts nothing here either. Not `setf' on
+              ;; `lsp-session-folders-blocklist': this file is macroexpanded
+              ;; before lsp-mode loads, so that accessor's setter is unknown.
+              (cl-pushnew root (cl-struct-slot-value
+                                'lsp-session 'folders-blocklist session)
+                          :test #'equal)
+              (lsp--persist-session session)
+              nil)
+          (quit nil)))))))
+
+(defun my/python-trusted-tools-h ()
+  "Activate the project's venv and enable mypy, if the project is trusted."
+  (when (my/python-project-trusted-p buffer-file-name)
+    (pyvenv-auto-run)
+    (my/python-flymake-mypy-h)))
 
 (use-package! pyenv-mode
   :hook (python-mode . pyenv-mode)
@@ -69,4 +115,5 @@
                   (expand-file-name "~/.local/bin/mypy")))
   (add-hook 'flymake-diagnostic-functions
             #'flymake-collection-mypy nil t))
-(add-hook! '(python-mode-hook python-ts-mode-hook) #'my/python-flymake-mypy-h)
+;; Not hooked directly: `my/python-trusted-tools-h' runs it after the venv.
+(add-hook! '(python-mode-hook python-ts-mode-hook) #'my/python-trusted-tools-h)
