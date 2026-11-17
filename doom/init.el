@@ -78,18 +78,18 @@
  (cc +lsp)
  data
  emacs-lisp
- json
+ (json +tree-sitter)
  (javascript +lsp +tree-sitter)
  latex
  markdown
  (org +brain +dragndrop +gnuplot +journal +jupyter +noter +pandoc +present +pretty +roam)
  plantuml
  graphviz
- (python +lsp +pyright +pyenv)
- (rust +lsp)
+ (python +lsp +pyright +pyenv +tree-sitter)
+ (rust +lsp +tree-sitter)
  (sh +lsp)
  web
- yaml
+ (yaml +tree-sitter)
 
  :app
  calendar
