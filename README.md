@@ -56,6 +56,9 @@ server rather than in the window, and a crash only detaches them:
 The agent starts only when its session is created, so a reattach never starts it
 twice. Killing a buffer or window detaches too, so sessions last until you end
 them: `Ctrl q` inside zellij, or `zellij ls` then `zellij kill-session <name>`.
+After a reboot they show as EXITED, a saved layout with no processes:
+`zellij delete-all-sessions -y` removes those and leaves live ones alone (its
+`-f` would kill the live ones too). Emacs terminals delete their own on reopen.
 Inside Emacs, `C-c`, `C-x` and `C-h` stay with Emacs, so zellij's move mode
 (`Ctrl h`) is out of reach there.
 
