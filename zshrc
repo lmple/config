@@ -146,6 +146,14 @@ if [[ -z "$ZELLIJ" ]]; then
         # An Emacs project terminal: a named session that outlives Emacs, so a
         # crash only detaches it. Exit with zellij (detach, quit) to close the
         # buffer, but stay on an error so it can be read.
+        # A session the zellij server lost (reboot, logout) is listed as EXITED,
+        # and attaching resurrects it with its agent suspended behind an "ENTER
+        # to run" prompt, outside any shell. Its processes are gone anyway, so
+        # start afresh and let MY_ZELLIJ_RUN type the agent into zsh again.
+        if zellij list-sessions --no-formatting 2>/dev/null \
+                | awk -v s="$MY_ZELLIJ_SESSION" '$1 == s && /EXITED/ { found = 1 } END { exit !found }'; then
+            zellij delete-session "$MY_ZELLIJ_SESSION"
+        fi
         zellij attach --create "$MY_ZELLIJ_SESSION" && exit
     elif [[ "${INSIDE_EMACS%%,*}" != ghostel ]]; then
         # Plain ghostel terminals (M-x ghostel) skip this and stay plain zsh.
