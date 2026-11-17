@@ -5,5 +5,4 @@ tmp/
 .claude/
 doom/extra_config.el
 doom/extra_packages.el
-helix/runtime
 doom/custom.el
