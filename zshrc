@@ -89,7 +89,15 @@ SAVEHIST=100000
 # alias, so plain "emacs" booted a second full Doom for every commit message.
 # emacsclient reuses the daemon in the current terminal; -a '' starts one if
 # none is running.
-export EDITOR="emacsclient -t -a ''"
+# Inside Emacs's own terminals (zellij panes included, which inherit
+# INSIDE_EMACS), a terminal frame nested in the pane is awkward, so open a
+# buffer in the Emacs frame instead; -r makes a frame if the daemon has none.
+# C-x # finishes, e.g. a git commit or Claude Code's Ctrl-G prompt.
+if [[ -n "$INSIDE_EMACS" ]]; then
+    export EDITOR="emacsclient -r -a ''"
+else
+    export EDITOR="emacsclient -t -a ''"
+fi
 export VISUAL="$EDITOR"
 export GIT_EDITOR="$EDITOR"
 
