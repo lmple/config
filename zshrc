@@ -85,8 +85,11 @@ setopt HIST_IGNORE_SPACE
 HISTSIZE=100000
 SAVEHIST=100000
 
-# Editor
-export EDITOR="emacs"
+# Editor: git and other tools exec this directly, bypassing oh-my-zsh's emacs
+# alias, so plain "emacs" booted a second full Doom for every commit message.
+# emacsclient reuses the daemon in the current terminal; -a '' starts one if
+# none is running.
+export EDITOR="emacsclient -t -a ''"
 export VISUAL="$EDITOR"
 export GIT_EDITOR="$EDITOR"
 
