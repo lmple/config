@@ -1,19 +1,33 @@
-# ZSH
-ln -s "$(pwd)/zshrc" "$HOME/.zshrc"
+#!/usr/bin/env bash
+# Symlink the configs into ~ and ~/.config. Safe to re-run, from any directory.
+set -euo pipefail
 
-# Starship
-ln -s "$(pwd)/starship.toml" "$HOME/.config/starship.toml"
+# The repo is where this script lives, not the caller's directory: with
+# $(pwd), running it from elsewhere linked to files that don't exist.
+REPO_DIR="$(dirname "$(realpath "$0")")"
+readonly REPO_DIR
 
-# Zellij
-ln -sfn "$(pwd)/zellij" "$HOME/.config/zellij"
+# Point DEST at SRC (relative to the repo). An existing symlink is replaced,
+# so a re-run is a no-op; a real file or directory stops the script instead,
+# since `ln -sfn` would put the link inside a directory or a plain `ln -s`
+# would fail halfway.
+link() {
+  local src="$REPO_DIR/$1" dest="$2"
+  if [[ -e "$dest" && ! -L "$dest" ]]; then
+    printf 'error: %s exists and is not a symlink; move it away and re-run\n' "$dest" >&2
+    exit 1
+  fi
+  mkdir -p "$(dirname "$dest")"
+  ln -sfn "$src" "$dest"
+  printf '%s -> %s\n' "$dest" "$src"
+}
 
-# Alacritty
-ln -sfn "$(pwd)/alacritty" "$HOME/.config/alacritty"
-
-# Doom Emacs
-ln -sfn "$(pwd)/doom" "$HOME/.config/doom"
+link zshrc "$HOME/.zshrc"
+link starship.toml "$HOME/.config/starship.toml"
+link zellij "$HOME/.config/zellij"
+link alacritty "$HOME/.config/alacritty"
+link doom "$HOME/.config/doom"
 
 # llama-server presets and its user service (enable it per machine, see README)
-ln -sfn "$(pwd)/llama" "$HOME/.config/llama"
-mkdir -p "$HOME/.config/systemd/user"
-ln -sf "$(pwd)/systemd/llama-server@.service" "$HOME/.config/systemd/user/llama-server@.service"
+link llama "$HOME/.config/llama"
+link systemd/llama-server@.service "$HOME/.config/systemd/user/llama-server@.service"
