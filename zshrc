@@ -80,7 +80,9 @@ setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_FIND_NO_DUPS
 # A leading space keeps a command out of the history, e.g. one with a token in it
 setopt HIST_IGNORE_SPACE
-HISTSIZE=50000
+# zsh rewrites the file from the in-memory list, so SAVEHIST above HISTSIZE
+# would still cap the file at HISTSIZE.
+HISTSIZE=100000
 SAVEHIST=100000
 
 # Editor
