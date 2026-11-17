@@ -55,8 +55,13 @@ style = "fg:pink bg:current_line"
 format = "[ $symbol$branch ]($style)"
 symbol = "\ue0a0 "
 
-# Git status
+# Git status - off for safety: computing it runs the clean filters a repo's own
+# .git/config names (filter.<x>.clean, via .gitattributes), so a mere cd into an
+# untrusted repo ran its code. Starship neutralises core.fsmonitor but not
+# those. Same reason Emacs's vc is off (doom/config.el); magit shows the status.
+# The other git modules only read refs and HEAD, which runs nothing.
 [git_status]
+disabled = true
 style = "fg:red bg:current_line"
 # Outer conditional group drops the padding too when the tree is clean
 format = "([ $all_status$ahead_behind ]($style))"
