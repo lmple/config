@@ -35,12 +35,13 @@ does, so it doesn't ask again.  Quitting the question records nothing."
                          (abbreviate-file-name root)))
                 (progn (lsp-workspace-folders-add root) t)
               ;; lsp--calculate-root skips blocklisted files, so Doom's lsp!
-              ;; then starts nothing here either. Not `setf' on
-              ;; `lsp-session-folders-blocklist': this file is macroexpanded
-              ;; before lsp-mode loads, so that accessor's setter is unknown.
-              (cl-pushnew root (cl-struct-slot-value
-                                'lsp-session 'folders-blocklist session)
-                          :test #'equal)
+              ;; then starts nothing here either. The slot is set by offset,
+              ;; found at run time: this file is macroexpanded and compiled
+              ;; (doom doctor) before lsp-mode loads, so any `setf' on the
+              ;; struct, its accessor's or `cl-struct-slot-value''s, fails then.
+              (let ((slot (cl-struct-slot-offset 'lsp-session 'folders-blocklist)))
+                (unless (member root (aref session slot))
+                  (aset session slot (cons root (aref session slot)))))
               (lsp--persist-session session)
               nil)
           (quit nil)))))))
