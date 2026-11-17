@@ -186,9 +186,16 @@ if [[ -n "$ZELLIJ" && -n "$MY_ZELLIJ_RUN" ]]; then
     unset MY_ZELLIJ_RUN
 fi
 
+# nvm resolving its default alias took ~1.2 s of a 1.6 s startup, paid by every
+# zellij pane and Emacs terminal. --no-use loads only the nvm command; the
+# newest installed Node goes on PATH directly, which is what the default alias
+# `node` resolves to anyway. `nvm use` still switches per project.
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" --no-use
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+my_node_bin=( "$NVM_DIR"/versions/node/*(N/nOn[1]) )
+(( $#my_node_bin )) && export PATH="$my_node_bin[1]/bin:$PATH"
+unset my_node_bin
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
