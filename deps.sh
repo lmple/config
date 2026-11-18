@@ -30,7 +30,7 @@ npm/pipx tools, Lean, Quint and SDKMAN.
   --dry-run     Print the commands instead of running them
   -h, --help    Show this help
 
-DEPS_DISTRO=arch|ubuntu overrides distro detection (useful with --dry-run).
+DEPS_DISTRO=arch|ubuntu|debian overrides distro detection (useful with --dry-run).
 EOF
 }
 
@@ -65,7 +65,8 @@ detect_distro() {
   case "$id" in
     arch | endeavouros | manjaro) printf 'arch\n' ;;
     ubuntu) printf 'ubuntu\n' ;;
-    *) die "unsupported distro '$id' (set DEPS_DISTRO=arch|ubuntu to force)" ;;
+    debian) printf 'debian\n' ;;
+    *) die "unsupported distro '$id' (set DEPS_DISTRO=arch|ubuntu|debian to force)" ;;
   esac
 }
 
@@ -105,13 +106,15 @@ pkgs_arch() {
   pacman_install scrot
 }
 
-pkgs_ubuntu() {
-  log "Ubuntu packages"
+# Debian and Ubuntu share one package list: Ubuntu's universe is synced from Debian
+pkgs_apt() {
+  local distro=$1
+  log "apt packages ($distro)"
   # Base tooling, plus the -dev libraries needed to build pdf-tools and pyenv Pythons
   apt_install git build-essential curl wget unzip pkg-config autoconf automake \
     libpoppler-glib-dev libpng-dev zlib1g-dev libssl-dev libbz2-dev libreadline-dev \
     libsqlite3-dev libncurses-dev xz-utils tk-dev libffi-dev liblzma-dev libxml2-dev
-  # Shell: Ubuntu ships fd as fdfind, link it so Emacs finds it as fd
+  # Shell: Debian and Ubuntu ship fd as fdfind, link it so Emacs finds it as fd
   apt_install zsh starship pyenv direnv fzf ripgrep fd-find jq
   run mkdir -p "$HOME/.local/bin"
   run_sh 'ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"'
@@ -170,8 +173,8 @@ with_nvm() { run_sh ". \"$NVM_DIR/nvm.sh\" && $1"; }
 npm_globals() {
   local distro=$1
   log "npm global packages"
-  if [[ "$distro" == ubuntu ]]; then
-    # Not packaged on Ubuntu
+  if [[ "$distro" != arch ]]; then
+    # Not packaged on Debian or Ubuntu
     with_nvm 'npm install -g bash-language-server typescript-language-server typescript prettier'
   fi
   # Quint and its language server
@@ -203,7 +206,10 @@ sdkman() {
 
 base() {
   local distro=$1
-  "pkgs_$distro"
+  case "$distro" in
+    arch) pkgs_arch ;;
+    ubuntu | debian) pkgs_apt "$distro" ;;
+  esac
   oh_my_zsh
   nvm_node
   npm_globals "$distro"
@@ -229,9 +235,14 @@ heavy() {
   else
     # texlive-full is the full TeX Live, every language included, and already
     # pulls in latexmk, chktex and biber
-    apt_install texlive-full texlab
-    # PlantUML, Jupyter (ein); LanguageTool is not packaged, Doom's
-    # grammar module just warns without it
+    apt_install texlive-full
+    # Debian 13 does not package texlab; Doom's latex module is enabled
+    # without +lsp, so it works without it
+    if [[ "$distro" == ubuntu ]]; then
+      apt_install texlab
+    fi
+    # PlantUML, Jupyter (ein); LanguageTool is not packaged on Debian or
+    # Ubuntu, Doom's grammar module just warns without it
     apt_install plantuml jupyter-notebook
   fi
 }
@@ -248,7 +259,7 @@ firewall() {
     fi
     run sudo systemctl enable --now ufw # loads the rules at boot
   else
-    # Ubuntu ships ufw installed but inactive
+    # Ubuntu ships ufw installed but inactive, Debian does not install it
     apt_install ufw
   fi
   run sudo ufw default deny incoming
@@ -311,7 +322,8 @@ main() {
 
   local distro
   distro="$(detect_distro)"
-  [[ "$distro" == arch || "$distro" == ubuntu ]] || die "DEPS_DISTRO must be arch or ubuntu"
+  [[ "$distro" == arch || "$distro" == ubuntu || "$distro" == debian ]] ||
+    die "DEPS_DISTRO must be arch, ubuntu or debian"
   log "Distro: $distro$("$DRY_RUN" && printf ' (dry run)')"
 
   # if, not `&&`: bash disables `set -e` inside a function called from a && list

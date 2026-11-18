@@ -23,7 +23,7 @@ or installing a new Node, run `doom sync --env` from a shell and restart Emacs.
 ./deps.sh --skip-base --doom  # Doom Emacs, once ~/.config/doom points at this repo
 ```
 
-`deps.sh` detects Arch/EndeavourOS/Manjaro or Ubuntu 26.04 and is safe to re-run: package
+`deps.sh` detects Arch/EndeavourOS/Manjaro, Ubuntu 26.04 or Debian 13 and is safe to re-run: package
 installs skip what is present and each installer skips if its directory exists.
 Opt-in extras, combinable:
 
@@ -36,10 +36,13 @@ Opt-in extras, combinable:
 
 `--dry-run` prints the commands without running them; `--help` lists every flag.
 
-- Emacs is the Wayland build (`emacs-wayland` on Arch, `emacs-pgtk` on Ubuntu); on
+- Emacs is the Wayland build (`emacs-wayland` on Arch, `emacs-pgtk` on Debian/Ubuntu); on
   X11, swap in `emacs` / `emacs-gtk` in `deps.sh`. On Arch it is skipped if any
   installed package already provides `emacs`.
 - Ubuntu: most packages live in `universe` (enabled by default on desktop).
+- Debian: your user needs `sudo` rights, which the installer skips when a root
+  password is set (`su - -c "usermod -aG sudo $USER"`, then log in again). `--heavy`
+  leaves out texlab, which Debian does not package.
 - `--firewall` on EndeavourOS disables firewalld first: two firewalls rewriting the
   same nftables rules conflict.
 - The NVM, SDKMAN and oh-my-zsh installers are kept from editing `~/.zshrc`, which is
