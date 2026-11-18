@@ -31,7 +31,7 @@ Opt-in extras, combinable:
 | --- | --- |
 | `--heavy` | TeX Live, LanguageTool (Arch), PlantUML, Jupyter: several GB |
 | `--firewall` | ufw: deny inbound, allow outbound and KDE Connect (1714-1764) |
-| `--llama` | `llama.cpp-cuda` from the AUR (Arch only), see [Local LLM](#local-llm-llamacpp) |
+| `--llama` | `llama.cpp-cuda` from the AUR on Arch, the llama.app installer elsewhere, see [Local LLM](#local-llm-llamacpp) |
 | `--doom` | Doom Emacs core + `doom install` |
 
 `--dry-run` prints the commands without running them; `--help` lists every flag.
@@ -116,6 +116,12 @@ The Emacs side is `doom/lisp/llm.el` (backend, model list) and
 ```sh
 ./deps.sh --skip-base --llama   # Arch / EndeavourOS / Manjaro, from the AUR
 ```
+
+On Debian/Ubuntu the same flag runs the [llama.app](https://llama.app) installer
+instead: it picks the CUDA, ROCm, Vulkan or CPU build and installs a single
+`~/.local/bin/llama` binary, started as `llama serve` rather than `llama-server`.
+The systemd unit below runs `/usr/bin/llama-server` (the Arch package), so it does
+not cover that install yet.
 
 ### Start the server
 

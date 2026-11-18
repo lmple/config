@@ -24,7 +24,8 @@ npm/pipx tools, Lean, Quint and SDKMAN.
 
   --heavy       Also install TeX Live, LanguageTool, PlantUML, Jupyter (several GB)
   --firewall    Also install and configure ufw (deny inbound, allow KDE Connect)
-  --llama       Also install llama.cpp with CUDA (Arch only, AUR via paru)
+  --llama       Also install llama.cpp (Arch: CUDA build from the AUR via paru;
+                elsewhere: the llama.app installer, into ~/.local/bin/llama)
   --doom        Also install Doom Emacs (run ./install.sh first)
   --skip-base   Skip the base set, e.g. ./deps.sh --skip-base --doom
   --dry-run     Print the commands instead of running them
@@ -275,13 +276,21 @@ firewall() {
 
 llama() {
   local distro=$1
-  log "llama.cpp (CUDA)"
-  [[ "$distro" == arch ]] || die "--llama is Arch only (llama.cpp-cuda from the AUR)"
-  # 10217 works; 8589 fails with "unknown model architecture: 'gemma4'"
-  run paru -S --needed llama.cpp-cuda
-  # An older hand-built copy in /usr/local/bin takes precedence over /usr/bin
-  if [[ -e /usr/local/bin/llama-server ]]; then
-    warn "/usr/local/bin/llama-server shadows the package; remove it if 'llama-server --version' is old"
+  log "llama.cpp"
+  if [[ "$distro" == arch ]]; then
+    # 10217 works; 8589 fails with "unknown model architecture: 'gemma4'"
+    run paru -S --needed llama.cpp-cuda
+    # An older hand-built copy in /usr/local/bin takes precedence over /usr/bin
+    if [[ -e /usr/local/bin/llama-server ]]; then
+      warn "/usr/local/bin/llama-server shadows the package; remove it if 'llama-server --version' is old"
+    fi
+  else
+    # No CUDA build is packaged on Debian/Ubuntu. llama.app's installer picks
+    # the CUDA, ROCm, Vulkan or CPU build itself, needs no sudo, and puts a
+    # single `llama` binary (llama serve, llama cli) in ~/.local/bin; re-running
+    # it updates to the latest build. pipefail so a failed download is not
+    # hidden behind sh exiting 0 on empty input.
+    run_sh 'set -o pipefail; curl -LsSf https://llama.app/install.sh | sh'
   fi
 }
 
