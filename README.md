@@ -120,8 +120,8 @@ The Emacs side is `doom/lisp/llm.el` (backend, model list) and
 On Debian/Ubuntu the same flag runs the [llama.app](https://llama.app) installer
 instead: it picks the CUDA, ROCm, Vulkan or CPU build and installs a single
 `~/.local/bin/llama` binary, started as `llama serve` rather than `llama-server`.
-The systemd unit below runs `/usr/bin/llama-server` (the Arch package), so it does
-not cover that install yet.
+The systemd unit below starts the server through `llama/serve.sh`, which runs
+whichever of the two is installed.
 
 ### Start the server
 
