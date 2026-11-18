@@ -230,13 +230,36 @@ is only started when its session is created."
 ;; *scratch* stay put.
 (setq +workspaces-on-switch-project-behavior t)
 
+(defun my/open-org-workspace ()
+  "Open workspace \"org\": Dired of `org-directory' beside a shell there.
+The shell, buffer \"org :: shell\", runs in zellij session emacs-org-shell,
+which has no project hash, so `my/project-reattach-terminals' never takes
+it.  Does nothing if the workspace exists or the directory is missing.
+Comes back to the workspace it started from."
+  (let ((dir (expand-file-name org-directory))
+        (origin (+workspace-current-name)))
+    (when (and (file-directory-p dir)
+               (not (+workspace-exists-p "org")))
+      (+workspace-switch "org" t)
+      ;; A new workspace starts on the fallback buffer; make sure it is the
+      ;; only window before splitting.
+      (delete-other-windows)
+      (dired dir)
+      (let ((dired-window (selected-window)))
+        (select-window (split-window-right))
+        (my/ghostel-session dir "org :: shell" "emacs-org-shell")
+        (select-window dired-window))
+      (+workspace-switch origin))))
+
 (defun my/show-home-terminal (frame)
   "Put the ~/ terminal to the right of *scratch* in FRAME's main workspace.
 Only when FRAME shows nothing but the fallback buffer there, so a frame
 opened on a file, a later frame (Doom gives those a workspace of their
 own), or a layout already arranged is left alone.  The terminal, buffer
 \"~ :: shell\", runs in zellij session emacs-home-shell, which has no
-project hash, so `my/project-reattach-terminals' never takes it."
+project hash, so `my/project-reattach-terminals' never takes it.
+Under the same condition, it also opens `my/open-org-workspace' behind
+main, so only the first frame does."
   (when (frame-live-p frame)
     (with-selected-frame frame
       (when (and (bound-and-true-p persp-mode)
@@ -247,7 +270,8 @@ project hash, so `my/project-reattach-terminals' never takes it."
           (select-window (split-window-right))
           (my/ghostel-session (expand-file-name "~/") "~ :: shell"
                               "emacs-home-shell")
-          (select-window scratch-window))))))
+          (select-window scratch-window))
+        (my/open-org-workspace)))))
 
 (defun my/show-home-terminal-soon-h ()
   "Run `my/show-home-terminal' on the selected frame once Emacs is idle."
