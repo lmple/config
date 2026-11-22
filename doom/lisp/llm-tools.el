@@ -9,7 +9,9 @@
 
 (defconst my/gptel-tool-denied-paths
   '("~/.ssh/" "~/.gnupg/" "~/.password-store/" "~/.aws/"
-    "~/.config/llama-server/" "~/.extra_config" "~/.authinfo" "~/.netrc")
+    "~/.config/llama-server/" "~/.extra_config" "~/.authinfo" "~/.netrc"
+    ;; Claude Code's login token, and the desktop keyring's stored passwords
+    "~/.claude/" "~/.local/share/keyrings/")
   "Files, and directories (ending in /), that the tools refuse.
 They hold keys and credentials.")
 
