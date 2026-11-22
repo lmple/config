@@ -1,0 +1,170 @@
+* {
+    font-family: "JetBrainsMono Nerd Font", "Noto Sans", monospace;
+    font-size: 13px;
+    min-height: 0;
+    border: none;
+    border-radius: 0;
+}
+
+window#waybar {
+    background-color: rgba(30, 31, 41, 0.92);
+    color: #cdd6f4;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.modules-left,
+.modules-center,
+.modules-right {
+    padding: 0 4px;
+}
+
+/* Generic module pill */
+#workspaces,
+#clock,
+#cpu,
+#memory,
+#temperature,
+#disk,
+#network,
+#pulseaudio,
+#tray,
+#custom-power {
+    background-color: rgba(49, 50, 68, 0.85);
+    color: #cdd6f4;
+    padding: 2px 10px;
+    border-radius: 8px;
+    margin: 4px 2px;
+}
+
+/* Workspaces */
+#workspaces button {
+    padding: 0 6px;
+    color: #6c7086;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+#workspaces button.active {
+    color: #cdd6f4;
+    background-color: rgba(137, 180, 250, 0.25);
+}
+
+#workspaces button:hover {
+    color: #cdd6f4;
+    background-color: rgba(108, 112, 134, 0.3);
+}
+
+/* Window title */
+#window {
+    color: #a6adc8;
+    padding: 2px 10px;
+    margin: 4px 2px;
+}
+
+/* Clock */
+#clock {
+    color: #89b4fa;
+    font-weight: 500;
+}
+
+/* CPU */
+#cpu {
+    color: #a6e3a1;
+}
+
+#cpu.warning {
+    color: #fab387;
+}
+
+#cpu.critical {
+    color: #f38ba8;
+}
+
+/* Memory */
+#memory {
+    color: #cba6f7;
+}
+
+/* Temperature */
+#temperature {
+    color: #94e2d5;
+}
+
+#temperature.critical {
+    color: #f38ba8;
+    animation: blink 0.5s steps(1) infinite;
+}
+
+/* Disk */
+#disk {
+    color: #f9e2af;
+}
+
+/* Network */
+#network {
+    color: #89dceb;
+}
+
+#network.disconnected {
+    color: #f38ba8;
+}
+
+/* Audio */
+#pulseaudio {
+    color: #f38ba8;
+}
+
+#pulseaudio.muted {
+    color: #6c7086;
+}
+
+/* Tray */
+#tray {
+    background-color: rgba(49, 50, 68, 0.85);
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: #f38ba8;
+}
+
+
+/* Battery */
+#battery {
+    color: #a6e3a1;
+}
+
+#battery.warning {
+    color: #f9e2af;
+}
+
+#battery.critical {
+    color: #f38ba8;
+}
+
+#battery.critical:not(.charging) {
+    animation: blink 0.5s steps(1) infinite;
+}
+
+#battery.charging {
+    color: #a6e3a1;
+}
+
+/* Submap indicator */
+#submap {
+    background-color: #f38ba8;
+    color: #1e1e2e;
+    padding: 2px 10px;
+    border-radius: 8px;
+    margin: 4px 2px;
+    font-weight: 500;
+}
+
+@keyframes blink {
+    to { background-color: rgba(243, 139, 168, 0.3); }
+}
