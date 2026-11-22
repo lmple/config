@@ -57,8 +57,9 @@ hl.config({
         gaps_out = 5,
         border_size = 2,
         col = {
-            active_border = "rgba(e06c75ff)",
-            inactive_border = "rgba(3b3f4dcc)",
+            -- Ashen red-ember and g-8, as zellij's selected tab and panes
+            active_border = "rgba(b14242ff)",
+            inactive_border = "rgba(323232cc)",
         },
         layout = "dwindle",
         resize_on_border = true,
