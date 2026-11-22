@@ -18,6 +18,7 @@
     "custom/agents",
     "tray",
     "pulseaudio",
+    "backlight",
     "network",
     "cpu",
     "custom/gpu",
@@ -80,6 +81,17 @@
     "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
     "on-click-right": "pavucontrol",
     "scroll-step": 5
+  },
+  // ── Screen brightness: scroll to change it (through logind, no root) ────
+  // Hidden on a machine without a backlight; no "device", so any panel works
+  "backlight": {
+    "format": "{icon} {percent}%",
+    // Nerd Font glyphs (U+F00DE..U+F00E0 brightness 5/6/7)
+    "format-icons": ["󰃞", "󰃟", "󰃠"],
+    "tooltip-format": "Brightness: {percent}%",
+    "scroll-step": 5,
+    // So scrolling down can't turn the panel black
+    "min-brightness": 5
   },
   // ── Network (nm-applet handles connecting; this just shows status) ───────
   "network": {

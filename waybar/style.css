@@ -48,6 +48,7 @@ window#waybar {
 #disk,
 #network,
 #pulseaudio,
+#backlight,
 #tray,
 #battery,
 #power-profiles-daemon,
@@ -159,6 +160,11 @@ window#waybar {
 
 #pulseaudio.muted {
     color: @g-7;
+}
+
+/* Screen brightness: the palette's sunniest colour */
+#backlight {
+    color: @orange-golden;
 }
 
 /* Tray */
