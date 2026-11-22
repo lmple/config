@@ -37,3 +37,7 @@ link mako "$HOME/.config/mako"
 # llama-server presets and its user service (enable it per machine, see README)
 link llama "$HOME/.config/llama"
 link systemd/llama-server@.service "$HOME/.config/systemd/user/llama-server@.service"
+# pi on that server: its launcher and guard, and the provider in pi's own
+# directory, linked as a file since ~/.pi/agent also holds pi's logins
+link pi "$HOME/.config/pi"
+link pi/models.json "$HOME/.pi/agent/models.json"

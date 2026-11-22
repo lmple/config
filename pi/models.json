@@ -1,0 +1,8 @@
+{
+  "$schema": "https://pi.dev/schemas/models.schema.json",
+  "providers": {
+    "llama.cpp": {
+      "apiKey": "!cat ~/.config/llama-server/api-key"
+    }
+  }
+}

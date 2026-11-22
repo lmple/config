@@ -13,7 +13,8 @@
     ;; Claude Code's login token, and the desktop keyring's stored passwords
     "~/.claude/" "~/.local/share/keyrings/")
   "Files, and directories (ending in /), that the tools refuse.
-They hold keys and credentials.")
+They hold keys and credentials.  Keep in sync with DENIED_PATHS in
+pi/guard.ts, which gives pi on the local model the same rules.")
 
 (defconst my/gptel-tool-denied-regexp "\\.\\(gpg\\|age\\)\\'"
   "File names the tools refuse: encrypted files.
