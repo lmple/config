@@ -31,8 +31,8 @@ and SDKMAN.
 
   --heavy       Also install TeX Live, LanguageTool, PlantUML, Jupyter (several GB)
   --firewall    Also install and configure ufw (deny inbound, allow KDE Connect)
-  --llama       Also install llama.cpp (Arch: CUDA build from the AUR via paru;
-                elsewhere: the llama.app installer, into ~/.local/bin/llama)
+  --llama       Also install llama.cpp with the llama.app installer, on every
+                distro: CUDA/ROCm/Vulkan/CPU build into ~/.local/bin/llama
   --helix       Also build Helix with Steel plugins (the steel-event-system
                 branch, updated on every run) and its file-watcher plugin
   --hyprland    Also install the Hyprland desktop: Waybar, lock, idle, wifi
@@ -319,21 +319,18 @@ firewall() {
 }
 
 llama() {
-  local distro=$1
   log "llama.cpp"
-  if [[ "$distro" == arch ]]; then
-    # 10217 works; 8589 fails with "unknown model architecture: 'gemma4'"
-    run paru -S --needed llama.cpp-cuda
-    # An older hand-built copy in /usr/local/bin takes precedence over /usr/bin
-    if [[ -e /usr/local/bin/llama-server ]]; then
-      warn "/usr/local/bin/llama-server shadows the package; remove it if 'llama-server --version' is old"
-    fi
-  else
-    # No CUDA build is packaged on Debian/Ubuntu. llama.app's installer picks
-    # the CUDA, ROCm, Vulkan or CPU build itself, needs no sudo, and puts a
-    # single `llama` binary (llama serve, llama cli) in ~/.local/bin; re-running
-    # it updates to the latest build.
-    run_sh 'curl -LsSf https://llama.app/install.sh | sh'
+  # llama.app's installer on every distro, Arch included: it picks the CUDA,
+  # ROCm, Vulkan or CPU build itself, needs no sudo, and puts one `llama`
+  # binary (llama serve, llama cli) in ~/.local/bin. That binary links no
+  # ggml or CUDA runtime from the system, only the driver's libcuda, so a
+  # distro upgrade can't break it: Arch's split llama-cpp did when ggml 1.0
+  # changed its soname before llama-cpp was rebuilt. A re-run updates it to
+  # the latest build, and does nothing when it is already there.
+  run_sh 'curl -LsSf https://llama.app/install.sh | sh'
+  # llama/serve.sh no longer runs a distro package's llama-server
+  if [[ -e /usr/bin/llama-server || -e /usr/local/bin/llama-server ]]; then
+    warn "a distro llama.cpp is still installed (llama-server); it is unused now, remove it with your package manager (Arch: sudo pacman -Rns llama-cpp ggml-cuda ggml)"
   fi
 }
 
@@ -452,7 +449,7 @@ main() {
   if "$want_base"; then base "$distro"; fi
   if "$want_heavy"; then heavy "$distro"; fi
   if "$want_firewall"; then firewall "$distro"; fi
-  if "$want_llama"; then llama "$distro"; fi
+  if "$want_llama"; then llama; fi
   if "$want_helix"; then helix; fi
   if "$want_hyprland"; then hyprland "$distro"; fi
   if "$want_doom"; then doom; fi

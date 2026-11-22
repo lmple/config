@@ -5,8 +5,8 @@
 Description=llama.cpp router server (%i presets) for gptel
 
 [Service]
-# serve.sh runs the AUR package's llama-server on Arch and llama.app's
-# `llama serve` elsewhere. It and the presets are read through the
+# serve.sh runs llama.app's `llama serve`, the one install on every machine
+# (deps.sh --llama). It and the presets are read through the
 # ~/.config/llama link from install.sh, so the repo can live anywhere.
 # The API key file lives outside the repo (see README); without it the server
 # refuses to start rather than run open to every local process.
