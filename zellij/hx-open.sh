@@ -38,9 +38,11 @@ project_root() {
 # started before them lacks, and quitting Helix leaves a shell.
 new_editor_pane() {
   local file=$1 line=$2 pane
-  # $1 is for the inner zsh, which gets the file as an argument, never as code
+  # $1 is for the inner zsh, which gets the file as an argument, never as code.
+  # --close-on-exit: Ctrl+d in that shell then closes the pane, as in a plain
+  # one, instead of zellij holding it at an exit-code prompt.
   # shellcheck disable=SC2016
-  pane="$(zellij run --name editor --cwd "$(project_root "${file%/*}")" -- \
+  pane="$(zellij run --close-on-exit --name editor --cwd "$(project_root "${file%/*}")" -- \
     zsh -ic 'hx "$1"; exec zsh' zsh "$file${line:+:$line}")"
   # Run from the Alt e floating pane, focus would go back to the tiled pane
   # under it; zellij run prints the new pane's id
