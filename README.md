@@ -38,6 +38,18 @@ Opt-in extras, combinable:
 
 `--dry-run` prints the commands without running them; `--help` lists every flag.
 
+Everything at once, links first:
+
+```sh
+./install.sh && ./deps.sh --heavy --firewall --llama --helix --hyprland --doom
+```
+
+- `install.sh` goes first: `--doom` needs `~/.config/doom` linked, and `--helix`
+  builds its grammars into `~/.config/helix`, which would otherwise become a real
+  directory that `install.sh` then refuses to replace.
+- On Arch, `--llama` needs [paru](https://github.com/Morganamilo/paru) for the AUR
+  package; `--hyprland` is skipped with a warning outside Arch.
+
 - Emacs is the Wayland build (`emacs-wayland` on Arch, `emacs-pgtk` on Debian/Ubuntu); on
   X11, swap in `emacs` / `emacs-gtk` in `deps.sh`. On Arch it is skipped if any
   installed package already provides `emacs`.
