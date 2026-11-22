@@ -142,6 +142,8 @@ hl.bind(key("F"), hl.dsp.window.fullscreen({ action = "toggle" }))
 -- Through logind, so hypridle's lock_cmd runs it: the same path as the idle
 -- and before-sleep locks, and never two hyprlocks (hypridle.conf)
 hl.bind(key("L"), hl.dsp.exec_cmd("loginctl lock-session"))
+-- Lock, suspend, logout, reboot, shutdown (also Waybar's power button)
+hl.bind(key("Escape"), hl.dsp.exec_cmd("~/.config/hypr/power-menu.sh"))
 
 -- Alt+Tab / Alt+Shift+Tab: focus the next / previous window on this
 -- workspace and raise it, so a floating one isn't left behind the others.

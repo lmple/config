@@ -22,7 +22,9 @@
     "memory",
     "temperature",
     "disk",
-    "battery"
+    "power-profiles-daemon",
+    "battery",
+    "custom/power"
   ],
   // ── Workspaces ──────────────────────────────────────────────────────────
   "hyprland/workspaces": {
@@ -125,5 +127,23 @@
     "format-icons": ["", "", "", "", ""],
     "tooltip-format": "{timeTo}\nPower draw: {power}W",
     "interval": 30
+  },
+  // ── Power profile (power-profiles-daemon): click cycles them ────────────
+  "power-profiles-daemon": {
+    "format": "{icon}",
+    "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+    // Nerd Font glyphs (U+F0E7 bolt, U+F24E scale, U+F06C leaf)
+    "format-icons": {
+      "default": "",
+      "performance": "",
+      "balanced": "",
+      "power-saver": ""
+    }
+  },
+  // ── Power menu: lock, suspend, logout, reboot, shutdown ─────────────────
+  "custom/power": {
+    "format": "⏻",
+    "tooltip-format": "Power menu (Super+Escape)",
+    "on-click": "~/.config/hypr/power-menu.sh"
   }
 }

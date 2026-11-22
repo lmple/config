@@ -29,6 +29,7 @@ window#waybar {
 #network,
 #pulseaudio,
 #tray,
+#power-profiles-daemon,
 #custom-power {
     background-color: rgba(49, 50, 68, 0.85);
     color: #cdd6f4;
@@ -153,6 +154,24 @@ window#waybar {
 
 #battery.charging {
     color: #a6e3a1;
+}
+
+/* Power profile: colour says which one is on */
+#power-profiles-daemon.performance {
+    color: #f38ba8;
+}
+
+#power-profiles-daemon.balanced {
+    color: #89b4fa;
+}
+
+#power-profiles-daemon.power-saver {
+    color: #a6e3a1;
+}
+
+/* Power menu button */
+#custom-power {
+    color: #f38ba8;
 }
 
 /* Submap indicator */
