@@ -59,10 +59,12 @@ run() {
 }
 
 # Run a shell snippet; needed for pipes (curl | sh) and for sourcing nvm.sh,
-# which is not safe under `set -u`, so it gets its own non-strict shell.
+# which is not safe under `set -u`, so it gets its own shell without it.
+# pipefail, though: in `curl ... | sh` a failed download gives sh empty
+# input, which it runs happily, and the step would pass with nothing installed.
 run_sh() {
   printf '+ %s\n' "$1"
-  "$DRY_RUN" || bash -c "$1"
+  "$DRY_RUN" || bash -o pipefail -c "$1"
 }
 
 detect_distro() {
@@ -140,9 +142,9 @@ pkgs_apt() {
   # emacs-pgtk is for Wayland, swap in emacs-gtk on X11; lazygit is a terminal git UI
   apt_install emacs-pgtk lazygit
   # Zed is not packaged: its installer puts zed in ~/.local/bin, no sudo, and
-  # Zed updates itself after that, so only run it once. pipefail as for llama.
+  # Zed updates itself after that, so only run it once.
   if [[ ! -x "$HOME/.local/bin/zed" ]]; then
-    run_sh 'set -o pipefail; curl -fsSL https://zed.dev/install.sh | sh'
+    run_sh 'curl -fsSL https://zed.dev/install.sh | sh'
   fi
   # Languages and LSP servers; zellij is not packaged, so build it with cargo
   apt_install pipx rustup shellcheck shfmt clang clangd
@@ -163,7 +165,9 @@ oh_my_zsh() {
   # --keep-zshrc: ~/.zshrc is this repo's zshrc (symlinked by install.sh) and
   # already sources oh-my-zsh; --unattended skips chsh, so do it below.
   if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
-    run_sh 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc'
+    # Downloaded first: pipefail can't see a failure inside $(...), and
+    # `sh -c ""` would succeed with nothing installed
+    run_sh 'script="$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" && sh -c "$script" "" --unattended --keep-zshrc'
   fi
   local plugin
   for plugin in zsh-autosuggestions zsh-syntax-highlighting; do
@@ -180,7 +184,7 @@ nvm_node() {
   log "NVM and Node"
   # PROFILE=/dev/null: zshrc already loads nvm, don't let the installer append to it
   if [[ ! -d "$NVM_DIR" ]]; then
-    run_sh 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | PROFILE=/dev/null bash'
+    run_sh 'curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | PROFILE=/dev/null bash'
   fi
   with_nvm 'nvm install --lts'
 }
@@ -218,7 +222,7 @@ sdkman() {
   log "SDKMAN"
   # rcupdate=false: zshrc already sources sdkman-init.sh at its end
   if [[ ! -d "$HOME/.sdkman" ]]; then
-    run_sh 'curl -s "https://get.sdkman.io?rcupdate=false" | bash'
+    run_sh 'curl -fsSL "https://get.sdkman.io?rcupdate=false" | bash'
   fi
 }
 
@@ -305,9 +309,8 @@ llama() {
     # No CUDA build is packaged on Debian/Ubuntu. llama.app's installer picks
     # the CUDA, ROCm, Vulkan or CPU build itself, needs no sudo, and puts a
     # single `llama` binary (llama serve, llama cli) in ~/.local/bin; re-running
-    # it updates to the latest build. pipefail so a failed download is not
-    # hidden behind sh exiting 0 on empty input.
-    run_sh 'set -o pipefail; curl -LsSf https://llama.app/install.sh | sh'
+    # it updates to the latest build.
+    run_sh 'curl -LsSf https://llama.app/install.sh | sh'
   fi
 }
 
