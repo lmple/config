@@ -43,8 +43,7 @@
   },
   // ── Clock ───────────────────────────────────────────────────────────────
   "clock": {
-    "format": " {:%H:%M}",
-    "format-alt": " {:%A %d %B %Y}",
+    "format": " {:%a %d %b · %H:%M}",
     "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
   },
   // ── Agents in zellij panes: working, waiting for you (agents.sh) ────────
