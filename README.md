@@ -106,6 +106,7 @@ zellij it switches session, from outside it attaches.
 | See an agent's edits | automatic, `helix/init.scm`'s file watcher reloads within 2 s; `space R` reloads every buffer by hand |
 | Start the language servers | `:workspace-trust` once per project, or Enter on the prompt; until then nothing from the project runs |
 | Switch project | `Ctrl o w`, or `cockpit DIR` again |
+| Open or go to a project's cockpit from any pane | `Alt c`: fzf over the live cockpits (●), then the repos under `~/sources`; a typed path that matches nothing opens as is |
 | Ask the local model (docs, small tasks) | `Alt f` shows or hides pi on the local model, floating, in `~` (see [pi on the local model](#pi-on-the-local-model)); only cockpits created since it was added have it |
 
 - `--helix` builds Helix from the tip of the `steel-event-system` branch, the
