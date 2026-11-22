@@ -61,7 +61,7 @@ server rather than in the window, and a crash only detaches them:
 | Emacs `org` workspace, beside Dired of `~/org` | `emacs-org-shell`, buffer `org :: shell`, in `~/org` | reattached on the next start |
 | Emacs `C-c o T` | the same, with `term-1`, `term-2`, ... as names | `C-c o z` reattaches every one the project still has |
 | `cockpit` | `cockpit-<project>-<hash>` | `cockpit` in the project again: same editor, agent and shell |
-| Alacritty or kitty | random name | a new window attaches the first live session with no client (not `emacs-*` or `cockpit-*`) |
+| Alacritty or kitty | `main`, shared by every window, each on its own tab | a new window attaches `main` again |
 | `M-x ghostel` | none, plain zsh | gone with Emacs |
 
 The agent starts only when its session is created, so a reattach never starts it
