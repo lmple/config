@@ -132,7 +132,9 @@ hl.bind(key("V"), hl.dsp.window.float({ action = "toggle" }))
 hl.bind(key("P"), hl.dsp.exec_cmd("wofi --show drun"))
 hl.bind(key("R"), hl.dsp.window.pseudo())
 hl.bind(key("F"), hl.dsp.window.fullscreen({ action = "toggle" }))
-hl.bind(key("L"), hl.dsp.exec_cmd("hyprlock"))
+-- Through logind, so hypridle's lock_cmd runs it: the same path as the idle
+-- and before-sleep locks, and never two hyprlocks (hypridle.conf)
+hl.bind(key("L"), hl.dsp.exec_cmd("loginctl lock-session"))
 
 -- Screenshot
 hl.bind("Print", hl.dsp.exec_cmd('grim -g "$(slurp)" - | wl-copy'))
@@ -145,9 +147,9 @@ local directions = {
 }
 
 for _, d in ipairs(directions) do
-    -- Move focus
+    -- Move focus. Arrows only: SUPER + L is the lock, so SUPER + H/J/K/L
+    -- would be a set with one key missing.
     hl.bind(key(d.arrow), hl.dsp.focus({ direction = d.arrow }))
-    hl.bind(key(d.vim), hl.dsp.focus({ direction = d.arrow }))
     -- Move window
     hl.bind(key("SHIFT + " .. d.vim), hl.dsp.window.move({ direction = d.arrow }))
     -- Resize, repeating while held
