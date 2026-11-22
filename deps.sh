@@ -363,9 +363,12 @@ hyprland() {
   # idle daemons, the bar, the launcher and power menu (wofi), screenshots
   # (grim, slurp; wl-clipboard is in the base set), the wifi tray applet,
   # a polkit agent, Super+E's Dolphin, the audio mixer and power profiles,
-  # whose daemon must also be running for the bar to switch them.
+  # whose daemon must also be running for the bar to switch them, and the
+  # notification daemon (mako; Plasma's only runs inside Plasma) with the
+  # notify-send that the battery alerts use (libnotify).
   pacman_install hyprland hyprlock hypridle hyprpaper waybar wofi grim slurp \
-    network-manager-applet polkit-gnome dolphin pavucontrol power-profiles-daemon
+    network-manager-applet polkit-gnome dolphin pavucontrol power-profiles-daemon \
+    mako libnotify
   run sudo systemctl enable --now power-profiles-daemon
 }
 
