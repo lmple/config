@@ -91,8 +91,8 @@ pkgs_arch() {
   # Shell: zshrc loads starship, pyenv and direnv; fzf/ripgrep/fd back fuzzy search in Emacs;
   # jq parses zellij's pane list for zellij/url-picker.sh
   pacman_install zsh starship pyenv direnv fzf ripgrep fd jq
-  # Terminal: zshrc auto-starts zellij; alacritty and Doom use FiraCode Nerd Font
-  pacman_install alacritty ttf-firacode-nerd zellij wl-clipboard xclip
+  # Terminal: zshrc auto-starts zellij; alacritty, kitty and Doom use FiraCode Nerd Font
+  pacman_install alacritty kitty ttf-firacode-nerd zellij wl-clipboard xclip
   # Terminal git UI, alongside magit
   pacman_install lazygit
   # emacs-wayland is the pure-GTK build for Wayland (KDE); swap in emacs on X11.
@@ -128,7 +128,7 @@ pkgs_apt() {
   run mkdir -p "$HOME/.local/bin"
   run_sh 'ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"'
   # Terminal: FiraCode Nerd Font is not packaged, install it per user
-  apt_install alacritty wl-clipboard xclip
+  apt_install alacritty kitty wl-clipboard xclip
   if [[ ! -d "$HOME/.local/share/fonts/FiraCodeNerd" ]]; then
     run mkdir -p "$HOME/.local/share/fonts/FiraCodeNerd"
     run_sh 'curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.tar.xz | tar -xJ -C "$HOME/.local/share/fonts/FiraCodeNerd" && fc-cache -f'
