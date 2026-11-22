@@ -149,6 +149,15 @@ linked into `~/.config` by `install.sh`.
 | Power profile | click the bolt/scale/leaf in the bar: performance, balanced, power saver |
 | Screenshot of a region, to the clipboard | `Print` |
 | Dismiss a notification | click it |
+| See the agents, go to the one waiting | the bar's agents pill (hidden when none runs): ⚙ working, red 🔔 waiting for you, the list in its tooltip; click it to jump |
+
+- The agents pill (`waybar/agents.sh`) reads the zellij panes running
+  `claude`, `pi` or `opencode` in every live session, and the state zellij
+  keeps for each: Claude Code reports working and needing you itself, so it
+  needs no hook. pi reports nothing and only counts as running. The click
+  moves an attached terminal to the next pane that needs you (zellij's
+  `go-to-next-attention`, switching session if needed) and raises that
+  window; with several terminals open, the one moved is the first attached.
 
 - Notifications are mako's, top right. The battery warns at 15% and again,
   until clicked, at 5%; those two show even over a fullscreen window, other
