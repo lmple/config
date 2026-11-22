@@ -22,6 +22,13 @@ hl.env("SDL_VIDEODRIVER", "wayland")
 hl.env("MOZ_ENABLE_WAYLAND", "1")
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 
+-- KDE apps (Dolphin) outside Plasma. Without the menu prefix, Dolphin's
+-- "Open with" is empty: KDE builds it from <prefix>applications.menu, and
+-- only /etc/xdg/menus/plasma-applications.menu is installed. The platform
+-- theme gives Breeze and the colours set in Plasma (plasma-integration).
+hl.env("XDG_MENU_PREFIX", "plasma-")
+hl.env("QT_QPA_PLATFORMTHEME", "kde")
+
 -- ─── Cursor ──────────────────────────────────────────────────────────────────
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
@@ -127,7 +134,7 @@ end
 hl.bind(key("Return"), hl.dsp.exec_cmd("kitty"))
 hl.bind(key("Q"), hl.dsp.window.close())
 hl.bind(key("M"), hl.dsp.exit())
-hl.bind(key("E"), hl.dsp.exec_cmd("thunar"))
+hl.bind(key("E"), hl.dsp.exec_cmd("dolphin"))
 hl.bind(key("V"), hl.dsp.window.float({ action = "toggle" }))
 hl.bind(key("P"), hl.dsp.exec_cmd("wofi --show drun"))
 hl.bind(key("R"), hl.dsp.window.pseudo())
