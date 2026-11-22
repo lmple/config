@@ -167,6 +167,19 @@ hl.bind(key("SHIFT + Tab"), cycle_windows(false))
 -- Screenshot
 hl.bind("Print", hl.dsp.exec_cmd('grim -g "$(slurp)" - | wl-copy'))
 
+-- Screen brightness keys: 5% steps while held, also on the lock screen. The
+-- kernel doesn't act on them itself here (no acpi_video backlight).
+hl.bind(
+    "XF86MonBrightnessUp",
+    hl.dsp.exec_cmd("~/.config/hypr/brightness.sh up"),
+    { repeating = true, locked = true }
+)
+hl.bind(
+    "XF86MonBrightnessDown",
+    hl.dsp.exec_cmd("~/.config/hypr/brightness.sh down"),
+    { repeating = true, locked = true }
+)
+
 local directions = {
     { arrow = "left", vim = "H", dx = -30, dy = 0 },
     { arrow = "right", vim = "L", dx = 30, dy = 0 },
