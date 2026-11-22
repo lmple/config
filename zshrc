@@ -103,6 +103,8 @@ export GIT_EDITOR="$EDITOR"
 
 # Aliases
 alias ll='ls -lah'
+# pi on the local model, as in the main session's pi pane (pi/local.sh)
+alias pi-local='~/.config/pi/local.sh'
 
 # extra_config for special variables for personnal or job configs
 [ -f ~/.extra_config ] && source ~/.extra_config
@@ -172,6 +174,14 @@ if [[ -z "$ZELLIJ" ]]; then
         # shells are in the next one. Windows share it but not their view:
         # with mirror_session off, each can be on its own tab. Projects get
         # their own cockpit-* sessions (`cockpit` below), Emacs its emacs-*.
+        # A new main gets its layout (zellij/layouts/main.kdl: a shell and pi
+        # on the local model), created first and joined after, as in
+        # my_cockpit_session: --layout given to a live session adds a tab to
+        # it. An exited main (after a reboot) is listed, so it resurrects.
+        if ! zellij list-sessions --no-formatting 2>/dev/null \
+                | awk '$1 == "main" { found = 1 } END { exit !found }'; then
+            zellij --layout main attach --create-background main
+        fi
         zellij attach --create main
     fi
 fi

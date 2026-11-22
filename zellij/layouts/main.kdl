@@ -1,0 +1,23 @@
+// The main session, which every terminal window joins (zshrc): a shell, and
+// beside it pi on the local llama-server with gptel's tool rules
+// (pi/local.sh). Only used when zshrc creates the session; the compact bar
+// is what default_layout "compact" gave it before.
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="compact-bar"
+        }
+    }
+    tab name="main" focus=true {
+        pane split_direction="vertical" {
+            pane name="shell" size="60%" focus=true
+            // Through an interactive zsh, as the cockpit's agent: quitting pi,
+            // or the server being down, leaves a shell in the pane, where
+            // `pi-local` starts it again
+            pane name="pi" size="40%" command="zsh" {
+                args "-ic" "~/.config/pi/local.sh; exec zsh"
+            }
+        }
+    }
+}
