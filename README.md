@@ -61,7 +61,7 @@ server rather than in the window, and a crash only detaches them:
 | Emacs `org` workspace, beside Dired of `~/org` | `emacs-org-shell`, buffer `org :: shell`, in `~/org` | reattached on the next start |
 | Emacs `C-c o T` | the same, with `term-1`, `term-2`, ... as names | `C-c o z` reattaches every one the project still has |
 | `cockpit` | `cockpit-<project>-<hash>` | `cockpit` in the project again: same editor, agent and shell |
-| Alacritty | random name | a new window attaches the first live session with no client (not `emacs-*` or `cockpit-*`) |
+| Alacritty or kitty | random name | a new window attaches the first live session with no client (not `emacs-*` or `cockpit-*`) |
 | `M-x ghostel` | none, plain zsh | gone with Emacs |
 
 The agent starts only when its session is created, so a reattach never starts it
@@ -130,7 +130,12 @@ Zellij links a wrapped URL only up to the end of its first row
 | --- | --- |
 | Zellij, any terminal | `Alt u`: Enter opens, `Ctrl-y` copies |
 | Emacs buffer outside Zellij (`M-x ghostel`) | `C-c o u` |
-| Alacritty | `Shift`+click (Shift is needed inside Zellij), `Ctrl+Shift+O` opens, `Ctrl+Shift+Y` copies |
+| Alacritty or kitty | `Shift`+click (Shift is needed inside Zellij), `Ctrl+Shift+O` opens, `Ctrl+Shift+Y` copies |
+
+`kitty/` mirrors `alacritty/`: same Ashen theme, font and keys, and zellij still
+does the tabs and splits (kitty's own shortcuts are cleared). It also draws
+FiraCode's ligatures, which Alacritty doesn't, and images through zellij.
+`Ctrl+Shift+F5` reloads its config.
 
 ## Local LLM (llama.cpp)
 
