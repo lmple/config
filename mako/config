@@ -17,3 +17,8 @@ default-timeout=5000
 [urgency=critical]
 border-color=#f38ba8
 default-timeout=0
+
+# Battery alerts (hypr/battery-notify.sh) go above fullscreen windows, which
+# cover the default top layer; everything else stays hidden under a video
+[app-name=battery]
+layer=overlay
