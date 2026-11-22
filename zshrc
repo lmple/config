@@ -209,13 +209,22 @@ my_cockpit_session() {
     local root=$dir
     until [[ -e $root/.git || $root == / ]]; do root=${root:h}; done
     [[ -e $root/.git ]] || root=$dir
-    # As in doom/lisp/terminals.el: the hash keeps projects with the same
-    # directory name apart, the prefix keeps my_zellij_orphan off them, and the
-    # truncation keeps zellij's socket path under its limit.
+    # Named after the project alone, so `zellij ls` and Ctrl o w read well;
+    # the truncation keeps zellij's socket path under its limit.
     local name=${${root:t}[1,32]//[^A-Za-z0-9_-]/-}
-    local session="cockpit-$name-${$(print -rn -- $root | md5sum)[1,6]}"
+    local session="cockpit-$name"
     local state=$(zellij list-sessions --no-formatting 2>/dev/null \
         | awk -v s="$session" '$1 == s { print (/EXITED/ ? "exited" : "live") }')
+    # Without a hash, two projects with the same directory name share a
+    # name, so each cockpit records its root when created. A record is only
+    # read while its session is live, and sits in the runtime dir, which a
+    # reboot clears along with those sessions; a live one without a record
+    # (made by hand) isn't checked.
+    local roots=${XDG_RUNTIME_DIR:-/tmp/cockpit-$UID}/cockpit-roots
+    if [[ $state == live && -r $roots/$session && $(<$roots/$session) != $root ]]; then
+        print -u2 -r -- "cockpit: $session is already the cockpit of $(<$roots/$session)"
+        return 1
+    fi
     # A session the server lost (reboot, logout) resurrects with its editor
     # and agent behind "ENTER to run"; their processes are gone, so start over.
     if [[ $state == exited ]]; then
@@ -229,6 +238,7 @@ my_cockpit_session() {
         ( cd "$root" && unset ZELLIJ ZELLIJ_PANE_ID ZELLIJ_SESSION_NAME &&
               zellij --layout cockpit attach --create-background "$session" ) \
             || return
+        mkdir -p -m 700 $roots && print -r -- $root >| $roots/$session
     fi
     print -r -- "$session"
 }
