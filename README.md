@@ -106,6 +106,7 @@ zellij it switches session, from outside it attaches.
 | See an agent's edits | automatic, `helix/init.scm`'s file watcher reloads within 2 s; `space R` reloads every buffer by hand |
 | Start the language servers | `:workspace-trust` once per project, or Enter on the prompt; until then nothing from the project runs |
 | Switch project | `Ctrl o w`, or `cockpit DIR` again |
+| Ask the local model (docs, small tasks) | `Alt f` shows or hides pi on the local model, floating, in `~` (see [pi on the local model](#pi-on-the-local-model)); only cockpits created since it was added have it |
 
 - `--helix` builds Helix from the tip of the `steel-event-system` branch, the
   open plugin PR ([helix#8675](https://github.com/helix-editor/helix/pull/8675)),
@@ -280,10 +281,16 @@ unit file:
 ### pi on the local model
 
 The zellij `main` session opens with pi on the same server, in a pane beside
-the shell (`zellij/layouts/main.kdl`, only when `main` is created). `pi-local`
-starts it anywhere else. `pi/local.sh` picks the model as gptel does (the loaded
-preset) and never another provider; if the server is down it waits a minute,
-says so, and leaves a shell.
+the shell (`zellij/layouts/main.kdl`, only when `main` is created), and every
+cockpit has it floating, hidden until `Alt f`. `pi-local` starts it anywhere
+else. `pi/local.sh` picks the model as gptel does (the loaded preset) and never
+another provider; if the server is down it waits a minute, says so, and leaves
+a shell.
+
+It is told that the Markdown notes are in `~/notes` (an Obsidian vault works),
+or in `$MY_NOTES_DIR` set per machine in `~/.extra_config`, and to search
+there: the cockpit's float starts in `~`, which its `grep` refuses (below).
+Without that folder it isn't told anything.
 
 It has gptel's rules, through `pi/guard.ts` (loaded for this launcher only):
 
