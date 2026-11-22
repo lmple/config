@@ -15,6 +15,7 @@
     "clock"
   ],
   "modules-right": [
+    "custom/agents",
     "tray",
     "pulseaudio",
     "network",
@@ -43,6 +44,15 @@
     "format": " {:%H:%M}",
     "format-alt": " {:%A %d %B %Y}",
     "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+  },
+  // ── Agents in zellij panes: working, waiting for you (agents.sh) ────────
+  // Hidden while none runs; a click jumps to the one waiting
+  "custom/agents": {
+    "exec": "~/.config/waybar/agents.sh",
+    "return-type": "json",
+    "interval": 3,
+    "escape": false,
+    "on-click": "~/.config/waybar/agents.sh --jump"
   },
   // ── System tray (nm-applet lives here) ──────────────────────────────────
   "tray": {
