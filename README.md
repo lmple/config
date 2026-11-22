@@ -161,6 +161,12 @@ linked into `~/.config` by `install.sh`.
   window. With none waiting, each click goes to the next agent in the
   tooltip's order, a cockpit's hidden pi included. With several terminals
   open, the one moved is the first attached.
+- The GPU pill (`waybar/gpu.sh`) shows an NVIDIA or AMD card's usage and
+  VRAM (llama-server's model lives there), with temperature, power and the
+  processes using it in the tooltip; it turns red once VRAM is 90% full.
+  Machines without such a card (an Intel iGPU has no readout) don't show it.
+  A laptop dGPU that sleeps shows as off and isn't queried, since
+  `nvidia-smi` would wake it.
 
 - Notifications are mako's, top right. The battery warns at 15% and again,
   until clicked, at 5%; those two show even over a fullscreen window, other
