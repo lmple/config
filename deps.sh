@@ -34,6 +34,8 @@ npm/pipx tools, Lean, Quint and SDKMAN.
                 elsewhere: the llama.app installer, into ~/.local/bin/llama)
   --helix       Also build Helix with Steel plugins (the steel-event-system
                 branch, updated on every run) and its file-watcher plugin
+  --hyprland    Also install the Hyprland desktop: Waybar, lock, idle, wifi
+                and power tools (Arch only)
   --doom        Also install Doom Emacs (run ./install.sh first)
   --skip-base   Skip the base set, e.g. ./deps.sh --skip-base --doom
   --dry-run     Print the commands instead of running them
@@ -348,6 +350,25 @@ helix() {
   run_sh "cd \"$HELIX_WATCHER_SRC\" && \"\$HOME/.cargo/bin/forge\" install"
 }
 
+hyprland() {
+  local distro=$1
+  log "Hyprland desktop"
+  # Debian/Ubuntu package Hyprland late or not at all, and hypr/hyprland.lua
+  # needs 0.57+ (the Lua config)
+  if [[ "$distro" != arch ]]; then
+    warn "--hyprland is Arch only; skipping"
+    return 0
+  fi
+  # Everything hypr/ and waybar/ start or bind: the compositor, its lock and
+  # idle daemons, the bar, the launcher and power menu (wofi), screenshots
+  # (grim, slurp; wl-clipboard is in the base set), the wifi tray applet,
+  # a polkit agent, Super+E's Dolphin, the audio mixer and power profiles,
+  # whose daemon must also be running for the bar to switch them.
+  pacman_install hyprland hyprlock hypridle hyprpaper waybar wofi grim slurp \
+    network-manager-applet polkit-gnome dolphin pavucontrol power-profiles-daemon
+  run sudo systemctl enable --now power-profiles-daemon
+}
+
 doom() {
   log "Doom Emacs"
   if [[ "$(realpath "$HOME/.config/doom" 2>/dev/null)" != "$REPO_DIR/doom" ]]; then
@@ -362,7 +383,7 @@ doom() {
 # ---------------------------------------------------------------- main
 
 main() {
-  local want_base=true want_heavy=false want_firewall=false want_llama=false want_helix=false want_doom=false
+  local want_base=true want_heavy=false want_firewall=false want_llama=false want_helix=false want_hyprland=false want_doom=false
   local arg
   for arg in "$@"; do
     case "$arg" in
@@ -370,6 +391,7 @@ main() {
       --firewall) want_firewall=true ;;
       --llama) want_llama=true ;;
       --helix) want_helix=true ;;
+      --hyprland) want_hyprland=true ;;
       --doom) want_doom=true ;;
       --skip-base) want_base=false ;;
       --dry-run) DRY_RUN=true ;;
@@ -396,6 +418,7 @@ main() {
   if "$want_firewall"; then firewall "$distro"; fi
   if "$want_llama"; then llama "$distro"; fi
   if "$want_helix"; then helix; fi
+  if "$want_hyprland"; then hyprland "$distro"; fi
   if "$want_doom"; then doom; fi
   log "Done"
 }
