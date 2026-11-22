@@ -68,9 +68,11 @@ Return matches as path:line:text, capped by `my/gptel-tool-cap'."
   (with-temp-buffer
     (pcase (apply #'call-process "rg" nil t nil
                   ;; rg drops the path for a single file unless asked, so
-                  ;; force path:line:text.
-                  (append '("--with-filename" "--line-number" "--color=never"
-                            "--max-columns=300")
+                  ;; force path:line:text. --no-config: searching ~ stays out
+                  ;; of ~/.ssh and the other denied dirs only because rg skips
+                  ;; hidden ones, which a ripgreprc with --hidden would undo.
+                  (append '("--no-config" "--with-filename" "--line-number"
+                            "--color=never" "--max-columns=300")
                           flags (list "-e" pattern target)))
       (0 (my/gptel-tool-cap (buffer-string)))
       (1 (format "No matches for %s in %s" pattern target))
