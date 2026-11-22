@@ -88,7 +88,7 @@ zellij it switches session, from outside it attaches.
 
 | Want | How |
 | --- | --- |
-| Open a file in the editor pane | `Alt e` (fzf), or `~/.config/zellij/hx-open.sh FILE[:LINE]` from the agent or shell |
+| Open a file in the editor pane | `Alt e` (fzf), or `~/.config/zellij/hx-open.sh FILE[:LINE]` from the agent or shell; in any session, a tab without one gets a new Helix pane |
 | See an agent's edits | automatic, `helix/init.scm`'s file watcher reloads within 2 s; `space R` reloads every buffer by hand |
 | Start the language servers | `:workspace-trust` once per project, or Enter on the prompt; until then nothing from the project runs |
 | Switch project | `Ctrl o w`, or `cockpit DIR` again |

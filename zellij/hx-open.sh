@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Open a file in the cockpit's Helix pane (zellij/layouts/cockpit.kdl) from any
-# other pane, then focus that pane.
+# Open a file in the tab's Helix pane, the one named "editor" (as in
+# zellij/layouts/cockpit.kdl), from any other pane, then focus that pane. A tab
+# without one, such as a plain session's, gets a new Helix pane by that name.
 #
 # Why this exists: Helix has no server to send a file to, as emacsclient does
 # for Emacs, so this types the :open command into the editor pane instead.
@@ -10,9 +11,40 @@
 #                            first; Alt e in config.kdl runs this in a floating pane
 set -euo pipefail
 
+# Set by --pick: its floating pane closes on exit, which would hide the error
+picking=false
+
 die() {
   printf 'hx-open: %s\n' "$*" >&2
+  if "$picking"; then
+    printf 'Press any key.' >&2
+    read -rsn1 || true
+  fi
   exit 1
+}
+
+# The nearest directory above $1 with a .git, as zshrc's cockpit finds a
+# project (without running git), else $1 itself
+project_root() {
+  local dir=$1
+  until [[ -e "$dir/.git" || "$dir" == / ]]; do dir=${dir%/*}; dir=${dir:-/}; done
+  if [[ -e "$dir/.git" ]]; then printf '%s\n' "$dir"; else printf '%s\n' "$1"; fi
+}
+
+# A new Helix pane named "editor", so the next call types into it instead.
+# It starts in the file's project: Helix takes its workspace (trust, language
+# servers) from its directory. Through an interactive zsh, as in the cockpit
+# layout: zshrc sets HELIX_STEEL_CONFIG and HELIX_RUNTIME, which a session
+# started before them lacks, and quitting Helix leaves a shell.
+new_editor_pane() {
+  local file=$1 line=$2 pane
+  # $1 is for the inner zsh, which gets the file as an argument, never as code
+  # shellcheck disable=SC2016
+  pane="$(zellij run --name editor --cwd "$(project_root "${file%/*}")" -- \
+    zsh -ic 'hx "$1"; exec zsh' zsh "$file${line:+:$line}")"
+  # Run from the Alt e floating pane, focus would go back to the tiled pane
+  # under it; zellij run prints the new pane's id
+  zellij action focus-pane-id "$pane"
 }
 
 # The pane the layout names "editor", in the tab of the pane this runs in (the
@@ -44,7 +76,10 @@ open_in_editor() {
   [[ -n "${ZELLIJ:-}" && "${ZELLIJ_PANE_ID:-}" =~ ^[0-9]+$ ]] || die "not inside a zellij pane"
   # Checked here: a failure inside $(...) doesn't stop the script under set -e
   pane="$(editor_pane)" || die "can't list this session's panes"
-  [[ -n "$pane" ]] || die "no pane named editor in this tab; open one with cockpit"
+  if [[ -z "$pane" ]]; then
+    new_editor_pane "$file" "$line" || die "can't open a Helix pane"
+    return
+  fi
 
   # Esc first: in insert mode or a picker the command would be typed as text.
   # The pause keeps Helix from reading Esc and ':' together as Alt-:.
@@ -66,7 +101,10 @@ pick() {
 
 main() {
   case "${1:-}" in
-    --pick) pick ;;
+    --pick)
+      picking=true
+      pick
+      ;;
     "" | -h | --help) sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//' ;;
     *) open_in_editor "$1" ;;
   esac
