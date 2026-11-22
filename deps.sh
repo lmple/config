@@ -12,7 +12,7 @@ REPO_DIR="$(dirname "$(realpath "$0")")"
 readonly REPO_DIR
 readonly NVM_DIR="$HOME/.nvm"
 readonly ZSH_CUSTOM_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
-# zshrc points HELIX_RUNTIME at this checkout's runtime/
+# Its runtime/ is linked beside the hx binary, see helix()
 readonly HELIX_SRC="$HOME/.local/src/helix-steel"
 readonly HELIX_WATCHER_SRC="$HOME/.local/src/helix-file-watcher"
 # Pinned, unlike Helix: it is a native library loaded into the editor, so a
@@ -320,7 +320,10 @@ helix() {
   # Installs hx, steel, forge and steel-language-server into ~/.cargo/bin,
   # which zshrc puts ahead of /usr/bin
   run_sh "cd \"$HELIX_SRC\" && cargo xtask steel"
-  # Grammars build into the checkout's runtime/, where HELIX_RUNTIME points
+  # Helix also looks for runtime/ beside its binary, so themes and queries are
+  # found by every hx, even from a shell started before HELIX_RUNTIME existed
+  run ln -sfn "$HELIX_SRC/runtime" "$HOME/.cargo/bin/runtime"
+  # Grammars build into ~/.config/helix/runtime, the first runtime dir
   run_sh "export HELIX_RUNTIME=\"$HELIX_SRC/runtime\" && \"\$HOME/.cargo/bin/hx\" --grammar fetch && \"\$HOME/.cargo/bin/hx\" --grammar build"
 
   # Reloads buffers changed on disk, e.g. by an agent, which Helix doesn't do.

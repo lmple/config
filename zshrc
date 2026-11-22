@@ -117,11 +117,9 @@ export PATH="$HOME/.opencode/bin:$PATH"
 export PATH="$HOME/.pi/agent/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 
-# Helix built from source by deps.sh --helix, which cargo puts in ~/.cargo/bin,
-# looks for its themes, queries and grammars here rather than beside itself
-if [[ -d "$HOME/.local/src/helix-steel/runtime" ]]; then
-    export HELIX_RUNTIME="$HOME/.local/src/helix-steel/runtime"
-fi
+# Helix built by deps.sh --helix needs no HELIX_RUNTIME: deps.sh links the
+# runtime beside the binary, which every shell finds, old ones included.
+
 # Without it, the Steel build runs a workspace's .helix/helix.scm and init.scm
 # instead of ours whenever both exist, with no workspace trust check: any repo
 # could run Scheme, and so shell commands, when `hx .` opens it (as `cockpit`
