@@ -149,8 +149,8 @@ hl.bind(key("L"), hl.dsp.exec_cmd("loginctl lock-session"))
 -- Lock, suspend, logout, reboot, shutdown (also Waybar's power button)
 hl.bind(key("Escape"), hl.dsp.exec_cmd("~/.config/hypr/power-menu.sh"))
 
--- Alt+Tab / Alt+Shift+Tab: focus the next / previous window on this
--- workspace and raise it, so a floating one isn't left behind the others.
+-- Alt+Tab / Alt+Shift+Tab (or Super): focus the next / previous window on
+-- this workspace and raise it, so a floating one isn't left behind the others.
 -- Cycles in order, not most-recently-used like Plasma's switcher.
 local function cycle_windows(forward)
     return function()
@@ -160,6 +160,8 @@ local function cycle_windows(forward)
 end
 hl.bind("ALT + Tab", cycle_windows(true))
 hl.bind("ALT + SHIFT + Tab", cycle_windows(false))
+hl.bind(key("Tab"), cycle_windows(true))
+hl.bind(key("SHIFT + Tab"), cycle_windows(false))
 
 -- Screenshot
 hl.bind("Print", hl.dsp.exec_cmd('grim -g "$(slurp)" - | wl-copy'))

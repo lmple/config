@@ -128,7 +128,7 @@ linked into `~/.config` by `install.sh`.
 | Launch an app (wofi) | `Super P` |
 | Lock | `Super L`; also after 10 min idle and before every suspend |
 | Lock, suspend, log out, reboot, shut down | `Super Escape`, or the bar's power button |
-| Next / previous window | `Alt Tab` / `Alt Shift Tab` |
+| Next / previous window | `Alt Tab` / `Alt Shift Tab`, or `Super Tab` / `Super Shift Tab` |
 | Focus, move, resize a window | `Super` + arrows, `Super Shift` + `h j k l`, `Super Alt` + `h j k l` |
 | Workspace 1-10, send a window to 1-5 | `Super 1`..`0`, `Super Shift 1`..`5` |
 | Wifi | the nm-applet icon in the bar's tray; clicking the network module opens the connection editor |
