@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # pi on the local llama-server (systemd/llama-server@.service), with the tool
 # rules gptel has in Emacs (pi/guard.ts). Run by the pi pane of the main
-# zellij session (zellij/layouts/main.kdl) and by zshrc's `pi-local`;
-# arguments go to pi.
+# zellij session (zellij/layouts/main.kdl), by the cockpit's floating pi
+# (zellij/layouts/cockpit.kdl) and by zshrc's `pi-local`; arguments go to pi.
 #
 # pi's built-in llama.cpp provider counts as set up once LLAMA_BASE_URL is
 # set; its key comes from pi/models.json (linked into ~/.pi/agent by
@@ -56,9 +56,23 @@ model="$(jq -r '
   | .[0].id // empty' <<<"$json")"
 [[ -n "$model" ]] || die "llama-server at $HOST has no preset model"
 
+# The notes it is meant to answer from (MY_NOTES_DIR per machine, in
+# ~/.extra_config). Named in the prompt because the cockpit's float starts in
+# ~, where the guard refuses a grep of "." (it holds ~/.ssh): the model has
+# to know where to search instead. Left out when the folder doesn't exist, so
+# the model isn't sent looking for it.
+notes="${MY_NOTES_DIR:-$HOME/notes}"
+hint=()
+if [[ -d "$notes" ]]; then
+  hint=(--append-system-prompt "The user's Markdown notes and documentation \
+are in $notes. Look there first for documentation questions. Search inside \
+$notes, or inside a project's directory, never the home directory as a \
+whole: that search is refused, because it holds credentials.")
+fi
+
 # Never another provider: this pane is for the local model only. bash isn't
 # among the tools, and the guard refuses any tool not listed here anyway.
 export LLAMA_BASE_URL="http://$HOST"
 exec pi --provider llama.cpp --model "$model" \
   --tools read,grep,find,ls,edit,write \
-  --extension "$HERE/guard.ts" "$@"
+  --extension "$HERE/guard.ts" "${hint[@]}" "$@"
