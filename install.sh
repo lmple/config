@@ -29,6 +29,9 @@ link alacritty "$HOME/.config/alacritty"
 link kitty "$HOME/.config/kitty"
 link doom "$HOME/.config/doom"
 link helix "$HOME/.config/helix"
+# Hyprland session (picked at the login screen; Plasma stays the fallback)
+link hypr "$HOME/.config/hypr"
+link waybar "$HOME/.config/waybar"
 
 # llama-server presets and its user service (enable it per machine, see README)
 link llama "$HOME/.config/llama"
