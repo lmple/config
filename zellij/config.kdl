@@ -180,6 +180,14 @@ keybinds clear-defaults=true {
                 name "URLs"
             }
         }
+        // Open a file in the cockpit's Helix pane, picked with fzf (hx-open.sh)
+        bind "Alt e" {
+            Run "bash" "-c" "exec \"$HOME/.config/zellij/hx-open.sh\" --pick" {
+                floating true
+                close_on_exit true
+                name "Open in Helix"
+            }
+        }
         bind "Ctrl q" { Quit; }
     }
     shared_except "locked" "move" {
