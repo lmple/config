@@ -32,6 +32,7 @@ link helix "$HOME/.config/helix"
 # Hyprland session (picked at the login screen; Plasma stays the fallback)
 link hypr "$HOME/.config/hypr"
 link waybar "$HOME/.config/waybar"
+link mako "$HOME/.config/mako"
 
 # llama-server presets and its user service (enable it per machine, see README)
 link llama "$HOME/.config/llama"

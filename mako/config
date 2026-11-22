@@ -1,0 +1,19 @@
+# mako: notification popups for the Hyprland session (started by hyprland.lua).
+# Colours and font follow waybar/style.css; the radius matches hyprland.lua's rounding.
+
+font=JetBrainsMono Nerd Font 11
+background-color=#1e1f29ee
+text-color=#cdd6f4
+border-color=#89b4fa
+border-size=2
+border-radius=8
+padding=10
+width=360
+anchor=top-right
+margin=10
+default-timeout=5000
+
+# Critical ones stay until clicked: they are the ones that can't be missed
+[urgency=critical]
+border-color=#f38ba8
+default-timeout=0
