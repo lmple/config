@@ -143,11 +143,13 @@ export DO_NOT_TRACK=1
 
 # Print a live session no client is attached to, such as the one a crashed
 # Alacritty left behind, so a new window picks it up instead of starting
-# another. emacs-* sessions belong to Emacs, which reattaches them itself.
+# another. emacs-* sessions belong to Emacs, which reattaches them itself, and
+# cockpit-* ones to `cockpit` below: a detached project cockpit would otherwise
+# take over every new window.
 my_zellij_orphan() {
     local session
     for session in ${(f)"$(zellij list-sessions --no-formatting 2>/dev/null \
-        | awk '!/EXITED/ && $1 !~ /^emacs-/ { print $1 }')"}; do
+        | awk '!/EXITED/ && $1 !~ /^(emacs|cockpit)-/ { print $1 }')"}; do
         # A header line, then one line per attached client
         if (( $(zellij --session "$session" action list-clients 2>/dev/null | wc -l) == 1 )); then
             print -r -- "$session"
@@ -201,6 +203,58 @@ if [[ -n "$ZELLIJ" && -n "$MY_ZELLIJ_RUN" ]]; then
     fi
     unset MY_ZELLIJ_RUN
 fi
+
+# Print the name of the zellij cockpit session (zellij/layouts/cockpit.kdl) of
+# the project at directory $1, creating the session detached if it isn't live.
+my_cockpit_session() {
+    local dir=${1:A}
+    if [[ ! -d $dir ]]; then
+        print -u2 -r -- "cockpit: $dir is not a directory"
+        return 1
+    fi
+    # The project is the nearest directory with a .git (a file in a worktree),
+    # found without running git, which runs the filters a repo's config names.
+    local root=$dir
+    until [[ -e $root/.git || $root == / ]]; do root=${root:h}; done
+    [[ -e $root/.git ]] || root=$dir
+    # As in doom/lisp/terminals.el: the hash keeps projects with the same
+    # directory name apart, the prefix keeps my_zellij_orphan off them, and the
+    # truncation keeps zellij's socket path under its limit.
+    local name=${${root:t}[1,32]//[^A-Za-z0-9_-]/-}
+    local session="cockpit-$name-${$(print -rn -- $root | md5sum)[1,6]}"
+    local state=$(zellij list-sessions --no-formatting 2>/dev/null \
+        | awk -v s="$session" '$1 == s { print (/EXITED/ ? "exited" : "live") }')
+    # A session the server lost (reboot, logout) resurrects with its editor
+    # and agent behind "ENTER to run"; their processes are gone, so start over.
+    if [[ $state == exited ]]; then
+        zellij delete-session "$session" >/dev/null || return
+    fi
+    if [[ $state != live ]]; then
+        # Created first and joined after: `switch-session --layout` would also
+        # stack the layout onto a session that already exists. The subshell
+        # drops the current session's variables, which would otherwise make
+        # zellij act on it and reach the new panes.
+        ( cd "$root" && unset ZELLIJ ZELLIJ_PANE_ID ZELLIJ_SESSION_NAME &&
+              zellij --layout cockpit attach --create-background "$session" ) \
+            || return
+    fi
+    print -r -- "$session"
+}
+
+# cockpit [DIR]: go to the cockpit of the project at DIR (default: here), the
+# zellij counterpart of Emacs's C-c p p. Its session outlives the terminal, so
+# after a crash or a detach, running this again brings the same editor, agent
+# and shell back; the agent only starts when the session is created.
+cockpit() {
+    local session
+    session=$(my_cockpit_session "${1:-$PWD}") || return
+    if [[ -n $ZELLIJ ]]; then
+        # Attaching from inside a pane would nest a zellij in it
+        zellij action switch-session "$session"
+    else
+        zellij attach "$session"
+    fi
+}
 
 # nvm resolving its default alias took ~1.2 s of a 1.6 s startup, paid by every
 # zellij pane and Emacs terminal. --no-use loads only the nvm command; the
