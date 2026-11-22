@@ -188,6 +188,15 @@ keybinds clear-defaults=true {
                 name "Open in Helix"
             }
         }
+        // Go to a project's cockpit, picked with fzf among the live ones and
+        // the repos under ~/sources (cockpit-pick.sh)
+        bind "Alt c" {
+            Run "bash" "-c" "exec \"$HOME/.config/zellij/cockpit-pick.sh\"" {
+                floating true
+                close_on_exit true
+                name "Cockpit"
+            }
+        }
         bind "Ctrl q" { Quit; }
     }
     shared_except "locked" "move" {
