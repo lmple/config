@@ -32,6 +32,7 @@ Opt-in extras, combinable:
 | `--heavy` | TeX Live, LanguageTool (Arch), PlantUML, Jupyter: several GB |
 | `--firewall` | ufw: deny inbound, allow outbound and KDE Connect (1714-1764) |
 | `--llama` | `llama.cpp-cuda` from the AUR on Arch, the llama.app installer elsewhere, see [Local LLM](#local-llm-llamacpp) |
+| `--helix` | Helix with Steel plugins, built from source, and its file watcher, see [Zellij cockpit](#zellij-cockpit-helix) |
 | `--doom` | Doom Emacs core + `doom install` |
 
 `--dry-run` prints the commands without running them; `--help` lists every flag.
@@ -59,7 +60,8 @@ server rather than in the window, and a crash only detaches them:
 | Emacs `main` workspace, beside `*scratch*` | `emacs-home-shell`, buffer `~ :: shell`, in `~/` | reattached on the next start |
 | Emacs `org` workspace, beside Dired of `~/org` | `emacs-org-shell`, buffer `org :: shell`, in `~/org` | reattached on the next start |
 | Emacs `C-c o T` | the same, with `term-1`, `term-2`, ... as names | `C-c o z` reattaches every one the project still has |
-| Alacritty | random name | a new window attaches the first live session with no client |
+| `cockpit` | `cockpit-<project>-<hash>` | `cockpit` in the project again: same editor, agent and shell |
+| Alacritty | random name | a new window attaches the first live session with no client (not `emacs-*` or `cockpit-*`) |
 | `M-x ghostel` | none, plain zsh | gone with Emacs |
 
 The agent starts only when its session is created, so a reattach never starts it
@@ -70,6 +72,39 @@ After a reboot they show as EXITED, a saved layout with no processes:
 `-f` would kill the live ones too). Emacs terminals delete their own on reopen.
 Inside Emacs, `C-c`, `C-x` and `C-h` stay with Emacs, so zellij's move mode
 (`Ctrl h`) is out of reach there.
+
+## Zellij cockpit (Helix)
+
+A terminal-only take on `C-c p p`: `cockpit [DIR]` opens the project at DIR
+(default: here) in zellij with Helix on the left, the agent top-right and a
+shell below (`zellij/layouts/cockpit.kdl`). The agent is `$MY_COCKPIT_AGENT`,
+`claude` by default; set it per machine in `~/.extra_config`. From inside
+zellij it switches session, from outside it attaches.
+
+```sh
+./install.sh                    # links ~/.config/helix
+./deps.sh --skip-base --helix   # builds hx, steel and forge into ~/.cargo/bin
+```
+
+| Want | How |
+| --- | --- |
+| Open a file in the editor pane | `Alt e` (fzf), or `~/.config/zellij/hx-open.sh FILE[:LINE]` from the agent or shell |
+| See an agent's edits | automatic, `helix/init.scm`'s file watcher reloads within 2 s; `space R` reloads every buffer by hand |
+| Start the language servers | `:workspace-trust` once per project, or Enter on the prompt; until then nothing from the project runs |
+| Switch project | `Ctrl o w`, or `cockpit DIR` again |
+
+- `--helix` builds Helix from the tip of the `steel-event-system` branch, the
+  open plugin PR ([helix#8675](https://github.com/helix-editor/helix/pull/8675)),
+  and re-running it updates. The watcher is pinned in `deps.sh`
+  (`HELIX_WATCHER_REV`); read a new revision before bumping it, since it is a
+  native library loaded into the editor.
+- A reload replaces unsaved edits too, but as one undo step: `u` brings them back.
+- zshrc sets `HELIX_STEEL_CONFIG`: without it, a project's own
+  `.helix/helix.scm` and `init.scm` would replace `helix/`'s, with no trust check.
+- Helix builds its grammars into `~/.config/helix/runtime`, which is
+  `helix/runtime` here (ignored, 2+ GB).
+- Still in Emacs: org, Lean's infoview (Helix gets `lake serve`'s diagnostics
+  only), gptel and its tools, magit.
 
 ## Untrusted code
 
