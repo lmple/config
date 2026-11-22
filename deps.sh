@@ -317,9 +317,19 @@ helix() {
     run git clone --branch steel-event-system https://github.com/mattwparas/helix.git "$HELIX_SRC"
   fi
   run git -C "$HELIX_SRC" pull --ff-only
+  # ~/.cargo/bin/hx is the wrapper link from a previous run: remove it, so the
+  # build's `cargo install --force` writes a binary there, not through the link
+  if [[ -L "$HOME/.cargo/bin/hx" ]]; then
+    run rm "$HOME/.cargo/bin/hx"
+  fi
   # Installs hx, steel, forge and steel-language-server into ~/.cargo/bin,
   # which zshrc puts ahead of /usr/bin
   run_sh "cd \"$HELIX_SRC\" && cargo xtask steel"
+  # hx becomes helix/hx.sh, which sets HELIX_STEEL_CONFIG and runs the binary,
+  # now hx-steel. In ~/.cargo/bin itself, so it comes first in every PATH that
+  # finds Helix, those of shells older than zshrc's settings included.
+  run mv -f "$HOME/.cargo/bin/hx" "$HOME/.cargo/bin/hx-steel"
+  run ln -sfn "$REPO_DIR/helix/hx.sh" "$HOME/.cargo/bin/hx"
   # Helix also looks for runtime/ beside its binary, so themes and queries are
   # found by every hx, even from a shell started before HELIX_RUNTIME existed
   run ln -sfn "$HELIX_SRC/runtime" "$HOME/.cargo/bin/runtime"

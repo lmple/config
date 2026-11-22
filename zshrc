@@ -123,7 +123,9 @@ export PATH="$HOME/.cargo/bin:$PATH"
 # Without it, the Steel build runs a workspace's .helix/helix.scm and init.scm
 # instead of ours whenever both exist, with no workspace trust check: any repo
 # could run Scheme, and so shell commands, when `hx .` opens it (as `cockpit`
-# does). Set, it is the only place Helix reads them from.
+# does). Set, it is the only place Helix reads them from. The hx wrapper
+# (helix/hx.sh) sets it as well, for shells started before this line; this
+# covers the binary run directly, as hx-steel.
 export HELIX_STEEL_CONFIG="$HOME/.config/helix"
 
 # PyEnv

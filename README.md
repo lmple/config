@@ -99,8 +99,11 @@ zellij it switches session, from outside it attaches.
   (`HELIX_WATCHER_REV`); read a new revision before bumping it, since it is a
   native library loaded into the editor.
 - A reload replaces unsaved edits too, but as one undo step: `u` brings them back.
-- zshrc sets `HELIX_STEEL_CONFIG`: without it, a project's own
-  `.helix/helix.scm` and `init.scm` would replace `helix/`'s, with no trust check.
+- `hx` is `helix/hx.sh`, which sets `HELIX_STEEL_CONFIG` and runs the binary,
+  `hx-steel`: without it, a project's own `.helix/helix.scm` and `init.scm`
+  would replace `helix/`'s, with no trust check. Being the `hx` on PATH, it
+  covers shells started before zshrc set the variable too. The runtime is
+  linked beside the binary (`~/.cargo/bin/runtime`) for the same reason.
 - Helix builds its grammars into `~/.config/helix/runtime`, which is
   `helix/runtime` here (ignored, 2+ GB).
 - Still in Emacs: org, Lean's infoview (Helix gets `lake serve`'s diagnostics
