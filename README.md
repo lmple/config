@@ -18,7 +18,7 @@ or installing a new Node, run `doom sync --env` from a shell and restart Emacs.
 ## Setup
 
 ```sh
-./deps.sh                     # packages, oh-my-zsh, Node, Lean, Quint, SDKMAN, ...
+./deps.sh                     # packages, oh-my-zsh, Node, coding agents, Lean, Quint, SDKMAN, ...
 ./install.sh                  # symlink the configs into ~ and ~/.config
 ./deps.sh --skip-base --doom  # Doom Emacs, once ~/.config/doom points at this repo
 ```

@@ -26,7 +26,8 @@ usage() {
 Usage: ./deps.sh [options]
 
 Without options, installs the base set: distro packages, oh-my-zsh, Node (NVM),
-npm/pipx tools, Lean, Quint and SDKMAN.
+the coding agents (Claude Code, opencode, pi), npm/pipx tools, Lean, Quint
+and SDKMAN.
 
   --heavy       Also install TeX Live, LanguageTool, PlantUML, Jupyter (several GB)
   --firewall    Also install and configure ufw (deny inbound, allow KDE Connect)
@@ -192,6 +193,27 @@ nvm_node() {
 # npm from NVM is only on PATH once nvm.sh is sourced
 with_nvm() { run_sh ". \"$NVM_DIR/nvm.sh\" && $1"; }
 
+# Coding agents, each from its vendor's installer. Skipped once installed:
+# all three update themselves (claude on its own, opencode upgrade, pi update).
+# zshrc already puts their bin directories on PATH, and ~/.zshrc is this
+# repo's zshrc, so no installer may add its own line there.
+agents() {
+  log "Coding agents"
+  if [[ ! -x "$HOME/.local/bin/claude" ]]; then
+    run_sh 'curl -fsSL https://claude.ai/install.sh | bash'
+  fi
+  if [[ ! -x "$HOME/.opencode/bin/opencode" ]]; then
+    run_sh 'curl -fsSL https://opencode.ai/install | bash -s -- --no-modify-path'
+  fi
+  # pi needs Node 22.19+, so with NVM's on PATH rather than letting it install
+  # its own. It asks through /dev/tty, not stdin, whether to add a PATH line
+  # to ~/.zshrc (its duplicate check misses zshrc's $HOME form) and whether to
+  # start pi mid-install; setsid leaves it no terminal, so it asks neither.
+  if [[ ! -x "$HOME/.pi/agent/bin/pi" ]]; then
+    with_nvm 'curl -fsSL https://pi.dev/install.sh | setsid -w sh'
+  fi
+}
+
 npm_globals() {
   local distro=$1
   log "npm global packages"
@@ -234,6 +256,7 @@ base() {
   esac
   oh_my_zsh
   nvm_node
+  agents
   npm_globals "$distro"
   pipx_tools
   toolchains
