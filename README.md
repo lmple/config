@@ -41,6 +41,8 @@ Opt-in extras, combinable:
 - Emacs is the Wayland build (`emacs-wayland` on Arch, `emacs-pgtk` on Debian/Ubuntu); on
   X11, swap in `emacs` / `emacs-gtk` in `deps.sh`. On Arch it is skipped if any
   installed package already provides `emacs`.
+- Zed is `zeditor` on Arch; Debian and Ubuntu don't package it, so Zed's own
+  installer puts `zed` in `~/.local/bin` and Zed updates itself from then on.
 - Ubuntu: most packages live in `universe` (enabled by default on desktop).
 - Debian: your user needs `sudo` rights, which the installer skips when a root
   password is set (`su - -c "usermod -aG sudo $USER"`, then log in again). `--heavy`
