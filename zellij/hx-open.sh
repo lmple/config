@@ -73,6 +73,12 @@ open_in_editor() {
   # Single quotes are literal in Helix's command line (no % expansion), and
   # have no escape for a quote inside them
   [[ "$file" != *"'"* ]] || die "can't pass a path containing ' to Helix: $file"
+  # The path is typed into Helix as keys: a carriage return in a file name
+  # (which a cloned repo can contain) would end :open and run the rest as a
+  # second command, such as :sh. Shown with %q so its escapes aren't sent to
+  # the terminal either.
+  [[ "$file" != *[[:cntrl:]]* ]] ||
+    die "can't pass a path with control characters to Helix: $(printf '%q' "$file")"
 
   local pane
   [[ -n "${ZELLIJ:-}" && "${ZELLIJ_PANE_ID:-}" =~ ^[0-9]+$ ]] || die "not inside a zellij pane"
