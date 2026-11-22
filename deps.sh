@@ -12,6 +12,12 @@ REPO_DIR="$(dirname "$(realpath "$0")")"
 readonly REPO_DIR
 readonly NVM_DIR="$HOME/.nvm"
 readonly ZSH_CUSTOM_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+# zshrc points HELIX_RUNTIME at this checkout's runtime/
+readonly HELIX_SRC="$HOME/.local/src/helix-steel"
+readonly HELIX_WATCHER_SRC="$HOME/.local/src/helix-file-watcher"
+# Pinned, unlike Helix: it is a native library loaded into the editor, so a
+# new revision should be read before it runs. Bump by hand.
+readonly HELIX_WATCHER_REV=2f7bb7ea3c505009d88ae23c31e6965f7165ddd1
 
 DRY_RUN=false
 
@@ -26,6 +32,8 @@ npm/pipx tools, Lean, Quint and SDKMAN.
   --firewall    Also install and configure ufw (deny inbound, allow KDE Connect)
   --llama       Also install llama.cpp (Arch: CUDA build from the AUR via paru;
                 elsewhere: the llama.app installer, into ~/.local/bin/llama)
+  --helix       Also build Helix with Steel plugins (the steel-event-system
+                branch, updated on every run) and its file-watcher plugin
   --doom        Also install Doom Emacs (run ./install.sh first)
   --skip-base   Skip the base set, e.g. ./deps.sh --skip-base --doom
   --dry-run     Print the commands instead of running them
@@ -294,6 +302,39 @@ llama() {
   fi
 }
 
+helix() {
+  log "Helix with Steel plugins"
+  # rustup comes with the base set; with --skip-base it must already be there
+  command -v cargo >/dev/null || "$DRY_RUN" || die "cargo not found; run without --skip-base first"
+  # Steel is a git dependency. Cargo's own git client follows a gitconfig
+  # url.insteadOf that rewrites GitHub to SSH, but can't authenticate there;
+  # the git CLI can, as for the clones below.
+  export CARGO_NET_GIT_FETCH_WITH_CLI=true
+  # Plugins exist only on this branch of the plugin PR (helix-editor/helix#8675),
+  # so no distro packages it. Its tip on purpose: a re-run pulls and rebuilds,
+  # like the llama.app installer updates.
+  if [[ ! -d "$HELIX_SRC" ]]; then
+    run git clone --branch steel-event-system https://github.com/mattwparas/helix.git "$HELIX_SRC"
+  fi
+  run git -C "$HELIX_SRC" pull --ff-only
+  # Installs hx, steel, forge and steel-language-server into ~/.cargo/bin,
+  # which zshrc puts ahead of /usr/bin
+  run_sh "cd \"$HELIX_SRC\" && cargo xtask steel"
+  # Grammars build into the checkout's runtime/, where HELIX_RUNTIME points
+  run_sh "export HELIX_RUNTIME=\"$HELIX_SRC/runtime\" && \"\$HOME/.cargo/bin/hx\" --grammar fetch && \"\$HOME/.cargo/bin/hx\" --grammar build"
+
+  # Reloads buffers changed on disk, e.g. by an agent, which Helix doesn't do.
+  # mtul0729's fork: the original (mattwparas/helix-file-watcher) stopped
+  # working with the current Steel branch. forge can't pin a git revision, so
+  # build from a checkout instead of `forge pkg install --git`.
+  if [[ ! -d "$HELIX_WATCHER_SRC" ]]; then
+    run git clone https://github.com/mtul0729/helix-file-watcher.git "$HELIX_WATCHER_SRC"
+  fi
+  run git -C "$HELIX_WATCHER_SRC" fetch origin
+  run git -C "$HELIX_WATCHER_SRC" checkout --detach "$HELIX_WATCHER_REV"
+  run_sh "cd \"$HELIX_WATCHER_SRC\" && \"\$HOME/.cargo/bin/forge\" install"
+}
+
 doom() {
   log "Doom Emacs"
   if [[ "$(realpath "$HOME/.config/doom" 2>/dev/null)" != "$REPO_DIR/doom" ]]; then
@@ -308,13 +349,14 @@ doom() {
 # ---------------------------------------------------------------- main
 
 main() {
-  local want_base=true want_heavy=false want_firewall=false want_llama=false want_doom=false
+  local want_base=true want_heavy=false want_firewall=false want_llama=false want_helix=false want_doom=false
   local arg
   for arg in "$@"; do
     case "$arg" in
       --heavy) want_heavy=true ;;
       --firewall) want_firewall=true ;;
       --llama) want_llama=true ;;
+      --helix) want_helix=true ;;
       --doom) want_doom=true ;;
       --skip-base) want_base=false ;;
       --dry-run) DRY_RUN=true ;;
@@ -340,6 +382,7 @@ main() {
   if "$want_heavy"; then heavy "$distro"; fi
   if "$want_firewall"; then firewall "$distro"; fi
   if "$want_llama"; then llama "$distro"; fi
+  if "$want_helix"; then helix; fi
   if "$want_doom"; then doom; fi
   log "Done"
 }
