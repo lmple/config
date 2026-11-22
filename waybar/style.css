@@ -1,3 +1,23 @@
+/* Ashen, as in doom/themes/ashen-theme.el (names and values from there) and
+   zellij's port in zellij/config.kdl: the selected workspace is red-ember on
+   the background, like zellij's selected tab. */
+@define-color background #121212;
+@define-color foreground #b4b4b4;
+@define-color red-flame #c53030;
+@define-color red-glowing #df6464;
+@define-color red-ember #b14242;
+@define-color orange-glow #d87c4a;
+@define-color orange-blaze #c4693d;
+@define-color orange-smolder #e49a44;
+@define-color orange-golden #e5a72a;
+@define-color blue #4a8b8b;
+@define-color g-1 #e5e5e5;
+@define-color g-4 #a7a7a7;
+@define-color g-5 #949494;
+@define-color g-7 #535353;
+@define-color g-8 #323232;
+@define-color g-9 #212121;
+
 * {
     font-family: "JetBrainsMono Nerd Font", "Noto Sans", monospace;
     font-size: 13px;
@@ -7,8 +27,8 @@
 }
 
 window#waybar {
-    background-color: rgba(30, 31, 41, 0.92);
-    color: #cdd6f4;
+    background-color: alpha(@background, 0.92);
+    color: @foreground;
     border-radius: 10px;
     transition: background-color 0.3s ease;
 }
@@ -32,8 +52,8 @@ window#waybar {
 #battery,
 #power-profiles-daemon,
 #custom-power {
-    background-color: rgba(49, 50, 68, 0.85);
-    color: #cdd6f4;
+    background-color: @g-9;
+    color: @foreground;
     padding: 2px 10px;
     border-radius: 8px;
     margin: 4px 2px;
@@ -42,143 +62,139 @@ window#waybar {
 /* Workspaces */
 #workspaces button {
     padding: 0 6px;
-    color: #6c7086;
+    color: @g-7;
     border-radius: 6px;
     transition: all 0.2s;
 }
 
 #workspaces button.active {
-    color: #cdd6f4;
-    background-color: rgba(137, 180, 250, 0.25);
+    color: @background;
+    background-color: @red-ember;
 }
 
 #workspaces button:hover {
-    color: #cdd6f4;
-    background-color: rgba(108, 112, 134, 0.3);
+    color: @g-1;
+    background-color: @g-8;
 }
 
 /* Window title */
 #window {
-    color: #a6adc8;
+    color: @g-5;
     padding: 2px 10px;
     margin: 4px 2px;
 }
 
 /* Clock */
 #clock {
-    color: #89b4fa;
+    color: @orange-glow;
     font-weight: 500;
 }
 
 /* CPU */
 #cpu {
-    color: #a6e3a1;
+    color: @orange-smolder;
 }
 
 #cpu.warning {
-    color: #fab387;
+    color: @orange-golden;
 }
 
 #cpu.critical {
-    color: #f38ba8;
+    color: @red-flame;
 }
 
 /* Memory */
 #memory {
-    color: #cba6f7;
+    color: @blue;
 }
 
 /* Temperature */
 #temperature {
-    color: #94e2d5;
+    color: @orange-blaze;
 }
 
 #temperature.critical {
-    color: #f38ba8;
+    color: @red-flame;
     animation: blink 0.5s steps(1) infinite;
 }
 
 /* Disk */
 #disk {
-    color: #f9e2af;
+    color: @g-4;
 }
 
 /* Network */
 #network {
-    color: #89dceb;
+    color: @blue;
 }
 
 #network.disconnected {
-    color: #f38ba8;
+    color: @red-flame;
 }
 
 /* Audio */
 #pulseaudio {
-    color: #f38ba8;
+    color: @red-glowing;
 }
 
 #pulseaudio.muted {
-    color: #6c7086;
+    color: @g-7;
 }
 
 /* Tray */
-#tray {
-    background-color: rgba(49, 50, 68, 0.85);
-}
-
 #tray > .passive {
     -gtk-icon-effect: dim;
 }
 
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
-    background-color: #f38ba8;
+    background-color: @red-flame;
 }
 
-
-/* Battery */
+/* Battery: Ashen has no green, so a healthy battery is orange */
 #battery {
-    color: #a6e3a1;
+    color: @orange-glow;
 }
 
 #battery.warning {
-    color: #f9e2af;
+    color: @orange-golden;
 }
 
 #battery.critical {
-    color: #f38ba8;
+    color: @red-flame;
 }
 
 #battery.critical:not(.charging) {
     animation: blink 0.5s steps(1) infinite;
 }
 
+/* Last, so plugging in at a low level shows charging, not the alarm */
 #battery.charging {
-    color: #a6e3a1;
+    color: @orange-smolder;
 }
 
 /* Power profile: colour says which one is on */
 #power-profiles-daemon.performance {
-    color: #f38ba8;
+    color: @red-glowing;
 }
 
 #power-profiles-daemon.balanced {
-    color: #89b4fa;
+    color: @blue;
 }
 
 #power-profiles-daemon.power-saver {
-    color: #a6e3a1;
+    color: @orange-golden;
 }
 
 /* Power menu button */
 #custom-power {
-    color: #f38ba8;
+    color: @red-glowing;
 }
 
 /* Submap indicator */
 #submap {
-    background-color: #f38ba8;
-    color: #1e1e2e;
+    background-color: @red-ember;
+    color: @background;
     padding: 2px 10px;
     border-radius: 8px;
     margin: 4px 2px;
@@ -186,5 +202,5 @@ window#waybar {
 }
 
 @keyframes blink {
-    to { background-color: rgba(243, 139, 168, 0.3); }
+    to { background-color: alpha(@red-flame, 0.3); }
 }
