@@ -175,6 +175,11 @@ linked into `~/.config` by `install.sh`.
 - The desktop is Ashen, like the terminals and editors: `waybar/style.css`
   names the palette once (`@define-color`), and mako, hyprlock and the window
   borders use the same values. Selected things are red-ember, as zellij's tab.
+- The wallpaper (hyprpaper, `hypr/hyprpaper.conf`) is
+  `~/Pictures/wallpaper.jpg`, a symlink made on each machine, so no image is
+  in the repo. Without it the desktop is black. To change it:
+  `ln -sf <image> ~/Pictures/wallpaper.jpg`, then
+  `pkill hyprpaper; hyprpaper &` (or log in again).
 - Hyprland 0.57 reads only `hyprland.lua`; a `hyprland.conf` is ignored.
   hyprlock and hypridle still take `.conf`.
 - `Alt Tab` cycles the workspace's windows in order, not most-recently-used
