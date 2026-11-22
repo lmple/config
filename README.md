@@ -153,6 +153,9 @@ linked into `~/.config` by `install.sh`.
 - Notifications are mako's, top right. The battery warns at 15% and again,
   until clicked, at 5%; those two show even over a fullscreen window, other
   notifications don't.
+- The desktop is Ashen, like the terminals and editors: `waybar/style.css`
+  names the palette once (`@define-color`), and mako, hyprlock and the window
+  borders use the same values. Selected things are red-ember, as zellij's tab.
 - Hyprland 0.57 reads only `hyprland.lua`; a `hyprland.conf` is ignored.
   hyprlock and hypridle still take `.conf`.
 - `Alt Tab` cycles the workspace's windows in order, not most-recently-used
@@ -192,6 +195,10 @@ Zellij links a wrapped URL only up to the end of its first row
 does the tabs and splits (kitty's own shortcuts are cleared). It also draws
 FiraCode's ligatures, which Alacritty doesn't, and images through zellij.
 `Ctrl+Shift+F5` reloads its config.
+
+Claude Code follows the terminal's Ashen colours with `/theme` → "Dark mode
+(ANSI colors only)". The choice lives in `~/.claude.json`, outside this repo, so
+pick it once per machine. Ashen has no green, so lines a diff adds show orange.
 
 ## Local LLM (llama.cpp)
 
