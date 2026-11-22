@@ -80,7 +80,9 @@ hl.animation({ leaf = "workspaces", enabled = true, speed = 6, bezier = "default
 -- ─── Input ───────────────────────────────────────────────────────────────────
 hl.config({
     input = {
+        -- Swiss French, as `localectl` reports; "ch" alone is Swiss German
         kb_layout = "ch",
+        kb_variant = "fr",
         follow_mouse = 1,
         touchpad = {
             natural_scroll = true,
