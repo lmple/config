@@ -33,7 +33,7 @@ Opt-in extras, combinable:
 | `--firewall` | ufw: deny inbound, allow outbound and KDE Connect (1714-1764) |
 | `--llama` | `llama.cpp-cuda` from the AUR on Arch, the llama.app installer elsewhere, see [Local LLM](#local-llm-llamacpp) |
 | `--helix` | Helix with Steel plugins, built from source, and its file watcher, see [Zellij cockpit](#zellij-cockpit-helix) |
-| `--hyprland` | Hyprland, Waybar, hyprlock/hypridle, wofi, Dolphin, nm-applet, power-profiles-daemon (Arch only), see [Hyprland desktop](#hyprland-desktop) |
+| `--hyprland` | Hyprland, Waybar, hyprlock/hypridle, wofi, Dolphin, nm-applet, power-profiles-daemon, mako (Arch only), see [Hyprland desktop](#hyprland-desktop) |
 | `--doom` | Doom Emacs core + `doom install` |
 
 `--dry-run` prints the commands without running them; `--help` lists every flag.
@@ -113,12 +113,12 @@ zellij it switches session, from outside it attaches.
 ## Hyprland desktop
 
 A Hyprland session beside Plasma: pick it at the login screen, Plasma stays
-the fallback and keeps its own settings. `hypr/` and `waybar/` are linked
-into `~/.config` by `install.sh`.
+the fallback and keeps its own settings. `hypr/`, `waybar/` and `mako/` are
+linked into `~/.config` by `install.sh`.
 
 ```sh
 ./deps.sh --skip-base --hyprland   # Arch only
-./install.sh                       # move a real ~/.config/hypr or waybar away first
+./install.sh                       # move a real ~/.config/hypr, waybar or mako away first
 ```
 
 | Want | Key or click |
@@ -134,7 +134,11 @@ into `~/.config` by `install.sh`.
 | Wifi | the nm-applet icon in the bar's tray; clicking the network module opens the connection editor |
 | Power profile | click the bolt/scale/leaf in the bar: performance, balanced, power saver |
 | Screenshot of a region, to the clipboard | `Print` |
+| Dismiss a notification | click it |
 
+- Notifications are mako's, top right. The battery warns at 15% and again,
+  until clicked, at 5%; those two show even over a fullscreen window, other
+  notifications don't.
 - Hyprland 0.57 reads only `hyprland.lua`; a `hyprland.conf` is ignored.
   hyprlock and hypridle still take `.conf`.
 - `Alt Tab` cycles the workspace's windows in order, not most-recently-used
