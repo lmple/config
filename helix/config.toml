@@ -1,0 +1,64 @@
+# Theme
+theme = "ashen"
+
+[editor]
+mouse = true
+line-number = "relative"
+cursorline = true
+auto-save = true
+color-modes = true
+true-color = true
+bufferline = "multiple" # Show buffer tabs when multiple files open
+rulers = [88, 120] # Visual column rulers
+idle-timeout = 250 # Faster LSP response (ms)
+completion-timeout = 5 # Fast completion popup (ms)
+text-width = 88
+auto-format = true
+default-yank-register = "+"
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.file-picker]
+hidden = false
+git-ignore = true
+max-depth = 8
+
+[editor.indent-guides]
+render = true
+character = "▏"
+skip-levels = 0
+
+[editor.lsp]
+display-messages = true
+display-inlay-hints = true # Show type hints inline
+auto-signature-help = true
+snippets = true
+
+[editor.whitespace.render]
+tab = "all"
+newline = "none"
+
+[editor.whitespace.characters]
+tab = "→"
+tabpad = "·"
+
+[editor.search]
+smart-case = true
+wrap-around = true
+
+# As Doom's one question per new project (doom/lisp/lang-python.el): nothing
+# from a workspace runs until :workspace-trust, language servers included.
+# Helix's default, "servers", starts them anywhere because their binaries come
+# from $PATH, but basedpyright still runs the project's venv interpreter.
+# The prompt asks on the first file of a new workspace.
+[editor.workspace-trust]
+level = "none"
+prompt = true
+
+# Fallback for helix-file-watcher (init.scm), which reloads changed files by
+# itself: reread every buffer from disk.
+[keys.normal.space]
+R = ":reload-all"

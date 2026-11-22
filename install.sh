@@ -27,6 +27,7 @@ link starship.toml "$HOME/.config/starship.toml"
 link zellij "$HOME/.config/zellij"
 link alacritty "$HOME/.config/alacritty"
 link doom "$HOME/.config/doom"
+link helix "$HOME/.config/helix"
 
 # llama-server presets and its user service (enable it per machine, see README)
 link llama "$HOME/.config/llama"

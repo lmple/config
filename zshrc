@@ -117,6 +117,12 @@ export PATH="$HOME/.opencode/bin:$PATH"
 export PATH="$HOME/.pi/agent/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 
+# Helix built from source by deps.sh --helix, which cargo puts in ~/.cargo/bin,
+# looks for its themes, queries and grammars here rather than beside itself
+if [[ -d "$HOME/.local/src/helix-steel/runtime" ]]; then
+    export HELIX_RUNTIME="$HOME/.local/src/helix-steel/runtime"
+fi
+
 # PyEnv
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
