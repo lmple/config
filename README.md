@@ -33,6 +33,7 @@ Opt-in extras, combinable:
 | `--firewall` | ufw: deny inbound, allow outbound and KDE Connect (1714-1764) |
 | `--llama` | `llama.cpp-cuda` from the AUR on Arch, the llama.app installer elsewhere, see [Local LLM](#local-llm-llamacpp) |
 | `--helix` | Helix with Steel plugins, built from source, and its file watcher, see [Zellij cockpit](#zellij-cockpit-helix) |
+| `--hyprland` | Hyprland, Waybar, hyprlock/hypridle, wofi, Dolphin, nm-applet, power-profiles-daemon (Arch only), see [Hyprland desktop](#hyprland-desktop) |
 | `--doom` | Doom Emacs core + `doom install` |
 
 `--dry-run` prints the commands without running them; `--help` lists every flag.
@@ -108,6 +109,40 @@ zellij it switches session, from outside it attaches.
   `helix/runtime` here (ignored, 2+ GB).
 - Still in Emacs: org, Lean's infoview (Helix gets `lake serve`'s diagnostics
   only), gptel and its tools, magit.
+
+## Hyprland desktop
+
+A Hyprland session beside Plasma: pick it at the login screen, Plasma stays
+the fallback and keeps its own settings. `hypr/` and `waybar/` are linked
+into `~/.config` by `install.sh`.
+
+```sh
+./deps.sh --skip-base --hyprland   # Arch only
+./install.sh                       # move a real ~/.config/hypr or waybar away first
+```
+
+| Want | Key or click |
+| --- | --- |
+| Terminal (joins zellij's `main`) | `Super Return` |
+| Files (Dolphin) | `Super E` |
+| Launch an app (wofi) | `Super P` |
+| Lock | `Super L`; also after 10 min idle and before every suspend |
+| Lock, suspend, log out, reboot, shut down | `Super Escape`, or the bar's power button |
+| Next / previous window | `Alt Tab` / `Alt Shift Tab` |
+| Focus, move, resize a window | `Super` + arrows, `Super Shift` + `h j k l`, `Super Alt` + `h j k l` |
+| Workspace 1-10, send a window to 1-5 | `Super 1`..`0`, `Super Shift 1`..`5` |
+| Wifi | the nm-applet icon in the bar's tray; clicking the network module opens the connection editor |
+| Power profile | click the bolt/scale/leaf in the bar: performance, balanced, power saver |
+| Screenshot of a region, to the clipboard | `Print` |
+
+- Hyprland 0.57 reads only `hyprland.lua`; a `hyprland.conf` is ignored.
+  hyprlock and hypridle still take `.conf`.
+- `Alt Tab` cycles the workspace's windows in order, not most-recently-used
+  as in Plasma.
+- `Super M` quits Hyprland without asking; the power menu's Logout is the
+  same, one step further away.
+- `Hyprland --verify-config -c hypr/hyprland.lua` checks syntax and option
+  names, not dispatcher arguments.
 
 ## Untrusted code
 
