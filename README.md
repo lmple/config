@@ -31,7 +31,7 @@ Opt-in extras, combinable:
 | --- | --- |
 | `--heavy` | TeX Live, LanguageTool (Arch), PlantUML, Jupyter: several GB |
 | `--firewall` | ufw: deny inbound, allow outbound and KDE Connect (1714-1764) |
-| `--llama` | `llama.cpp-cuda` from the AUR on Arch, the llama.app installer elsewhere, see [Local LLM](#local-llm-llamacpp) |
+| `--llama` | llama.cpp from the llama.app installer, on every distro, see [Local LLM](#local-llm-llamacpp) |
 | `--helix` | Helix with Steel plugins, built from source, and its file watcher, see [Zellij cockpit](#zellij-cockpit-helix) |
 | `--hyprland` | Hyprland, Waybar, hyprlock/hypridle, wofi, Dolphin, nm-applet, power-profiles-daemon, mako (Arch only), see [Hyprland desktop](#hyprland-desktop) |
 | `--doom` | Doom Emacs core + `doom install` |
@@ -47,8 +47,7 @@ Everything at once, links first:
 - `install.sh` goes first: `--doom` needs `~/.config/doom` linked, and `--helix`
   builds its grammars into `~/.config/helix`, which would otherwise become a real
   directory that `install.sh` then refuses to replace.
-- On Arch, `--llama` needs [paru](https://github.com/Morganamilo/paru) for the AUR
-  package; `--hyprland` is skipped with a warning outside Arch.
+- `--hyprland` is skipped with a warning outside Arch.
 
 - Emacs is the Wayland build (`emacs-wayland` on Arch, `emacs-pgtk` on Debian/Ubuntu); on
   X11, swap in `emacs` / `emacs-gtk` in `deps.sh`. On Arch it is skipped if any
@@ -218,14 +217,16 @@ The Emacs side is `doom/lisp/llm.el` (backend, model list) and
 ### Install
 
 ```sh
-./deps.sh --skip-base --llama   # Arch / EndeavourOS / Manjaro, from the AUR
+./deps.sh --skip-base --llama   # any distro; run it again to update
 ```
 
-On Debian/Ubuntu the same flag runs the [llama.app](https://llama.app) installer
-instead: it picks the CUDA, ROCm, Vulkan or CPU build and installs a single
-`~/.local/bin/llama` binary, started as `llama serve` rather than `llama-server`.
-The systemd unit below starts the server through `llama/serve.sh`, which runs
-whichever of the two is installed.
+It runs the [llama.app](https://llama.app) installer, the same on every machine:
+it picks the CUDA, ROCm, Vulkan or CPU build and installs a single
+`~/.local/bin/llama`, started as `llama serve` rather than `llama-server` (the
+systemd unit below does it through `llama/serve.sh`). No sudo, and nothing a
+distro upgrade can break: the binary takes only the GPU driver from the system,
+where Arch's `llama-cpp` broke when `ggml` changed under it. A distro llama.cpp
+package is unused; `deps.sh` warns while one is installed.
 
 ### Start the server
 
