@@ -52,6 +52,7 @@ window#waybar {
 #battery,
 #power-profiles-daemon,
 #custom-agents,
+#custom-gpu,
 #custom-power {
     background-color: @g-9;
     color: @foreground;
@@ -102,6 +103,24 @@ window#waybar {
 
 #cpu.critical {
     color: @red-flame;
+}
+
+/* GPU (gpu.sh): grey when idle, orange like the CPU when busy, red once
+   VRAM is nearly full, dim while a laptop's dGPU sleeps */
+#custom-gpu.idle {
+    color: @g-4;
+}
+
+#custom-gpu.busy {
+    color: @orange-smolder;
+}
+
+#custom-gpu.full {
+    color: @red-flame;
+}
+
+#custom-gpu.asleep {
+    color: @g-7;
 }
 
 /* Memory */

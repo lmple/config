@@ -20,6 +20,7 @@
     "pulseaudio",
     "network",
     "cpu",
+    "custom/gpu",
     "memory",
     "temperature",
     "disk",
@@ -94,6 +95,13 @@
     "tooltip": true,
     "interval": 2,
     "on-click": "kitty --title btop sh -c btop"
+  },
+  // ── GPU: usage and VRAM of an NVIDIA or AMD card (gpu.sh) ───────────────
+  // Hidden without one; a sleeping laptop dGPU shows as off, never woken
+  "custom/gpu": {
+    "exec": "~/.config/waybar/gpu.sh",
+    "return-type": "json",
+    "interval": 5
   },
   // ── Memory ───────────────────────────────────────────────────────────────
   "memory": {
