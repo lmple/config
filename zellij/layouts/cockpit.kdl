@@ -1,0 +1,34 @@
+// Project cockpit: the zellij counterpart of Emacs's C-c p p
+// (doom/lisp/terminals.el). Editor on the left, agent top-right, shell below.
+// Opened by zshrc's `cockpit`, which names the session after the project.
+//
+// The editor and agent run in an interactive zsh that `exec zsh`s afterwards,
+// so quitting either leaves a usable shell in its pane instead of a dead pane
+// (the same reason the Emacs agent is typed into its shell, not exec'd).
+layout {
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="compact-bar"
+        }
+    }
+    tab name="cockpit" focus=true {
+        pane split_direction="vertical" {
+            // Arch installs the binary as helix, Debian and upstream as hx.
+            // -x rather than $+commands: zsh lists a dangling symlink too,
+            // such as an hx -> helix link left behind by an uninstall.
+            pane name="editor" size="50%" focus=true command="zsh" {
+                args "-ic" "if [[ -x $commands[hx] ]]; then hx .; elif [[ -x $commands[helix] ]]; then helix .; else print -u2 'cockpit: Helix is not installed'; fi; exec zsh"
+            }
+            pane split_direction="horizontal" size="50%" {
+                // 65% like my/project-agent-share; set MY_COCKPIT_AGENT per
+                // machine in ~/.extra_config, as my/project-agent in Emacs.
+                // eval so it can carry arguments, as a line typed in a shell
+                pane name="agent" size="65%" command="zsh" {
+                    args "-ic" "eval \"${MY_COCKPIT_AGENT:-claude}\"; exec zsh"
+                }
+                pane name="shell"
+            }
+        }
+    }
+}
