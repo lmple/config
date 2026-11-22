@@ -276,6 +276,25 @@ unit file:
   would decrypt them), and the credential paths in `my/gptel-tool-denied-paths`
   (`~/.ssh`, `~/.gnupg`, `~/.password-store`, `~/.aws`, `~/.extra_config`, ...).
 
+### pi on the local model
+
+The zellij `main` session opens with pi on the same server, in a pane beside
+the shell (`zellij/layouts/main.kdl`, only when `main` is created). `pi-local`
+starts it anywhere else. `pi/local.sh` picks the model as gptel does (the loaded
+preset) and never another provider; if the server is down it waits a minute,
+says so, and leaves a shell.
+
+It has gptel's rules, through `pi/guard.ts` (loaded for this launcher only):
+
+- `read`, `grep`, `find`, `ls` run without asking; `edit` and `write` ask first,
+  and are refused in print mode (`-p`), where nothing can ask. No `bash`.
+- The same credential paths are off limits, plus `/proc`. pi's `grep` searches
+  hidden directories, so it refuses a directory that holds one, `~` included:
+  ask it to search a project instead.
+- The key comes from the key file through `pi/models.json` (linked into
+  `~/.pi/agent`). Don't `/login llama.cpp` in pi: a stored key wins over the
+  file and goes stale when the file changes.
+
 ### Add or change a model
 
 Add a section to the machine's presets file and restart the server
