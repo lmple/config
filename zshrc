@@ -122,6 +122,11 @@ export PATH="$HOME/.cargo/bin:$PATH"
 if [[ -d "$HOME/.local/src/helix-steel/runtime" ]]; then
     export HELIX_RUNTIME="$HOME/.local/src/helix-steel/runtime"
 fi
+# Without it, the Steel build runs a workspace's .helix/helix.scm and init.scm
+# instead of ours whenever both exist, with no workspace trust check: any repo
+# could run Scheme, and so shell commands, when `hx .` opens it (as `cockpit`
+# does). Set, it is the only place Helix reads them from.
+export HELIX_STEEL_CONFIG="$HOME/.config/helix"
 
 # PyEnv
 export PYENV_ROOT="$HOME/.pyenv"
