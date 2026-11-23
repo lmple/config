@@ -27,6 +27,8 @@ and SDKMAN.
 
   --heavy       Also install TeX Live, LanguageTool, PlantUML, Jupyter (several GB)
   --firewall    Also install and configure ufw (deny inbound, allow outbound)
+  --clamav      Also install ClamAV and enable its signature updater and
+                scanning daemon (clamd, about 1 GB of RAM); scans are manual
   --llama       Also install llama.cpp with the llama.app installer, on every
                 distro: CUDA/ROCm/Vulkan/CPU build into ~/.local/bin/llama
   --helix       Also build Helix from upstream master (updated on every run)
@@ -314,6 +316,28 @@ firewall() {
   run sudo ufw status verbose
 }
 
+clamav() {
+  local distro=$1
+  log "ClamAV"
+  if [[ "$distro" == arch ]]; then
+    pacman_install clamav
+  else
+    # Debian and Ubuntu split the daemon and the updater into their own packages
+    apt_install clamav clamav-daemon clamav-freshclam
+  fi
+  # clamd's unit only starts once the signatures exist (ConditionPathExistsGlob),
+  # so `enable --now` alone would skip it until the next boot: fetch them first.
+  # Debian/Ubuntu start the updater on install, and a second freshclam fails on
+  # its lock, so stop it for the first fetch.
+  if ! compgen -G '/var/lib/clamav/main.c[vl]d' >/dev/null; then
+    run sudo systemctl stop clamav-freshclam
+    run sudo freshclam
+  fi
+  # The updater keeps the signatures current; clamd keeps them loaded so
+  # `clamdscan` is fast. Nothing scans on its own: no schedule, no on-access.
+  run sudo systemctl enable --now clamav-freshclam clamav-daemon
+}
+
 llama() {
   log "llama.cpp"
   # llama.app's installer on every distro, Arch included: it picks the CUDA,
@@ -405,12 +429,13 @@ doom() {
 # ---------------------------------------------------------------- main
 
 main() {
-  local want_base=true want_heavy=false want_firewall=false want_llama=false want_helix=false want_hyprland=false want_doom=false
+  local want_base=true want_heavy=false want_firewall=false want_clamav=false want_llama=false want_helix=false want_hyprland=false want_doom=false
   local arg
   for arg in "$@"; do
     case "$arg" in
       --heavy) want_heavy=true ;;
       --firewall) want_firewall=true ;;
+      --clamav) want_clamav=true ;;
       --llama) want_llama=true ;;
       --helix) want_helix=true ;;
       --hyprland) want_hyprland=true ;;
@@ -438,6 +463,7 @@ main() {
   if "$want_base"; then base "$distro"; fi
   if "$want_heavy"; then heavy "$distro"; fi
   if "$want_firewall"; then firewall "$distro"; fi
+  if "$want_clamav"; then clamav "$distro"; fi
   if "$want_llama"; then llama; fi
   if "$want_helix"; then helix; fi
   if "$want_hyprland"; then hyprland "$distro"; fi
