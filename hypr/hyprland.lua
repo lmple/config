@@ -142,7 +142,7 @@ local function key(rest)
     return mod .. " + " .. rest
 end
 
-hl.bind(key("Return"), hl.dsp.exec_cmd("kitty"))
+hl.bind(key("Return"), hl.dsp.exec_cmd("alacritty"))
 hl.bind(key("Q"), hl.dsp.window.close())
 hl.bind(key("M"), hl.dsp.exit())
 hl.bind(key("E"), hl.dsp.exec_cmd("dolphin"))
