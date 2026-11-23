@@ -33,7 +33,7 @@ Opt-in extras, combinable:
 | `--firewall` | ufw: deny inbound, allow outbound and KDE Connect (1714-1764) |
 | `--llama` | llama.cpp from the llama.app installer, on every distro, see [Local LLM](#local-llm-llamacpp) |
 | `--helix` | Helix from upstream master, built from source, see [Zellij cockpit](#zellij-cockpit-helix) |
-| `--hyprland` | Hyprland, Waybar, hyprlock/hypridle, wofi, Dolphin, nm-applet, power-profiles-daemon, mako (Arch only), see [Hyprland desktop](#hyprland-desktop) |
+| `--hyprland` | Hyprland, Waybar, hyprlock/hypridle, wofi, Dolphin, nm-applet, power-profiles-daemon, mako, btop (Arch only), see [Hyprland desktop](#hyprland-desktop) |
 | `--doom` | Doom Emacs core + `doom install` |
 
 `--dry-run` prints the commands without running them; `--help` lists every flag.
