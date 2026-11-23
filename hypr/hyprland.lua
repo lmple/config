@@ -33,8 +33,11 @@ hl.env("QT_QPA_PLATFORMTHEME", "kde")
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
 
--- ─── Monitor (auto-detect; adjust as needed) ─────────────────────────────────
-hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
+-- ─── Monitors ────────────────────────────────────────────────────────────────
+-- The laptop's own screen (eDP-1) always on the right, any other screen to
+-- its left, whatever order they are found in
+hl.monitor({ output = "eDP-1", mode = "preferred", position = "auto-right", scale = 1 })
+hl.monitor({ output = "", mode = "preferred", position = "auto-left", scale = 1 })
 
 -- ─── Startup ─────────────────────────────────────────────────────────────────
 hl.on("hyprland.start", function()
