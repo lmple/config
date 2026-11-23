@@ -55,8 +55,6 @@ Everything at once, links first:
   installed package already provides `emacs`.
 - On Arch the base set also installs Dolphin, which `Super E` opens; `--hyprland`
   installs it too, for `--skip-base`.
-- Zed is `zeditor` on Arch; Debian and Ubuntu don't package it, so Zed's own
-  installer puts `zed` in `~/.local/bin` and Zed updates itself from then on.
 - Ubuntu: most packages live in `universe` (enabled by default on desktop).
 - Debian: your user needs `sudo` rights, which the installer skips when a root
   password is set (`su - -c "usermod -aG sudo $USER"`, then log in again). `--heavy`

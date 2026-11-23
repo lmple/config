@@ -97,8 +97,6 @@ pkgs_arch() {
   pacman_install alacritty ttf-firacode-nerd zellij wl-clipboard xclip
   # Terminal git UI, alongside magit
   pacman_install lazygit
-  # Zed editor; Arch names the command zeditor, not zed
-  pacman_install zed
   # File manager: Super+E in Hyprland (hypr/hyprland.lua) and Meta+E in Plasma open it
   pacman_install dolphin
   # emacs-wayland is the pure-GTK build for Wayland (KDE); swap in emacs on X11.
@@ -141,11 +139,6 @@ pkgs_apt() {
   fi
   # emacs-pgtk is for Wayland, swap in emacs-gtk on X11; lazygit is a terminal git UI
   apt_install emacs-pgtk lazygit
-  # Zed is not packaged: its installer puts zed in ~/.local/bin, no sudo, and
-  # Zed updates itself after that, so only run it once.
-  if [[ ! -x "$HOME/.local/bin/zed" ]]; then
-    run_sh 'curl -fsSL https://zed.dev/install.sh | sh'
-  fi
   # Languages and LSP servers; zellij is not packaged, so build it with cargo
   apt_install pipx rustup shellcheck shfmt clang clangd
   run rustup default stable
