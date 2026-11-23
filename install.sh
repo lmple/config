@@ -26,7 +26,6 @@ link zshrc "$HOME/.zshrc"
 link starship.toml "$HOME/.config/starship.toml"
 link zellij "$HOME/.config/zellij"
 link alacritty "$HOME/.config/alacritty"
-link kitty "$HOME/.config/kitty"
 link doom "$HOME/.config/doom"
 link helix "$HOME/.config/helix"
 # Hyprland session (picked at the login screen; Plasma stays the fallback)

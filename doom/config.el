@@ -5,8 +5,8 @@
 
 ;; The Ashen theme sets no terminal colours, so ghostel (its ghostel-color-*
 ;; faces inherit ansi-color-*) fell back to Emacs's bright defaults, and `ls'
-;; drew directories in a vivid blue. These are kitty/theme.conf's 16 colours,
-;; so a terminal looks the same in Emacs and kitty. Set here, not in the
+;; drew directories in a vivid blue. These are alacritty/theme.toml's 16
+;; colours, so a terminal looks the same in Emacs and Alacritty. Set here, not in the
 ;; vendored theme, which an update overwrites. Bright is normal but for black.
 (custom-theme-set-faces! 'ashen
   '(ansi-color-black          :foreground "#121212" :background "#121212")

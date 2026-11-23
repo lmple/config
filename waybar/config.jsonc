@@ -104,7 +104,7 @@
     "format": "CPU {usage}%",
     "tooltip": true,
     "interval": 2,
-    "on-click": "kitty --title btop sh -c btop"
+    "on-click": "alacritty --title btop -e btop"
   },
   // ── GPU: usage and VRAM of an NVIDIA or AMD card (gpu.sh) ───────────────
   // Hidden without one; a sleeping laptop dGPU shows as off, never woken
