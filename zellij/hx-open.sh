@@ -34,8 +34,8 @@ project_root() {
 # A new Helix pane named "editor", so the next call types into it instead.
 # It starts in the file's project: Helix takes its workspace (trust, language
 # servers) from its directory. Through an interactive zsh, as in the cockpit
-# layout: zshrc sets HELIX_STEEL_CONFIG, which a session started before it
-# lacks, and quitting Helix leaves a shell.
+# layout: zshrc puts ~/.cargo/bin, where hx is, on PATH, and quitting Helix
+# leaves a shell.
 new_editor_pane() {
   local file=$1 line=$2 pane
   # $1 is for the inner zsh, which gets the file as an argument, never as code.

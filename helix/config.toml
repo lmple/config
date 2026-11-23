@@ -58,7 +58,7 @@ wrap-around = true
 level = "none"
 prompt = true
 
-# Fallback for helix-file-watcher (init.scm), which reloads changed files by
-# itself: reread every buffer from disk.
+# Reread every buffer from disk, e.g. after the agent edited files: Helix
+# doesn't notice changes on disk by itself.
 [keys.normal.space]
 R = ":reload-all"

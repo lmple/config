@@ -13,11 +13,7 @@ readonly REPO_DIR
 readonly NVM_DIR="$HOME/.nvm"
 readonly ZSH_CUSTOM_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 # Its runtime/ is linked beside the hx binary, see helix()
-readonly HELIX_SRC="$HOME/.local/src/helix-steel"
-readonly HELIX_WATCHER_SRC="$HOME/.local/src/helix-file-watcher"
-# Pinned, unlike Helix: it is a native library loaded into the editor, so a
-# new revision should be read before it runs. Bump by hand.
-readonly HELIX_WATCHER_REV=2f7bb7ea3c505009d88ae23c31e6965f7165ddd1
+readonly HELIX_SRC="$HOME/.local/src/helix"
 
 DRY_RUN=false
 
@@ -33,8 +29,7 @@ and SDKMAN.
   --firewall    Also install and configure ufw (deny inbound, allow KDE Connect)
   --llama       Also install llama.cpp with the llama.app installer, on every
                 distro: CUDA/ROCm/Vulkan/CPU build into ~/.local/bin/llama
-  --helix       Also build Helix with Steel plugins (the steel-event-system
-                branch, updated on every run) and its file-watcher plugin
+  --helix       Also build Helix from upstream master (updated on every run)
   --hyprland    Also install the Hyprland desktop: Waybar, lock, idle, wifi
                 and power tools (Arch only)
   --doom        Also install Doom Emacs (run ./install.sh first)
@@ -335,49 +330,40 @@ llama() {
 }
 
 helix() {
-  log "Helix with Steel plugins"
+  log "Helix from upstream master"
   # rustup comes with the base set; with --skip-base it must already be there
   command -v cargo >/dev/null || "$DRY_RUN" || die "cargo not found; run without --skip-base first"
-  # Steel is a git dependency. Cargo's own git client follows a gitconfig
-  # url.insteadOf that rewrites GitHub to SSH, but can't authenticate there;
-  # the git CLI can, as for the clones below.
-  export CARGO_NET_GIT_FETCH_WITH_CLI=true
-  # Plugins exist only on this branch of the plugin PR (helix-editor/helix#8675),
-  # so no distro packages it. Its tip on purpose: a re-run pulls and rebuilds,
-  # like the llama.app installer updates.
+  # Master rather than the distro package: workspace trust (helix/config.toml),
+  # which keeps a repo's .helix/ config and language servers from running
+  # until :workspace-trust, is in no release yet. Its tip on purpose: a re-run
+  # pulls and rebuilds, like the llama.app installer updates.
   if [[ ! -d "$HELIX_SRC" ]]; then
-    run git clone --branch steel-event-system https://github.com/mattwparas/helix.git "$HELIX_SRC"
+    run git clone https://github.com/helix-editor/helix.git "$HELIX_SRC"
   fi
   run git -C "$HELIX_SRC" pull --ff-only
-  # ~/.cargo/bin/hx is the wrapper link from a previous run: remove it, so the
-  # build's `cargo install --force` writes a binary there, not through the link
+  # ~/.cargo/bin/hx may still be the link to the Steel build's wrapper:
+  # remove it, so cargo writes the binary there, not through the link
   if [[ -L "$HOME/.cargo/bin/hx" ]]; then
     run rm "$HOME/.cargo/bin/hx"
   fi
-  # Installs hx, steel, forge and steel-language-server into ~/.cargo/bin,
-  # which zshrc puts ahead of /usr/bin
-  run_sh "cd \"$HELIX_SRC\" && cargo xtask steel"
-  # hx becomes helix/hx.sh, which sets HELIX_STEEL_CONFIG and runs the binary,
-  # now hx-steel. In ~/.cargo/bin itself, so it comes first in every PATH that
-  # finds Helix, those of shells older than zshrc's settings included.
-  run mv -f "$HOME/.cargo/bin/hx" "$HOME/.cargo/bin/hx-steel"
-  run ln -sfn "$REPO_DIR/helix/hx.sh" "$HOME/.cargo/bin/hx"
+  # Installs hx into ~/.cargo/bin, which zshrc puts ahead of /usr/bin
+  run_sh "cd \"$HELIX_SRC\" && cargo install --path helix-term --locked"
   # Helix also looks for runtime/ beside its binary, so themes and queries are
   # found by every hx, even from a shell started before HELIX_RUNTIME existed
   run ln -sfn "$HELIX_SRC/runtime" "$HOME/.cargo/bin/runtime"
   # Grammars build into ~/.config/helix/runtime, the first runtime dir
   run_sh "export HELIX_RUNTIME=\"$HELIX_SRC/runtime\" && \"\$HOME/.cargo/bin/hx\" --grammar fetch && \"\$HOME/.cargo/bin/hx\" --grammar build"
 
-  # Reloads buffers changed on disk, e.g. by an agent, which Helix doesn't do.
-  # mtul0729's fork: the original (mattwparas/helix-file-watcher) stopped
-  # working with the current Steel branch. forge can't pin a git revision, so
-  # build from a checkout instead of `forge pkg install --git`.
-  if [[ ! -d "$HELIX_WATCHER_SRC" ]]; then
-    run git clone https://github.com/mtul0729/helix-file-watcher.git "$HELIX_WATCHER_SRC"
+  # The Steel build this replaced left its binaries and checkouts; nothing
+  # uses them now, but they are the user's to delete
+  local steel_leftovers=() path
+  for path in "$HOME"/.cargo/bin/{hx-steel,steel,forge,steel-language-server,cargo-steel-lib} \
+    "$HOME"/.local/src/{helix-steel,helix-file-watcher}; do
+    if [[ -e "$path" ]]; then steel_leftovers+=("$path"); fi
+  done
+  if ((${#steel_leftovers[@]})); then
+    warn "the Steel build of Helix left these behind, unused now: rm -rf ${steel_leftovers[*]}"
   fi
-  run git -C "$HELIX_WATCHER_SRC" fetch origin
-  run git -C "$HELIX_WATCHER_SRC" checkout --detach "$HELIX_WATCHER_REV"
-  run_sh "cd \"$HELIX_WATCHER_SRC\" && \"\$HOME/.cargo/bin/forge\" install"
 }
 
 hyprland() {
