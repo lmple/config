@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Waybar's custom/agents module (waybar/config.jsonc): the coding agents
-# running in zellij panes, and which of them wait for you.
+# running in zellij panes, and which of them wait for you. Only to look at:
+# the list is in the tooltip, and a click does nothing.
 #
 # Why zellij: every agent here runs in a zellij pane (cockpits, Emacs's
 # emacs-* sessions, pi-local in main), and zellij 0.46 tracks each pane's state
@@ -8,9 +9,7 @@
 # while it runs, NeedsYou when it asks. So no agent needs a hook for this.
 # pi sets nothing, so it only ever shows as running.
 #
-#   agents.sh          print the module's JSON line (Waybar runs it every few s)
-#   agents.sh --jump   on click: move a terminal to the agent waiting for
-#                      you, else to the next agent, and raise its window
+#   agents.sh   print the module's JSON line (Waybar runs it every few s)
 set -euo pipefail
 
 # Basenames of the commands that count as agents
@@ -48,7 +47,7 @@ agent_panes() {
 }
 
 # The agents as one JSON array, waiting first, then working: the tooltip's
-# order, which a click cycles through
+# order
 ordered_agents() {
   agent_panes | jq -sc 'sort_by({waiting: 0, working: 1, running: 2}[.state], .session, .pane)'
 }
@@ -77,69 +76,10 @@ module() {
                  | join("\n"))}'
 }
 
-# The attached clients, one "id session pane" per line (pane as terminal_N)
-clients() {
-  local s
-  while read -r s; do
-    zellij -s "$s" action list-clients 2>/dev/null |
-      awk -v s="$s" 'NR > 1 && $1 ~ /^[0-9]+$/ { print $1, s, $2 }'
-  done < <(sessions)
-}
-
-# Raise the window showing session $1, found by the title zellij gives it,
-# "session | pane". The title is matched whole, against a regex, so a session
-# named by hand with . or + is escaped; then it goes in a Lua string, since
-# Hyprland's Lua config makes `hyprctl dispatch` take a dispatcher call.
-raise_window() {
-  local re lua
-  re="$(sed 's/[][\.*^$+?(){}|/]/\\&/g' <<<"$1") \\| .*"
-  lua="${re//\\/\\\\}"
-  lua="${lua//\"/\\\"}"
-  hyprctl dispatch "hl.dsp.focus({ window = \"title:$lua\" })" >/dev/null
-}
-
-# The click. Run from Waybar, outside zellij, an action moves a client of the
-# session it names, so the first attached client is the terminal that moves.
-# With an agent waiting, that client goes to it (go-to-next-attention, which
-# switches session if needed); otherwise to the agent after the one it shows,
-# in the tooltip's order, so clicks cycle through them.
-jump() {
-  local agents before session pane moved target target_pane
-  agents="$(ordered_agents)"
-  before="$(clients)"
-  [[ -n "$before" ]] || exit 0 # no terminal attached anywhere
-  read -r _ session pane <<<"${before%%$'\n'*}"
-
-  if jq -e 'any(.state == "waiting")' <<<"$agents" >/dev/null; then
-    zellij -s "$session" action go-to-next-attention 2>/dev/null || exit 0
-    sleep 0.3
-    # A client that changes session gets a new id there, so the moved one is
-    # the line that wasn't there before; none means it stayed in $session
-    moved="$(clients | awk 'NR == FNR { seen[$0]; next } !($0 in seen) { print $2; exit }' \
-      <(printf '%s\n' "$before") -)"
-    session="${moved:-$session}"
-  else
-    read -r target target_pane < <(jq -r --arg at "$session $pane" '
-      if length == 0 then empty else
-        (map("\(.session) terminal_\(.id)") | index($at)) as $i
-        | .[if $i == null then 0 else ($i + 1) % length end]
-        | "\(.session) terminal_\(.id)"
-      end' <<<"$agents") || exit 0 # no agent at all
-    if [[ "$target" == "$session" ]]; then
-      zellij -s "$session" action focus-pane-id "$target_pane"
-    else
-      zellij -s "$session" action switch-session "$target" --pane-id "$target_pane"
-    fi
-    session="$target"
-  fi
-  raise_window "$session"
-}
-
 case "${1:-}" in
   "") module ;;
-  --jump) jump ;;
   *)
-    sed -n '2,14p' "$0" | sed 's/^# \{0,1\}//' >&2
+    sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//' >&2
     exit 2
     ;;
 esac

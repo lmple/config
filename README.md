@@ -157,17 +157,14 @@ linked into `~/.config` by `install.sh`.
 | Screen brightness | the brightness keys (`Fn F5` / `Fn F6`, held to repeat, also on the lock screen), or scroll on the bar's brightness pill: 5% steps, never below 5% (hidden without a backlight) |
 | Screenshot of a region, to the clipboard | `Print` |
 | Dismiss a notification | click it |
-| See the agents, go to the one waiting | the bar's agents pill (hidden when none runs): ⚙ working, red 🔔 waiting for you, `>_` running only, the list in its tooltip; click it to jump to the waiting one, or, with none waiting, to the next agent |
+| See the agents, and which one waits | the bar's agents pill (hidden when none runs): ⚙ working, red 🔔 waiting for you, `>_` running only; hover it for the list |
 
 - The agents pill (`waybar/agents.sh`) reads the zellij panes running
   `claude`, `pi` or `opencode` in every live session, and the state zellij
   keeps for each: Claude Code reports working and needing you itself, so it
-  needs no hook. pi reports nothing and only counts as running. The click
-  moves an attached terminal to the next pane that needs you (zellij's
-  `go-to-next-attention`, switching session if needed) and raises that
-  window. With none waiting, each click goes to the next agent in the
-  tooltip's order, a cockpit's hidden pi included. With several terminals
-  open, the one moved is the first attached.
+  needs no hook. pi reports nothing and only counts as running. The
+  tooltip lists each agent as session › pane, waiting ones first, with what
+  it is doing or asking. Clicking it does nothing.
 - The GPU pill (`waybar/gpu.sh`) shows an NVIDIA or AMD card's usage and
   VRAM (llama-server's model lives there), with temperature, power and the
   processes using it in the tooltip; it turns red once VRAM is 90% full.
