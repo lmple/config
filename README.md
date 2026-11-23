@@ -1,19 +1,12 @@
 # config
 
-ZSH extra config: `~/.extra_config`
-
-Doom packages extra: `doom/extra_packages.el`
-
-Doom config extra: `doom/extra_config.el`, loaded last so its settings win
-
-Doom config layout: `doom/config.el` keeps the core settings (theme, fonts, modeline)
-and loads one file per topic from `doom/lisp/`: `terminals`, `documents` (org,
-LaTeX), `lang-python`, `lang-js`, `llm`, `llm-tools`, `lang-lean`, `lang-quint`.
-
-Doom environment: started from the desktop menu, Emacs never runs zshrc, so it
-loads a snapshot of the shell environment instead. After changing PATH in `zshrc`
-or installing a new Node, run `doom sync --env` from a shell and restart Emacs.
-`doom/cli.el` keeps zellij and Claude Code session variables out of the snapshot.
+- Per-machine extras, outside git: `~/.extra_config` (zsh),
+  `doom/extra_packages.el`, `doom/extra_config.el` (loaded last, so it wins).
+- `doom/config.el` holds the core settings and loads one file per topic from
+  `doom/lisp/`: `terminals`, `documents` (org, LaTeX), `lang-python`, `lang-js`,
+  `llm`, `llm-tools`, `lang-lean`, `lang-quint`.
+- Emacs loads a snapshot of the shell environment, not zshrc: after changing
+  PATH in `zshrc` or installing a new Node, run `doom sync --env` and restart it.
 
 ## Setup
 
@@ -46,23 +39,12 @@ Everything at once, links first:
 ```
 
 - `install.sh` goes first: `--doom` needs `~/.config/doom` linked, and `--helix`
-  builds its grammars into `~/.config/helix`, which would otherwise become a real
-  directory that `install.sh` then refuses to replace.
-- `--hyprland` is skipped with a warning outside Arch.
-
-- Emacs is the Wayland build (`emacs-wayland` on Arch, `emacs-pgtk` on Debian/Ubuntu); on
-  X11, swap in `emacs` / `emacs-gtk` in `deps.sh`. On Arch it is skipped if any
-  installed package already provides `emacs`.
-- On Arch the base set also installs Dolphin, which `Super E` opens; `--hyprland`
-  installs it too, for `--skip-base`.
+  would otherwise make `~/.config/helix` a real directory.
+- Emacs is the Wayland build (`emacs-wayland` / `emacs-pgtk`); on X11, swap in
+  `emacs` / `emacs-gtk` in `deps.sh`.
 - Ubuntu: most packages live in `universe` (enabled by default on desktop).
-- Debian: your user needs `sudo` rights, which the installer skips when a root
-  password is set (`su - -c "usermod -aG sudo $USER"`, then log in again). `--heavy`
-  leaves out texlab, which Debian does not package.
-- `--firewall` on EndeavourOS disables firewalld first: two firewalls rewriting the
-  same nftables rules conflict.
-- The NVM, SDKMAN and oh-my-zsh installers are kept from editing `~/.zshrc`, which is
-  this repo's `zshrc` and already loads them.
+- Debian: your user needs `sudo` rights (`su - -c "usermod -aG sudo $USER"`,
+  then log in again); `--heavy` leaves out texlab, which Debian doesn't package.
 
 ## Terminals and crashes
 
@@ -79,20 +61,14 @@ server rather than in the window, and a crash only detaches them:
 | Alacritty | `main`, shared by every window, each on its own tab | a new window attaches `main` again |
 | `M-x ghostel` | none, plain zsh | gone with Emacs |
 
-The agent starts only when its session is created, so a reattach never starts it
-twice. Killing a buffer or window detaches too, so sessions last until you end
-them: `Ctrl q` inside zellij, or `zellij ls` then `zellij kill-session <name>`.
-After a reboot they show as EXITED, a saved layout with no processes:
-`zellij delete-all-sessions -y` removes those and leaves live ones alone (its
-`-f` would kill the live ones too). Emacs terminals delete their own on reopen.
-Inside Emacs, `C-c`, `C-x` and `C-h` stay with Emacs, so zellij's move mode
-(`Ctrl h`) is out of reach there.
-
-A selection in any zellij pane goes to the clipboard when the mouse button
-is released, through `wl-copy` (`copy_command` in `zellij/config.kdl`).
-Emacs terminals included: ghostel ignores the OSC 52 sequence zellij would
-otherwise use, and enabling it (`ghostel-enable-osc52`) would let any
-program's output set the clipboard.
+- Killing a buffer or window only detaches, and a reattach never starts the
+  agent twice. End a session with `Ctrl q`, or `zellij kill-session <name>`.
+- After a reboot, sessions show as EXITED (no processes):
+  `zellij delete-all-sessions -y` removes those only; `-f` kills live ones too.
+- Inside Emacs, `C-c`, `C-x` and `C-h` stay with Emacs, so zellij's move mode
+  (`Ctrl h`) is out of reach there.
+- A mouse selection in any pane, Emacs included, goes to the clipboard through
+  `wl-copy` (`zellij/config.kdl`), not OSC 52, which ghostel ignores.
 
 ## Zellij cockpit (Helix)
 
@@ -116,19 +92,12 @@ zellij it switches session, from outside it attaches.
 | Open or go to a project's cockpit from any pane | `Alt c`: fzf over the live cockpits (●), then the repos under `~/sources`; a typed path that matches nothing opens as is |
 | Ask the local model (docs, small tasks) | `Alt f` shows or hides pi on the local model, floating, in `~` (see [pi on the local model](#pi-on-the-local-model)); only cockpits created since it was added have it |
 
-- `--helix` builds Helix from the tip of upstream master, and re-running it
-  updates. Master rather than a distro package because workspace trust
-  (`:workspace-trust` above) is in no release yet; without it, a repo's own
-  `.helix/` config and language servers run as soon as Helix opens it.
-  Replacing the earlier Steel build, it warns about that build's leftovers
-  (`hx-steel`, `steel`, `forge`, `~/.local/src/helix-steel`, ...) until you
-  delete them.
-- The runtime is linked beside the binary (`~/.cargo/bin/runtime`), so every
-  `hx` finds it, even from a shell started before `HELIX_RUNTIME` existed.
-- Helix builds its grammars into `~/.config/helix/runtime`, which is
-  `helix/runtime` here (ignored, 2+ GB).
-- Still in Emacs: org, Lean's infoview (Helix gets `lake serve`'s diagnostics
-  only), gptel and its tools, magit.
+- `--helix` builds upstream master and re-running it updates: workspace trust
+  is in no release yet, and without it a repo's `.helix/` config and language
+  servers run as soon as Helix opens it.
+- Grammars build into `helix/runtime` here (ignored, 2+ GB).
+- Still in Emacs: org, Lean's infoview (Helix gets diagnostics only), gptel,
+  magit.
 
 ## Hyprland desktop
 
@@ -148,7 +117,7 @@ linked into `~/.config` by `install.sh`.
 | Launch an app (wofi) | `Super P` |
 | Lock | `Super L`; also after 10 min idle and before every suspend |
 | Lock, suspend, log out, reboot, shut down | `Super Escape`, or the bar's power button |
-| Next / previous window | `Alt Tab` / `Alt Shift Tab`, or `Super Tab` / `Super Shift Tab` |
+| Next / previous window, in order (not most-recent first) | `Alt Tab` / `Alt Shift Tab`, or `Super Tab` / `Super Shift Tab` |
 | Focus, move, resize a window | `Super` + arrows, `Super Shift` + `h j k l`, `Super Alt` + `h j k l` |
 | Workspace 1-10, send a window to 1-5 | `Super 1`..`0`, `Super Shift 1`..`5` |
 | Wifi | the nm-applet icon in the bar's tray; clicking the network module opens the connection editor |
@@ -158,39 +127,21 @@ linked into `~/.config` by `install.sh`.
 | Dismiss a notification | click it |
 | See the agents, and which one waits | the bar's agents pill (hidden when none runs): ⚙ working, red 🔔 waiting for you, `>_` running only; hover it for the list |
 
-- The agents pill (`waybar/agents.sh`) reads the zellij panes running
-  `claude`, `pi` or `opencode` in every live session, and the state zellij
-  keeps for each: Claude Code reports working and needing you itself, so it
-  needs no hook. pi reports nothing and only counts as running. The
-  tooltip lists each agent as session › pane, waiting ones first, with what
-  it is doing or asking. Clicking it does nothing.
-- The GPU pill (`waybar/gpu.sh`) shows an NVIDIA or AMD card's usage and
-  VRAM (llama-server's model lives there), with temperature, power and the
-  processes using it in the tooltip; it turns red once VRAM is 90% full.
-  Machines without such a card (an Intel iGPU has no readout) don't show it.
-  A laptop dGPU that sleeps shows as off and isn't queried, since
-  `nvidia-smi` would wake it.
-
-- Notifications are mako's, top right. The battery warns at 15% and again,
-  until clicked, at 5%; those two show even over a fullscreen window, other
-  notifications don't.
-- The desktop is Ashen, like the terminals and editors: `waybar/style.css`
-  names the palette once (`@define-color`), and mako, hyprlock and the window
-  borders use the same values. Selected things are red-ember, as zellij's tab.
-- The wallpaper (hyprpaper, `hypr/hyprpaper.conf`) is
-  `~/Pictures/wallpaper.jpg`, a symlink made on each machine, so no image is
-  in the repo. Without it the desktop is black. To change it:
-  `ln -sf <image> ~/Pictures/wallpaper.jpg`, then
-  `pkill hyprpaper; hyprpaper &` (or log in again).
-- The laptop's screen (eDP-1) is always on the right: an external screen
-  goes to its left, whichever is found first. The mouse wheel and TrackPoint
-  scroll naturally, like the touchpad. Both are in `hypr/hyprland.lua`.
-- Hyprland 0.57 reads only `hyprland.lua`; a `hyprland.conf` is ignored.
-  hyprlock and hypridle still take `.conf`.
-- `Alt Tab` cycles the workspace's windows in order, not most-recently-used
-  as in Plasma.
-- `Super M` quits Hyprland without asking; the power menu's Logout is the
-  same, one step further away.
+- Agents pill (`waybar/agents.sh`): the `claude`, `pi` and `opencode` panes of
+  every live zellij session. Claude Code reports its state itself; pi only
+  counts as running.
+- GPU pill (`waybar/gpu.sh`): an NVIDIA or AMD card's usage and VRAM, red at
+  90% full; hidden without one, and a sleeping laptop dGPU isn't woken.
+- Notifications are mako's, top right. The battery warns at 15% and, until
+  clicked, at 5%, even over a fullscreen window.
+- The desktop is Ashen too: `waybar/style.css` names the palette, and mako,
+  hyprlock and the window borders use the same values.
+- Wallpaper: `~/Pictures/wallpaper.jpg`, a symlink per machine (black
+  without it). Change it with `ln -sf <image> ~/Pictures/wallpaper.jpg`, then
+  `pkill hyprpaper; hyprpaper &`.
+- The laptop's screen (eDP-1) is always on the right of an external one; the
+  mouse and TrackPoint scroll naturally, like the touchpad.
+- `Super M` quits Hyprland without asking.
 - `Hyprland --verify-config -c hypr/hyprland.lua` checks syntax and option
   names, not dispatcher arguments.
 
@@ -245,13 +196,9 @@ The Emacs side is `doom/lisp/llm.el` (backend, model list) and
 ./deps.sh --skip-base --llama   # any distro; run it again to update
 ```
 
-It runs the [llama.app](https://llama.app) installer, the same on every machine:
-it picks the CUDA, ROCm, Vulkan or CPU build and installs a single
-`~/.local/bin/llama`, started as `llama serve` rather than `llama-server` (the
-systemd unit below does it through `llama/serve.sh`). No sudo, and nothing a
-distro upgrade can break: the binary takes only the GPU driver from the system,
-where Arch's `llama-cpp` broke when `ggml` changed under it. A distro llama.cpp
-package is unused; `deps.sh` warns while one is installed.
+The [llama.app](https://llama.app) installer picks the CUDA, ROCm, Vulkan or CPU
+build and installs one `~/.local/bin/llama`, with no sudo and nothing a distro
+upgrade can break. A distro llama.cpp package is unused; `deps.sh` warns about it.
 
 ### Start the server
 
@@ -276,54 +223,43 @@ systemctl --user enable --now llama-server@home   # work machine: llama-server@w
 | Free the GPU for now | `systemctl --user stop llama-server@home` |
 | Stop starting at login | `systemctl --user disable --now llama-server@home` |
 
-While it runs, the `load-on-startup` model stays in VRAM. The flags, set in the
-unit file:
+While it runs, the `load-on-startup` model stays in VRAM. The unit's flags:
 
-- `--models-max 1` keeps a single model in VRAM: switching unloads the previous one.
-- `--host 127.0.0.1` keeps other machines out, and `--cors-origins localhost
-  --no-cors-credentials` stops web pages open in the browser from using the server
-  (by default it accepts any origin).
-- `--api-key-file ~/.config/llama-server/api-key` makes every request, the model
-  list included, carry the key, so other local processes and web pages can't use
-  the server. gptel reads the same file (`my/gptel-llama-key-file`); without it
-  the server doesn't start.
-- The first time a model is used, it is downloaded into `~/.cache/huggingface`
-  (15-18 GB for the work models), and that first request waits for the download.
+- `--models-max 1`: one model in VRAM; switching unloads the previous one.
+- `--host 127.0.0.1` and `--cors-origins localhost --no-cors-credentials`: no
+  other machine, and no web page open in the browser, can use it.
+- `--api-key-file`: every request carries the key, which gptel reads from the
+  same file (`my/gptel-llama-key-file`); without the file the server won't start.
+- A model is downloaded into `~/.cache/huggingface` on first use (15-18 GB for
+  the work models), and that first request waits for it.
 
 ### gptel tools
 
-- `read_file`, `list_directory`, `search_project` (ripgrep), `search_org`
-  (ripgrep over `org-directory` from any buffer, org files only, smart case),
-  `list_buffers`, `read_buffer` (including unsaved changes): run without asking.
-- `write_file`: gptel shows the proposed call in the buffer and waits; `C-c C-c`
-  runs it, `C-c C-k` rejects it.
-- Off limits to every tool, since reading never asks and a prompt injected into a
-  file could ask for secrets: remote (TRAMP) paths, `.gpg`/`.age` files (Emacs
-  would decrypt them), and the credential paths in `my/gptel-tool-denied-paths`
-  (`~/.ssh`, `~/.gnupg`, `~/.password-store`, `~/.aws`, `~/.extra_config`, ...).
+- Run without asking: `read_file`, `list_directory`, `search_project` (ripgrep),
+  `search_org` (ripgrep over `org-directory`), `list_buffers`, `read_buffer`.
+- `write_file` waits: `C-c C-c` runs the proposed call, `C-c C-k` rejects it.
+- Off limits to every tool, since a prompt injected into a file could ask for
+  secrets: remote (TRAMP) paths, `.gpg`/`.age` files, and
+  `my/gptel-tool-denied-paths` (`~/.ssh`, `~/.gnupg`, `~/.password-store`,
+  `~/.aws`, `~/.extra_config`, ...).
 
 ### pi on the local model
 
-Every cockpit has pi on the same server floating, hidden until `Alt f`, and
-`pi-local` starts it anywhere else. `pi/local.sh` picks the model as gptel does (the loaded preset) and never
-another provider; if the server is down it waits a minute, says so, and leaves
-a shell.
+Every cockpit has pi on the same server, floating and hidden until `Alt f`;
+`pi-local` starts it anywhere else. `pi/local.sh` uses the loaded model, never
+another provider, and waits a minute for a server that is down.
 
-It is told that the Markdown notes are in `~/notes` (an Obsidian vault works),
-or in `$MY_NOTES_DIR` set per machine in `~/.extra_config`, and to search
-there: the cockpit's float starts in `~`, which its `grep` refuses (below).
-Without that folder it isn't told anything.
+It is told to search the Markdown notes in `~/notes` (an Obsidian vault works),
+or `$MY_NOTES_DIR` from `~/.extra_config`, when that folder exists.
 
-It has gptel's rules, through `pi/guard.ts` (loaded for this launcher only):
+`pi/guard.ts` gives it gptel's rules:
 
-- `read`, `grep`, `find`, `ls` run without asking; `edit` and `write` ask first,
-  and are refused in print mode (`-p`), where nothing can ask. No `bash`.
-- The same credential paths are off limits, plus `/proc`. pi's `grep` searches
-  hidden directories, so it refuses a directory that holds one, `~` included:
-  ask it to search a project instead.
-- The key comes from the key file through `pi/models.json` (linked into
-  `~/.pi/agent`). Don't `/login llama.cpp` in pi: a stored key wins over the
-  file and goes stale when the file changes.
+- `read`, `grep`, `find`, `ls` run without asking; `edit` and `write` ask, and
+  are refused in print mode (`-p`). No `bash`.
+- The same credential paths are off limits, plus `/proc`. Its `grep` refuses a
+  directory holding hidden ones, `~` included: ask it to search a project.
+- The key comes from the key file through `pi/models.json`. Don't
+  `/login llama.cpp` in pi: a stored key wins over the file and goes stale.
 
 ### Add or change a model
 
