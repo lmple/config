@@ -578,7 +578,13 @@ on_force_close "detach"
 // copy_command "pbcopy"                     // osx
 // 
 // copy_command "pbcopy"
- 
+//
+// wl-copy rather than OSC 52: Emacs's ghostel ignores OSC 52 unless
+// ghostel-enable-osc52 is set, and setting it would let any program's output
+// overwrite the clipboard. This way only zellij's own copies reach it, in
+// Emacs, Alacritty and kitty alike. Every desktop here is Wayland.
+copy_command "wl-copy"
+
 // Choose the destination for copied text
 // Allows using the primary selection buffer (on x11/wayland) instead of the system clipboard.
 // Does not apply when using copy_command.
