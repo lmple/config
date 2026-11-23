@@ -32,7 +32,7 @@ Opt-in extras, combinable:
 | `--heavy` | TeX Live, LanguageTool (Arch), PlantUML, Jupyter: several GB |
 | `--firewall` | ufw: deny inbound, allow outbound and KDE Connect (1714-1764) |
 | `--llama` | llama.cpp from the llama.app installer, on every distro, see [Local LLM](#local-llm-llamacpp) |
-| `--helix` | Helix with Steel plugins, built from source, and its file watcher, see [Zellij cockpit](#zellij-cockpit-helix) |
+| `--helix` | Helix from upstream master, built from source, see [Zellij cockpit](#zellij-cockpit-helix) |
 | `--hyprland` | Hyprland, Waybar, hyprlock/hypridle, wofi, Dolphin, nm-applet, power-profiles-daemon, mako (Arch only), see [Hyprland desktop](#hyprland-desktop) |
 | `--doom` | Doom Emacs core + `doom install` |
 
@@ -97,29 +97,27 @@ zellij it switches session, from outside it attaches.
 
 ```sh
 ./install.sh                    # links ~/.config/helix
-./deps.sh --skip-base --helix   # builds hx, steel and forge into ~/.cargo/bin
+./deps.sh --skip-base --helix   # builds hx into ~/.cargo/bin
 ```
 
 | Want | How |
 | --- | --- |
 | Open a file in the editor pane | `Alt e` (fzf), or `~/.config/zellij/hx-open.sh FILE[:LINE]` from the agent or shell; in any session, a tab without one gets a new Helix pane |
-| See an agent's edits | automatic, `helix/init.scm`'s file watcher reloads within 2 s; `space R` reloads every buffer by hand |
+| See an agent's edits | `space R` rereads every buffer from disk (`:reload-all`); Helix doesn't notice changes by itself |
 | Start the language servers | `:workspace-trust` once per project, or Enter on the prompt; until then nothing from the project runs |
 | Switch project | `Ctrl o w`, or `cockpit DIR` again |
 | Open or go to a project's cockpit from any pane | `Alt c`: fzf over the live cockpits (●), then the repos under `~/sources`; a typed path that matches nothing opens as is |
 | Ask the local model (docs, small tasks) | `Alt f` shows or hides pi on the local model, floating, in `~` (see [pi on the local model](#pi-on-the-local-model)); only cockpits created since it was added have it |
 
-- `--helix` builds Helix from the tip of the `steel-event-system` branch, the
-  open plugin PR ([helix#8675](https://github.com/helix-editor/helix/pull/8675)),
-  and re-running it updates. The watcher is pinned in `deps.sh`
-  (`HELIX_WATCHER_REV`); read a new revision before bumping it, since it is a
-  native library loaded into the editor.
-- A reload replaces unsaved edits too, but as one undo step: `u` brings them back.
-- `hx` is `helix/hx.sh`, which sets `HELIX_STEEL_CONFIG` and runs the binary,
-  `hx-steel`: without it, a project's own `.helix/helix.scm` and `init.scm`
-  would replace `helix/`'s, with no trust check. Being the `hx` on PATH, it
-  covers shells started before zshrc set the variable too. The runtime is
-  linked beside the binary (`~/.cargo/bin/runtime`) for the same reason.
+- `--helix` builds Helix from the tip of upstream master, and re-running it
+  updates. Master rather than a distro package because workspace trust
+  (`:workspace-trust` above) is in no release yet; without it, a repo's own
+  `.helix/` config and language servers run as soon as Helix opens it.
+  Replacing the earlier Steel build, it warns about that build's leftovers
+  (`hx-steel`, `steel`, `forge`, `~/.local/src/helix-steel`, ...) until you
+  delete them.
+- The runtime is linked beside the binary (`~/.cargo/bin/runtime`), so every
+  `hx` finds it, even from a shell started before `HELIX_RUNTIME` existed.
 - Helix builds its grammars into `~/.config/helix/runtime`, which is
   `helix/runtime` here (ignored, 2+ GB).
 - Still in Emacs: org, Lean's infoview (Helix gets `lake serve`'s diagnostics
