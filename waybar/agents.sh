@@ -3,7 +3,7 @@
 # running in zellij panes, and which of them wait for you.
 #
 # Why zellij: every agent here runs in a zellij pane (cockpits, Emacs's
-# emacs-* sessions, main's pi), and zellij 0.46 tracks each pane's state
+# emacs-* sessions, pi-local in main), and zellij 0.46 tracks each pane's state
 # (`list-panes --json` .attention), which Claude Code sets itself: Working
 # while it runs, NeedsYou when it asks. So no agent needs a hook for this.
 # pi sets nothing, so it only ever shows as running.

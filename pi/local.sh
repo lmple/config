@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # pi on the local llama-server (systemd/llama-server@.service), with the tool
-# rules gptel has in Emacs (pi/guard.ts). Run by the pi pane of the main
-# zellij session (zellij/layouts/main.kdl), by the cockpit's floating pi
+# rules gptel has in Emacs (pi/guard.ts). Run by the cockpit's floating pi
 # (zellij/layouts/cockpit.kdl) and by zshrc's `pi-local`; arguments go to pi.
 #
 # pi's built-in llama.cpp provider counts as set up once LLAMA_BASE_URL is
