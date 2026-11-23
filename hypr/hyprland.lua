@@ -96,6 +96,9 @@ hl.config({
         kb_layout = "ch",
         kb_variant = "fr",
         follow_mouse = 1,
+        -- The mouse wheel and TrackPoint scroll like the touchpad below.
+        -- SUPER + wheel's workspace scroll follows, so it flips direction too.
+        natural_scroll = true,
         touchpad = {
             natural_scroll = true,
             tap_to_click = true,
