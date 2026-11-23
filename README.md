@@ -87,6 +87,12 @@ After a reboot they show as EXITED, a saved layout with no processes:
 Inside Emacs, `C-c`, `C-x` and `C-h` stay with Emacs, so zellij's move mode
 (`Ctrl h`) is out of reach there.
 
+A selection in any zellij pane goes to the clipboard when the mouse button
+is released, through `wl-copy` (`copy_command` in `zellij/config.kdl`).
+Emacs terminals included: ghostel ignores the OSC 52 sequence zellij would
+otherwise use, and enabling it (`ghostel-enable-osc52`) would let any
+program's output set the clipboard.
+
 ## Zellij cockpit (Helix)
 
 A terminal-only take on `C-c p p`: `cockpit [DIR]` opens the project at DIR
