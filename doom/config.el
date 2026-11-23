@@ -67,6 +67,7 @@
 (global-auto-revert-mode +1)
 
 (load! "lisp/terminals")
+(load! "lisp/remote")
 (load! "lisp/documents")
 (load! "lisp/lang-python")
 (load! "lisp/lang-js")

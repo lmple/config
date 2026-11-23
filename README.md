@@ -3,8 +3,10 @@
 - Per-machine extras, outside git: `~/.extra_config` (zsh),
   `doom/extra_packages.el`, `doom/extra_config.el` (loaded last, so it wins).
 - `doom/config.el` holds the core settings and loads one file per topic from
-  `doom/lisp/`: `terminals`, `documents` (org, LaTeX), `lang-python`, `lang-js`,
-  `llm`, `llm-tools`, `lang-lean`, `lang-quint`.
+  `doom/lisp/`: `terminals`, `remote`, `documents` (org, LaTeX), `lang-python`,
+  `lang-js`, `llm`, `llm-tools`, `lang-lean`, `lang-quint`.
+- `C-c o s` opens Dired on a host from `~/.ssh/config`, over TRAMP (by hand:
+  `C-x d`, then `/ssh:` and TAB).
 - Emacs loads a snapshot of the shell environment, not zshrc: after changing
   PATH in `zshrc` or installing a new Node, run `doom sync --env` and restart it.
 
