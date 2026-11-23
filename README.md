@@ -30,7 +30,7 @@ Opt-in extras, combinable:
 | Flag | Adds |
 | --- | --- |
 | `--heavy` | TeX Live, LanguageTool (Arch), PlantUML, Jupyter: several GB |
-| `--firewall` | ufw: deny inbound, allow outbound and KDE Connect (1714-1764) |
+| `--firewall` | ufw: deny inbound, allow outbound |
 | `--llama` | llama.cpp from the llama.app installer, on every distro, see [Local LLM](#local-llm-llamacpp) |
 | `--helix` | Helix from upstream master, built from source, see [Zellij cockpit](#zellij-cockpit-helix) |
 | `--hyprland` | Hyprland, Waybar, hyprlock/hypridle, wofi, Dolphin, nm-applet, power-profiles-daemon, mako, btop (Arch only), see [Hyprland desktop](#hyprland-desktop) |

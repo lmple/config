@@ -26,7 +26,7 @@ the coding agents (Claude Code, opencode, pi), npm/pipx tools, Lean, Quint
 and SDKMAN.
 
   --heavy       Also install TeX Live, LanguageTool, PlantUML, Jupyter (several GB)
-  --firewall    Also install and configure ufw (deny inbound, allow KDE Connect)
+  --firewall    Also install and configure ufw (deny inbound, allow outbound)
   --llama       Also install llama.cpp with the llama.app installer, on every
                 distro: CUDA/ROCm/Vulkan/CPU build into ~/.local/bin/llama
   --helix       Also build Helix from upstream master (updated on every run)
@@ -306,9 +306,8 @@ firewall() {
   fi
   run sudo ufw default deny incoming
   run sudo ufw default allow outgoing
-  # KDE Connect / GSConnect pair and transfer over 1714-1764
-  run sudo ufw allow 1714:1764/tcp
-  run sudo ufw allow 1714:1764/udp
+  # No KDE Connect ports (1714-1764): the desktop is mostly Hyprland, which
+  # doesn't start kdeconnectd, so they would be open with nothing behind them
   # Only if this machine runs an SSH server: rate-limit repeated login attempts
   # run sudo ufw limit ssh
   run sudo ufw enable
