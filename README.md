@@ -145,21 +145,6 @@ linked into `~/.config` by `install.sh`.
 - `Hyprland --verify-config -c hypr/hyprland.lua` checks syntax and option
   names, not dispatcher arguments.
 
-## Untrusted code
-
-Some tools run code a project supplies just because you look at it: git runs the
-filters a repo's own `.git/config` names, a venv's binaries are the project's,
-and language servers run build scripts. So treat a repo you didn't write as code:
-
-| When | What runs the project's code |
-| --- | --- |
-| Opening a file, `cd` in a shell | Nothing: Emacs's vc is off (`doom/config.el`), the prompt skips git status (`starship.toml`) |
-| First file of a new project | One question. For Python (`doom/lisp/lang-python.el`) it covers the `.venv`, mypy and its plugins, and the language server; no keeps ruff only. Other languages get lsp-mode's "import project root?" |
-| Only when you ask | magit, `C-c p p` / `C-c p f` (`git ls-files`), treemacs's git colours, `direnv allow` |
-
-Both answers live in lsp-mode's session; undo one with `M-x lsp-workspace-folders-remove`
-or `M-x lsp-workspace-blocklist-remove`.
-
 ## Long URLs
 
 Zellij links a wrapped URL only up to the end of its first row
