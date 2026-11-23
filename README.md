@@ -162,36 +162,18 @@ pick it once per machine. Ashen has no green, so lines a diff adds show orange.
 
 ## Local LLM (llama.cpp)
 
-Doom's gptel talks to a local `llama-server` on port 9091, run in router mode: one
-server offers every model in a presets file and loads whichever one gptel asks for.
-gptel reads that list from the server, so the presets file is the only list of
-models to maintain.
+gptel (and pi) talk to a local `llama-server` on port 9091 that offers every
+model of the machine's presets file and loads the one asked for; gptel reads
+the list from the server. Emacs side: `doom/lisp/llm.el`, `doom/lisp/llm-tools.el`.
 
 | File | GPU | Models (gptel names) |
 | --- | --- | --- |
 | `llama/home.ini` | 8 GB | `gemma-4-12b` |
 | `llama/work.ini` | 24 GB | `gemma-4-26b-a4b` (default), `qwen3-coder-30b`, `gemma-4-31b` |
 
-The Emacs side is `doom/lisp/llm.el` (backend, model list) and
-`doom/lisp/llm-tools.el` (the [tools](#gptel-tools)).
-
-### Install
-
-```sh
-./deps.sh --skip-base --llama   # any distro; run it again to update
-```
-
-The [llama.app](https://llama.app) installer picks the CUDA, ROCm, Vulkan or CPU
-build and installs one `~/.local/bin/llama`, with no sudo and nothing a distro
-upgrade can break. A distro llama.cpp package is unused; `deps.sh` warns about it.
-
-### Start the server
-
-`systemd/llama-server@.service` runs the server as a systemd user service. Its
-instance name is the presets file: `@home` reads `llama/home.ini`, `@work` reads
-`llama/work.ini` (through the `~/.config/llama` link from `install.sh`). On each
-machine, create the API key the server and gptel share (outside the repo, never
-committed), then enable its instance once; after that it starts at every login:
+Install with `./deps.sh --skip-base --llama` (any distro, re-run to update).
+Then, once per machine, create the API key the server and gptel share (never
+committed) and enable the user service, `@home` or `@work` after the presets file:
 
 ```sh
 mkdir -p ~/.config/llama-server
@@ -208,61 +190,41 @@ systemctl --user enable --now llama-server@home   # work machine: llama-server@w
 | Free the GPU for now | `systemctl --user stop llama-server@home` |
 | Stop starting at login | `systemctl --user disable --now llama-server@home` |
 
-While it runs, the `load-on-startup` model stays in VRAM. The unit's flags:
-
-- `--models-max 1`: one model in VRAM; switching unloads the previous one.
-- `--host 127.0.0.1` and `--cors-origins localhost --no-cors-credentials`: no
-  other machine, and no web page open in the browser, can use it.
-- `--api-key-file`: every request carries the key, which gptel reads from the
-  same file (`my/gptel-llama-key-file`); without the file the server won't start.
-- A model is downloaded into `~/.cache/huggingface` on first use (15-18 GB for
-  the work models), and that first request waits for it.
+- One model in VRAM at a time, reachable from localhost only, never from a web
+  page, and only with the key (flags in `systemd/llama-server@.service`).
+- A model downloads into `~/.cache/huggingface` on first use (15-18 GB for the
+  work models); that first request waits for it.
 
 ### gptel tools
 
-- Run without asking: `read_file`, `list_directory`, `search_project` (ripgrep),
-  `search_org` (ripgrep over `org-directory`), `list_buffers`, `read_buffer`.
-- `write_file` waits: `C-c C-c` runs the proposed call, `C-c C-k` rejects it.
-- Off limits to every tool, since a prompt injected into a file could ask for
-  secrets: remote (TRAMP) paths, `.gpg`/`.age` files, and
-  `my/gptel-tool-denied-paths` (`~/.ssh`, `~/.gnupg`, `~/.password-store`,
-  `~/.aws`, `~/.extra_config`, ...).
+Reading tools run without asking; `write_file` waits for `C-c C-c` (run) or
+`C-c C-k` (reject). No tool reaches remote paths, `.gpg`/`.age` files or
+`my/gptel-tool-denied-paths` (`~/.ssh`, `~/.gnupg`, `~/.password-store`,
+`~/.aws`, `~/.extra_config`, ...).
 
 ### pi on the local model
 
-Every cockpit has pi on the same server, floating and hidden until `Alt f`;
-`pi-local` starts it anywhere else. `pi/local.sh` uses the loaded model, never
-another provider, and waits a minute for a server that is down.
-
-It is told to search the Markdown notes in `~/notes` (an Obsidian vault works),
-or `$MY_NOTES_DIR` from `~/.extra_config`, when that folder exists.
-
-`pi/guard.ts` gives it gptel's rules:
-
-- `read`, `grep`, `find`, `ls` run without asking; `edit` and `write` ask, and
-  are refused in print mode (`-p`). No `bash`.
-- The same credential paths are off limits, plus `/proc`. Its `grep` refuses a
-  directory holding hidden ones, `~` included: ask it to search a project.
-- The key comes from the key file through `pi/models.json`. Don't
-  `/login llama.cpp` in pi: a stored key wins over the file and goes stale.
+`Alt f` in a cockpit shows or hides it; `pi-local` starts it anywhere else. It
+uses the loaded model, searches the notes in `~/notes` (or `$MY_NOTES_DIR`), and
+`pi/guard.ts` gives it gptel's rules: reading runs, `edit`/`write` ask, no
+`bash`, the same denied paths plus `/proc`. Don't `/login llama.cpp` in pi: a
+stored key wins over the key file and goes stale.
 
 ### Add or change a model
 
-Add a section to the machine's presets file and restart the server
-(`systemctl --user restart llama-server@home`, or `@work`). The section name
-is the model name gptel shows; the other keys are `llama-server` flags without the
-leading dashes, and `[*]` holds the settings every model shares.
+Add a section to the presets file and restart the server. The section name is
+the name gptel shows, the keys are `llama-server` flags without dashes, and
+`[*]` holds what every model shares:
 
 ```ini
 [my-model]
 hf-repo = ggml-org/<repo>-GGUF:<quant>   ; the quants a repo offers are listed on Hugging Face
-c = 32768                                ; context size; keep it at 16384 or more
+c = 32768                                ; context size; keep it at 16384 or more (the tools assume 16k)
 load-on-startup = true                   ; optional, one model per file: the default
 ```
 
-Keep every context at 16384 or more: the tools cap their output for a 16k context.
-The work context sizes are estimates, so on first use of each model, check what it
-got and whether it fits in VRAM, and lower `c` if it spills onto the CPU:
+On first use, check the context it got and that it fits in VRAM; lower `c` if it
+spills onto the CPU:
 
 ```sh
 curl -s 'localhost:9091/props?model=gemma-4-26b-a4b' | grep -o '"n_ctx":[0-9]*'
