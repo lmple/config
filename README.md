@@ -178,6 +178,9 @@ linked into `~/.config` by `install.sh`.
   in the repo. Without it the desktop is black. To change it:
   `ln -sf <image> ~/Pictures/wallpaper.jpg`, then
   `pkill hyprpaper; hyprpaper &` (or log in again).
+- The laptop's screen (eDP-1) is always on the right: an external screen
+  goes to its left, whichever is found first. The mouse wheel and TrackPoint
+  scroll naturally, like the touchpad. Both are in `hypr/hyprland.lua`.
 - Hyprland 0.57 reads only `hyprland.lua`; a `hyprland.conf` is ignored.
   hyprlock and hypridle still take `.conf`.
 - `Alt Tab` cycles the workspace's windows in order, not most-recently-used
