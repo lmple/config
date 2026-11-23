@@ -97,6 +97,8 @@ pkgs_arch() {
   pacman_install lazygit
   # Zed editor; Arch names the command zeditor, not zed
   pacman_install zed
+  # File manager: Super+E in Hyprland (hypr/hyprland.lua) and Meta+E in Plasma open it
+  pacman_install dolphin
   # emacs-wayland is the pure-GTK build for Wayland (KDE); swap in emacs on X11.
   # Skip when any variant already provides emacs: they conflict with each other,
   # and pacman would ask to remove the installed one.
@@ -378,7 +380,8 @@ hyprland() {
   # Everything hypr/ and waybar/ start or bind: the compositor, its lock and
   # idle daemons, the bar, the launcher and power menu (wofi), screenshots
   # (grim, slurp; wl-clipboard is in the base set), the wifi tray applet,
-  # a polkit agent, Super+E's Dolphin, the audio mixer and power profiles,
+  # a polkit agent, Super+E's Dolphin (also in the base set, but here for
+  # --skip-base --hyprland), the audio mixer and power profiles,
   # whose daemon must also be running for the bar to switch them, and the
   # notification daemon (mako; Plasma's only runs inside Plasma) with the
   # notify-send that the battery alerts use (libnotify).
