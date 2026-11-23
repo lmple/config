@@ -304,10 +304,8 @@ unit file:
 
 ### pi on the local model
 
-The zellij `main` session opens with pi on the same server, in a pane beside
-the shell (`zellij/layouts/main.kdl`, only when `main` is created), and every
-cockpit has it floating, hidden until `Alt f`. `pi-local` starts it anywhere
-else. `pi/local.sh` picks the model as gptel does (the loaded preset) and never
+Every cockpit has pi on the same server floating, hidden until `Alt f`, and
+`pi-local` starts it anywhere else. `pi/local.sh` picks the model as gptel does (the loaded preset) and never
 another provider; if the server is down it waits a minute, says so, and leaves
 a shell.
 
