@@ -172,8 +172,11 @@ hl.bind("ALT + SHIFT + Tab", cycle_windows(false))
 hl.bind(key("Tab"), cycle_windows(true))
 hl.bind(key("SHIFT + Tab"), cycle_windows(false))
 
--- Screenshot
-hl.bind("Print", hl.dsp.exec_cmd('grim -g "$(slurp)" - | wl-copy'))
+-- Region screenshot, then copy, save or both (screenshot.sh). Super+Shift+S
+-- too, for keyboards without a Print key.
+local screenshot = "~/.config/hypr/screenshot.sh"
+hl.bind("Print", hl.dsp.exec_cmd(screenshot))
+hl.bind(key("SHIFT + S"), hl.dsp.exec_cmd(screenshot))
 
 -- Screen brightness keys: 5% steps while held, also on the lock screen. The
 -- kernel doesn't act on them itself here (no acpi_video backlight).

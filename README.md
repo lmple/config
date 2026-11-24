@@ -125,7 +125,7 @@ linked into `~/.config` by `install.sh`.
 | Wifi | the nm-applet icon in the bar's tray; clicking the network module opens the connection editor |
 | Power profile | click the bolt/scale/leaf in the bar: performance, balanced, power saver |
 | Screen brightness | the brightness keys (`Fn F5` / `Fn F6`, held to repeat, also on the lock screen), or scroll on the bar's brightness pill: 5% steps, never below 5% (hidden without a backlight) |
-| Screenshot of a region, to the clipboard | `Print` |
+| Screenshot of a region, then copy it, save it to `~/Pictures/Screenshots`, or both | `Print` or `Super Shift S` |
 | Dismiss a notification | click it |
 | See the agents, and which one waits | the bar's agents pill (hidden when none runs): ⚙ working, red 🔔 waiting for you, `>_` running only; hover it for the list |
 
