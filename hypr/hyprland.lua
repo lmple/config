@@ -148,6 +148,8 @@ hl.bind(key("M"), hl.dsp.exit())
 hl.bind(key("E"), hl.dsp.exec_cmd("dolphin"))
 hl.bind(key("V"), hl.dsp.window.float({ action = "toggle" }))
 hl.bind(key("P"), hl.dsp.exec_cmd("wofi --show drun"))
+-- Same launcher on Space too: the Plasma/macOS habit
+hl.bind(key("space"), hl.dsp.exec_cmd("wofi --show drun"))
 hl.bind(key("R"), hl.dsp.window.pseudo())
 hl.bind(key("F"), hl.dsp.window.fullscreen({ action = "toggle" }))
 -- Through logind, so hypridle's lock_cmd runs it: the same path as the idle

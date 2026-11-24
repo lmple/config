@@ -116,7 +116,7 @@ linked into `~/.config` by `install.sh`.
 | --- | --- |
 | Terminal (joins zellij's `main`) | `Super Return` |
 | Files (Dolphin) | `Super E` |
-| Launch an app (wofi) | `Super P` |
+| Launch an app (wofi) | `Super P` or `Super Space` |
 | Lock | `Super L`; also after 10 min idle and before every suspend |
 | Lock, suspend, log out, reboot, shut down | `Super Escape`, or the bar's power button |
 | Next / previous window, in order (not most-recent first) | `Alt Tab` / `Alt Shift Tab`, or `Super Tab` / `Super Shift Tab` |
