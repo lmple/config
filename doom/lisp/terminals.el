@@ -95,6 +95,37 @@ BUFFER is \"<project> :: NAME\" and SESSION names its zellij session."
                   (my/zellij-safe-name (truncate-string-to-width name 16))
                   suffix))))
 
+(defun my/terminal-role (buffer-name)
+  "Return NAME from a \"<project> :: NAME\" BUFFER-NAME, or nil."
+  ;; Greedy .* so a project name holding \" :: \" still yields the last part
+  (and (string-match ".* :: \\(.+\\)\\'" buffer-name)
+       (match-string 1 buffer-name)))
+
+(defun my/ibuffer-format-with-term (format)
+  "Return ibuffer FORMAT with a term column after its name column.
+FORMAT is returned as is when it already has one, so reloading this file
+doesn't add a second."
+  (if (seq-some (lambda (item) (eq (car-safe item) 'term)) format)
+      format
+    (seq-mapcat (lambda (item)
+                  (if (eq (car-safe item) 'name)
+                      (list item " " '(term 10 10 :left :elide))
+                    (list item)))
+                format)))
+
+;; Doom caps ibuffer's name column at 18 columns, so a long project name hides
+;; whether a terminal is the agent, the shell or a term-N, and the mode column
+;; says ghostel for all of them. The project is already shown by ibuffer's
+;; per-project groups, so the role gets a column of its own. This runs after
+;; Doom's own `after! ibuffer', which sets the formats edited here.
+(after! ibuffer
+  (define-ibuffer-column term (:name "Term")
+    (or (and (derived-mode-p 'ghostel-mode)
+             (my/terminal-role (buffer-name)))
+        ""))
+  (setq ibuffer-formats
+        (mapcar #'my/ibuffer-format-with-term ibuffer-formats)))
+
 (defun my/zellij-live-sessions ()
   "Return the names of the zellij sessions that are running, not exited."
   (delq nil
