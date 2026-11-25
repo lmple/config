@@ -3,6 +3,10 @@
 
 ;;; Terminal
 (package! ghostel)
+;; Runs the project agent (lisp/terminals.el): Claude Code in a ghostel buffer,
+;; wired to Emacs over MCP for diffs, selection and diagnostics
+(package! claude-code-ide
+  :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
 
 ;;; Python
 (package! pyvenv-auto)
