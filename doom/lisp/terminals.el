@@ -101,27 +101,45 @@ BUFFER is \"<project> :: NAME\" and SESSION names its zellij session."
   (and (string-match ".* :: \\(.+\\)\\'" buffer-name)
        (match-string 1 buffer-name)))
 
+(defun my/terminal-task (title)
+  "Return the task part of terminal TITLE, or nil.
+Terminals run in zellij, which titles them \"<session> | <pane title>\";
+the pane title is what the program set, e.g. a Claude Code session's name.
+A shell sets none, which leaves just \"<session>\"."
+  (and title
+       (string-match " | \\(.+\\)\\'" title)
+       (match-string 1 title)))
+
 (defun my/ibuffer-format-with-term (format)
-  "Return ibuffer FORMAT with a term column after its name column.
-FORMAT is returned as is when it already has one, so reloading this file
-doesn't add a second."
+  "Return ibuffer FORMAT with term and title columns after its name column.
+FORMAT is returned as is when it already has a term column, so reloading
+this file doesn't add a second."
   (if (seq-some (lambda (item) (eq (car-safe item) 'term)) format)
       format
     (seq-mapcat (lambda (item)
                   (if (eq (car-safe item) 'name)
-                      (list item " " '(term 10 10 :left :elide))
+                      (list item
+                            " " '(term 10 10 :left :elide)
+                            " " '(title 30 30 :left :elide))
                     (list item)))
                 format)))
 
 ;; Doom caps ibuffer's name column at 18 columns, so a long project name hides
 ;; whether a terminal is the agent, the shell or a term-N, and the mode column
 ;; says ghostel for all of them. The project is already shown by ibuffer's
-;; per-project groups, so the role gets a column of its own. This runs after
-;; Doom's own `after! ibuffer', which sets the formats edited here.
+;; per-project groups, so the role gets a column of its own. Several agents in
+;; one project are all "claude" or "term-N" there, so a title column tells
+;; them apart by the session's name, which follows /rename (refresh with g).
+;; This runs after Doom's own `after! ibuffer', which sets the formats edited
+;; here.
 (after! ibuffer
   (define-ibuffer-column term (:name "Term")
     (or (and (derived-mode-p 'ghostel-mode)
              (my/terminal-role (buffer-name)))
+        ""))
+  (define-ibuffer-column title (:name "Title")
+    (or (and (derived-mode-p 'ghostel-mode)
+             (my/terminal-task (bound-and-true-p ghostel-title)))
         ""))
   (setq ibuffer-formats
         (mapcar #'my/ibuffer-format-with-term ibuffer-formats)))
