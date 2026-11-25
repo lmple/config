@@ -119,7 +119,7 @@ this file doesn't add a second."
     (seq-mapcat (lambda (item)
                   (if (eq (car-safe item) 'name)
                       (list item
-                            " " '(term 10 10 :left :elide)
+                            " " '(term 16 16 :left :elide)
                             " " '(title 30 30 :left :elide))
                     (list item)))
                 format)))
@@ -224,9 +224,60 @@ running in their sessions."
 
 (defvar my/project-agent "claude"
   "Command of the coding agent `my/project-terminals' starts, e.g. \"pi\".
-It also names the agent's buffer, \"<project> :: <command>\", and its zellij
-session, so neither is reused for another agent.  Set it per machine in
-extra_config.el.")
+\"claude\" runs as a claude-code-ide session (`my/project-claude-ide').
+Any other agent runs in a zellij terminal, and the command also names its
+buffer, \"<project> :: <command>\", and its zellij session, so neither is
+reused for another agent.  Set it per machine in extra_config.el.")
+
+(defun my/claude-ide-buffer-name (directory &optional instance)
+  "Return \"<project> :: claude-ide\" for DIRECTORY, \":INSTANCE\" appended.
+A `claude-code-ide-buffer-name-function', in the same \"<project> :: NAME\"
+form as the other project terminals, so the ibuffer Term column shows it."
+  ;; Not ":: claude": that is the zellij agent's buffer, which
+  ;; `my/project-reattach-terminals' can still bring back, and claude-code-ide
+  ;; kills any buffer already holding the name it starts in.
+  (format "%s :: claude-ide%s"
+          (file-name-nondirectory (directory-file-name directory))
+          (if instance (concat ":" instance) "")))
+
+(use-package! claude-code-ide
+  :defer t
+  :config
+  ;; Never a side window: `my/project-terminals' places the agent itself
+  (setq claude-code-ide-terminal-backend 'ghostel
+        claude-code-ide-use-side-window nil
+        claude-code-ide-buffer-name-function #'my/claude-ide-buffer-name)
+  ;; Gives Claude xref, imenu, tree-sitter and project info over MCP
+  (claude-code-ide-emacs-tools-setup))
+
+(map! :leader
+      :desc "Claude Code IDE menu" "o c" #'claude-code-ide-menu)
+
+(defun my/project-claude-ide ()
+  "Show the project's claude-code-ide session in the selected window.
+Starts one when the project has none.  Of several, it shows the first,
+unnamed one, or else the one used last; `claude-code-ide' starts more."
+  (require 'claude-code-ide)
+  (let* ((root (expand-file-name (project-root (project-current t))))
+         (live (seq-filter (lambda (session)
+                             (buffer-live-p
+                              (claude-code-ide-mcp-session-buffer session)))
+                           (claude-code-ide-mcp--sessions-for-project root)))
+         (session (or (seq-find (lambda (session)
+                                  (null (claude-code-ide-mcp-session-instance-name
+                                         session)))
+                                live)
+                      (car (seq-sort-by
+                            (lambda (session)
+                              (or (claude-code-ide-mcp-session-last-used session)
+                                  0))
+                            #'> live)))))
+    (if session
+        (switch-to-buffer (claude-code-ide-mcp-session-buffer session))
+      ;; claude-code-ide shows a new session with plain `display-buffer'
+      ;; when side windows are off; this keeps it in the selected window.
+      (let ((display-buffer-overriding-action '(display-buffer-same-window)))
+        (claude-code-ide)))))
 
 (defvar my/project-agent-share 0.65
   "Fraction of the agent/shell split that the agent's window gets.
@@ -239,9 +290,11 @@ DIR defaults to `default-directory'.  The file goes on the left, the agent
 picker with \\[keyboard-quit] skips the file and puts the agent and the
 shell side by side.  Either way the agent gets `my/project-agent-share' of
 the space it shares with the shell.
-The agent and the shell run in zellij sessions that outlive Emacs: switching
-back to a project, even after an Emacs crash, reattaches them, and the agent
-is only started when its session is created."
+The shell runs in a zellij session that outlives Emacs: switching back to
+a project, even after an Emacs crash, reattaches it.  So does an agent
+other than claude.  Claude runs in claude-code-ide instead, which ties it
+to Emacs: switching back shows the running session, and after a crash
+`claude-code-ide-continue' picks the conversation back up."
   (interactive)
   (let* ((default-directory (or dir default-directory))
          (file-window (progn
@@ -254,9 +307,11 @@ is only started when its session is created."
                           (quit nil)))))
     (when file-window
       (select-window (split-window-right)))
-    ;; Run by the session's shell rather than exec'd, so quitting the agent
-    ;; leaves a usable shell instead of ending the session.
-    (my/project-ghostel my/project-agent my/project-agent)
+    (if (equal my/project-agent "claude")
+        (my/project-claude-ide)
+      ;; Run by the session's shell rather than exec'd, so quitting the
+      ;; agent leaves a usable shell instead of ending the session.
+      (my/project-ghostel my/project-agent my/project-agent))
     ;; The agent's window is still selected, and a positive SIZE goes to the
     ;; selected (top or left) window, so this sizes the agent, not the shell.
     (select-window
