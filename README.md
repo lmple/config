@@ -50,12 +50,14 @@ Everything at once, links first:
 
 ## Terminals and crashes
 
-Every terminal runs in a zellij session, so its processes live on the zellij
-server rather than in the window, and a crash only detaches them:
+Every terminal but Emacs's Claude runs in a zellij session, so its processes
+live on the zellij server rather than in the window, and a crash only detaches
+them:
 
 | Where | Session | After a crash |
 | --- | --- | --- |
-| Emacs agent and shell (`C-c p p`) | `emacs-<project>-<name>-<hash>`, buffer `<project> :: <name>` | `C-c p p` the project again: same agent, same shell |
+| Emacs shell (`C-c p p`), and the agent when it isn't claude | `emacs-<project>-<name>-<hash>`, buffer `<project> :: <name>` | `C-c p p` the project again: same agent, same shell |
+| Emacs Claude (`C-c p p`) | none: claude-code-ide runs it in Emacs, buffer `<project> :: claude-ide` | gone with Emacs; `M-x claude-code-ide-continue` brings the conversation back |
 | Emacs `main` workspace, beside `*scratch*` | `emacs-home-shell`, buffer `~ :: shell`, in `~/` | reattached on the next start |
 | Emacs `org` workspace, beside Dired of `~/org` | `emacs-org-shell`, buffer `org :: shell`, in `~/org` | reattached on the next start |
 | Emacs `C-c o T` | the same, with `term-1`, `term-2`, ... as names | `C-c o z` reattaches every one the project still has |
@@ -71,6 +73,10 @@ server rather than in the window, and a crash only detaches them:
   (`Ctrl h`) is out of reach there.
 - A mouse selection in any pane, Emacs included, goes to the clipboard through
   `wl-copy` (`zellij/config.kdl`), not OSC 52, which ghostel ignores.
+- Emacs's Claude is a claude-code-ide session: its edits open in ediff, and it
+  sees the open file, the selection, diagnostics and xref. `C-c o c` opens its
+  menu. `M-x claude-code-ide` starts another one in the project, under a name
+  you pick (`<project> :: claude-ide:<name>`); C-x C-b shows which is which.
 
 ## Zellij cockpit (Helix)
 
@@ -131,7 +137,8 @@ linked into `~/.config` by `install.sh`.
 
 - Agents pill (`waybar/agents.sh`): the `claude`, `pi` and `opencode` panes of
   every live zellij session. Claude Code reports its state itself; pi only
-  counts as running.
+  counts as running. Emacs's Claude (claude-code-ide) runs outside zellij, so
+  it isn't listed.
 - GPU pill (`waybar/gpu.sh`): an NVIDIA or AMD card's usage and VRAM, red at
   90% full; hidden without one, and a sleeping laptop dGPU isn't woken.
 - Notifications are mako's, top right. The battery warns at 15% and, until
