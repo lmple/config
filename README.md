@@ -56,7 +56,7 @@ them:
 
 | Where | Session | After a crash |
 | --- | --- | --- |
-| Emacs shell (`C-c p p`), and the agent when it isn't claude | `emacs-<project>-<name>-<hash>`, buffer `<project> :: <name>` | `C-c p p` the project again: same agent, same shell |
+| Emacs shell (`C-c p p`), and the agent when it isn't claude | `emacs-<project>-<name>-<hash>`, buffer `<project> :: <name>` | `C-c p p` the project again and pick the same agent: same agent, same shell |
 | Emacs Claude (`C-c p p`) | none: claude-code-ide runs it in Emacs, buffer `<project> :: claude-ide` | gone with Emacs; `M-x claude-code-ide-continue` brings the conversation back |
 | Emacs `main` workspace, beside `*scratch*` | `emacs-home-shell`, buffer `~ :: shell`, in `~/` | reattached on the next start |
 | Emacs `org` workspace, beside Dired of `~/org` | `emacs-org-shell`, buffer `org :: shell`, in `~/org` | reattached on the next start |
@@ -73,6 +73,10 @@ them:
   (`Ctrl h`) is out of reach there.
 - A mouse selection in any pane, Emacs included, goes to the clipboard through
   `wl-copy` (`zellij/config.kdl`), not OSC 52, which ghostel ignores.
+- `C-c p p` asks which agent to start after the file picker: RET takes claude,
+  or pick `pi-local` (pi on the local model). The list is `my/project-agents`
+  in `doom/lisp/terminals.el`; `my/project-agent` (per machine, in
+  `extra_config.el`) is the one offered first.
 - Emacs's Claude is a claude-code-ide session: its edits open in ediff, and it
   sees the open file, the selection, diagnostics and xref. `C-c o c` opens its
   menu. `M-x claude-code-ide` starts another one in the project, under a name

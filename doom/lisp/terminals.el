@@ -223,11 +223,33 @@ running in their sessions."
       :desc "Reattach project terminals" "o z" #'my/project-reattach-terminals)
 
 (defvar my/project-agent "claude"
-  "Command of the coding agent `my/project-terminals' starts, e.g. \"pi\".
+  "Command of the agent `my/project-terminals' offers first, e.g. \"pi\".
 \"claude\" runs as a claude-code-ide session (`my/project-claude-ide').
 Any other agent runs in a zellij terminal, and the command also names its
 buffer, \"<project> :: <command>\", and its zellij session, so neither is
 reused for another agent.  Set it per machine in extra_config.el.")
+
+(defvar my/project-agents '("claude" "pi-local")
+  "Agent commands `my/project-terminals' lets you pick from.
+Each runs as `my/project-agent' describes.  \"pi-local\" is zshrc's alias
+for pi on the local llama-server: it works because the terminal's zsh
+types the command in.")
+
+(defun my/read-project-agent ()
+  "Ask which agent to start, `my/project-agent' offered first.
+Asks nothing when `my/project-agents' holds no other agent."
+  (let ((agents (cons my/project-agent
+                      (remove my/project-agent my/project-agents))))
+    (if (cdr agents)
+        (completing-read
+         "Agent: "
+         ;; Keep the default on top: completion UIs re-sort plain lists
+         (lambda (string pred action)
+           (if (eq action 'metadata)
+               '(metadata (display-sort-function . identity))
+             (complete-with-action action agents string pred)))
+         nil t nil nil my/project-agent)
+      my/project-agent)))
 
 (defun my/claude-ide-buffer-name (directory &optional instance)
   "Return \"<project> :: claude-ide\" for DIRECTORY, \":INSTANCE\" appended.
@@ -285,8 +307,9 @@ The shell keeps the rest, which is still enough for a few commands.")
 
 (defun my/project-terminals (&optional dir)
   "Pick a file in the project at DIR, then open the agent and a shell beside it.
-DIR defaults to `default-directory'.  The file goes on the left, the agent
-\(`my/project-agent') top-right and the shell bottom-right.  Cancelling the
+DIR defaults to `default-directory'.  The agent is picked next, from
+`my/project-agents' (RET takes `my/project-agent').  The file goes on the
+left, the agent top-right and the shell bottom-right.  Cancelling the
 picker with \\[keyboard-quit] skips the file and puts the agent and the
 shell side by side.  Either way the agent gets `my/project-agent-share' of
 the space it shares with the shell.
@@ -304,14 +327,16 @@ to Emacs: switching back shows the running session, and after a crash
                         (condition-case nil
                             (progn (doom-project-find-file default-directory)
                                    (selected-window))
-                          (quit nil)))))
+                          (quit nil))))
+         ;; Asked before any split, so C-g here leaves just the file
+         (agent (my/read-project-agent)))
     (when file-window
       (select-window (split-window-right)))
-    (if (equal my/project-agent "claude")
+    (if (equal agent "claude")
         (my/project-claude-ide)
       ;; Run by the session's shell rather than exec'd, so quitting the
       ;; agent leaves a usable shell instead of ending the session.
-      (my/project-ghostel my/project-agent my/project-agent))
+      (my/project-ghostel agent agent))
     ;; The agent's window is still selected, and a positive SIZE goes to the
     ;; selected (top or left) window, so this sizes the agent, not the shell.
     (select-window
