@@ -140,7 +140,7 @@ linked into `~/.config` by `install.sh`.
 | Next / previous window, in order (not most-recent first) | `Alt Tab` / `Alt Shift Tab`, or `Super Tab` / `Super Shift Tab` |
 | Focus, move, resize a window | `Super` + arrows, `Super Shift` + `h j k l`, `Super Alt` + `h j k l` |
 | Workspace 1-10, send a window to 1-5 | `Super 1`..`0`, `Super Shift 1`..`5` |
-| Wifi | the nm-applet icon in the bar's tray; clicking the network module opens the connection editor |
+| Wifi | click the bar's network pill: nmtui lists the networks in range and asks for the password; right-click edits saved networks |
 | Power profile | click the bolt/scale/leaf in the bar: performance, balanced, power saver |
 | Screen brightness | the brightness keys (`Fn F5` / `Fn F6`, held to repeat, also on the lock screen), or scroll on the bar's brightness pill: 5% steps, never below 5% (hidden without a backlight) |
 | Screenshot of a region, then copy it, save it to `~/Pictures/Screenshots`, or both | `Print` or `Super Shift S` |

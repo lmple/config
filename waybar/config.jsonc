@@ -45,7 +45,7 @@
     "format": " {:%a %d %b · %H:%M}",
     "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
   },
-  // ── System tray (nm-applet lives here) ──────────────────────────────────
+  // ── System tray ─────────────────────────────────────────────────────────
   "tray": {
     "spacing": 8,
     "icon-size": 16
@@ -82,7 +82,7 @@
     // So scrolling down can't turn the panel black
     "min-brightness": 5
   },
-  // ── Network (nm-applet handles connecting; this just shows status) ───────
+  // ── Network: click to connect (nmtui), right-click to edit saved ones ───
   "network": {
     // The icon follows the signal: empty, then one to four bars
     "format-wifi": "{icon} {essid} ({signalStrength}%)",
@@ -90,7 +90,10 @@
     "format-ethernet": "󰈀 {ipaddr}",
     "format-disconnected": "⚠ disconnected",
     "tooltip-format": "{ifname}\n{ipaddr}/{cidr}\nGateway: {gwaddr}\nUp: {bandwidthUpBits} Down: {bandwidthDownBits}",
-    "on-click": "nm-connection-editor"
+    // nmtui-connect lists the networks in range and asks for a password
+    // itself, so no nm-applet is needed to join one
+    "on-click": "alacritty --title nmtui -e nmtui-connect",
+    "on-click-right": "nm-connection-editor"
   },
   // ── CPU ──────────────────────────────────────────────────────────────────
   "cpu": {

@@ -49,7 +49,7 @@ hl.on("hyprland.start", function()
     -- org.freedesktop.Notifications, and whichever starts first wins
     hl.exec_cmd("mako")
     hl.exec_cmd("~/.config/hypr/battery-notify.sh")
-    hl.exec_cmd("nm-applet --indicator")
+    -- No nm-applet: Waybar's network pill connects, through nmtui
     hl.exec_cmd("emacs --daemon")
 end)
 
