@@ -391,8 +391,12 @@ Comes back to the workspace it started from."
         (select-window dired-window))
       (+workspace-switch origin))))
 
+;; In lisp/agents.el, loaded after this file but before any frame shows
+(declare-function my/agents-show-above "agents")
+
 (defun my/show-home-terminal (frame)
   "Put the ~/ terminal to the right of *scratch* in FRAME's main workspace.
+The agents list goes above the terminal, in the same column.
 Only when FRAME shows nothing but the fallback buffer there, so a frame
 opened on a file, a later frame (Doom gives those a workspace of their
 own), or a layout already arranged is left alone.  The terminal, buffer
@@ -410,6 +414,8 @@ main, so only the first frame does."
           (select-window (split-window-right))
           (my/ghostel-session (expand-file-name "~/") "~ :: shell"
                               "emacs-home-shell")
+          ;; The agents list (lisp/agents.el) on top of the right column
+          (my/agents-show-above (selected-window))
           (select-window scratch-window))
         (my/open-org-workspace)))))
 

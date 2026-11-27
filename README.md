@@ -77,7 +77,8 @@ them:
   or pick `pi-local` (pi on the local model) or `opencode`. The list is
   `my/project-agents` in `doom/lisp/terminals.el`; `my/project-agent` (per
   machine, in `extra_config.el`) is the one offered first.
-- `C-c o a` lists every agent (`doom/lisp/agents.el`): Emacs's Claude
+- The agents list sits in `main`, above the `~` shell; `C-c o a` goes there
+  from anywhere (`doom/lisp/agents.el`). It shows every agent: Emacs's Claude
   sessions, from the state Claude Code reports to ghostel, and the agents in
   zellij, from `waybar/agents.sh --json`, cockpits and Alacritty included.
   Waiting for you comes first, then done, working and idle; pi only ever shows

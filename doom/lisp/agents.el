@@ -22,6 +22,8 @@
 ;; Doom's :ui workspaces
 (declare-function +workspace-list-names "autoload/workspaces")
 (declare-function +workspace-switch "autoload/workspaces")
+(declare-function +workspace-current-name "autoload/workspaces")
+(defvar +workspaces-main)
 
 (defvar my/agents-script (expand-file-name "~/.config/waybar/agents.sh")
   "The script that lists the agents in zellij, run with --json.
@@ -214,8 +216,10 @@ An agent with no buffer in Emacs only says where it runs."
     (if (not (buffer-live-p buffer))
         (message "This agent runs in zellij session %s, outside Emacs" session)
       (let ((workspace (my/agents--project buffer)))
-        ;; Off the screen first, so the layout left behind doesn't keep it
-        (quit-window)
+        ;; main keeps the list on screen. Anywhere else it was shown for the
+        ;; jump only, so it goes, and the layout left behind doesn't keep it.
+        (unless (equal (+workspace-current-name) +workspaces-main)
+          (quit-window))
         (when (and workspace (member workspace (+workspace-list-names)))
           (+workspace-switch workspace))
         (if-let* ((window (get-buffer-window buffer)))
@@ -239,11 +243,9 @@ An agent with no buffer in Emacs only says where it runs."
   (setq-local revert-buffer-function (lambda (&rest _) (my/agents-refresh)))
   (tabulated-list-init-header))
 
-(defun my/agents ()
-  "Show every coding agent, its state and what it's doing.
-Emacs's Claude sessions and the agents in zellij, refreshed every
-`my/agents-refresh-seconds' while shown."
-  (interactive)
+(defun my/agents-buffer ()
+  "Return the agents buffer, created and refreshing, its list up to date.
+Refreshed every `my/agents-refresh-seconds' while it is shown."
   (let ((buffer (get-buffer-create my/agents-buffer-name)))
     (with-current-buffer buffer
       (unless (derived-mode-p 'my/agents-mode)
@@ -252,8 +254,30 @@ Emacs's Claude sessions and the agents in zellij, refreshed every
       (setq my/agents--timer (run-at-time my/agents-refresh-seconds
                                           my/agents-refresh-seconds
                                           #'my/agents--tick)))
-    (pop-to-buffer buffer)
-    (my/agents-refresh)))
+    (my/agents-refresh)
+    buffer))
+
+(defun my/agents-show-above (window)
+  "Show the agents list in a new window above WINDOW, and return it."
+  (let ((agents (split-window window nil 'above)))
+    (set-window-buffer agents (my/agents-buffer))
+    agents))
+
+(defun my/agents ()
+  "Go to the agents list in the main workspace.
+Every coding agent, its state and what it's doing: Emacs's Claude
+sessions and the agents in zellij.  The list sits above main's ~ shell
+\(`my/show-home-terminal'); closed there, it comes back above the shell,
+or in the selected window when the shell isn't shown either."
+  (interactive)
+  (let ((buffer (my/agents-buffer)))
+    (unless (equal (+workspace-current-name) +workspaces-main)
+      (+workspace-switch +workspaces-main t))
+    (select-window
+     (or (get-buffer-window buffer)
+         (when-let* ((shell (get-buffer-window "~ :: shell")))
+           (my/agents-show-above shell))
+         (progn (switch-to-buffer buffer) (selected-window))))))
 
 (map! :leader
       :desc "Agents" "o a" #'my/agents)
