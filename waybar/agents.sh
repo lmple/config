@@ -9,7 +9,8 @@
 # while it runs, NeedsYou when it asks. So no agent needs a hook for this.
 # pi sets nothing, so it only ever shows as running.
 #
-#   agents.sh   print the module's JSON line (Waybar runs it every few s)
+#   agents.sh          print the module's JSON line (Waybar runs it every few s)
+#   agents.sh --json   print the agents as one JSON array (Emacs's C-c o a)
 set -euo pipefail
 
 # Basenames of the commands that count as agents
@@ -78,8 +79,9 @@ module() {
 
 case "${1:-}" in
   "") module ;;
+  --json) ordered_agents ;;
   *)
-    sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//' >&2
+    sed -n '2,13p' "$0" | sed 's/^# \{0,1\}//' >&2
     exit 2
     ;;
 esac
