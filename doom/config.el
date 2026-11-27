@@ -66,6 +66,11 @@
         auto-revert-avoid-polling t))
 (global-auto-revert-mode +1)
 
+;; Treemacs moves to the file being edited. `after!' so this runs after Doom's
+;; own treemacs setup.
+(after! treemacs
+  (treemacs-follow-mode +1))
+
 (load! "lisp/terminals")
 (load! "lisp/agents")
 (load! "lisp/remote")
