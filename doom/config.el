@@ -71,6 +71,21 @@
 (after! treemacs
   (treemacs-follow-mode +1))
 
+(defun my/treemacs-focus-or-toggle ()
+  "Go to treemacs if it is open, close it if already there, else open it.
+Doom's `+treemacs/toggle' closes a visible treemacs even from a file,
+so reaching an open one took a close and a reopen."
+  (interactive)
+  (require 'treemacs)
+  (let ((window (treemacs-get-local-window)))
+    (cond ((and window (eq window (selected-window)))
+           (delete-window window))
+          (window (select-window window))
+          (t (+treemacs/toggle)))))
+
+(map! :leader
+      :desc "Project sidebar" "o p" #'my/treemacs-focus-or-toggle)
+
 (load! "lisp/terminals")
 (load! "lisp/agents")
 (load! "lisp/remote")
