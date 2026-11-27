@@ -42,7 +42,7 @@
   },
   // ── Clock ───────────────────────────────────────────────────────────────
   "clock": {
-    "format": " {:%a %d %b · %H:%M}",
+    "format": "󰅐 {:%a %d %b · %H:%M}",
     "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
   },
   // ── System tray ─────────────────────────────────────────────────────────
@@ -53,18 +53,18 @@
   // ── Audio ───────────────────────────────────────────────────────────────
   "pulseaudio": {
     "format": "{icon} {volume}%",
-    "format-muted": " muted",
+    "format-muted": "󰖁 muted",
     "format-icons": {
-      "headphone": "",
-      "hands-free": "",
-      "headset": "",
-      "phone": "",
-      "portable": "",
-      "car": "",
+      "headphone": "󰋋",
+      "hands-free": "󰋎",
+      "headset": "󰋎",
+      "phone": "󰏲",
+      "portable": "󰄜",
+      "car": "󰄋",
       "default": [
-        "",
-        "",
-        ""
+        "󰕿",
+        "󰖀",
+        "󰕾"
       ]
     },
     "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
@@ -97,7 +97,7 @@
   },
   // ── CPU ──────────────────────────────────────────────────────────────────
   "cpu": {
-    "format": "CPU {usage}%",
+    "format": "󰻠 {usage}%",
     "tooltip": true,
     "interval": 2,
     "on-click": "alacritty --title btop -e btop"
@@ -111,21 +111,21 @@
   },
   // ── Memory ───────────────────────────────────────────────────────────────
   "memory": {
-    "format": "RAM {used:0.1f}/{total:0.1f}G",
+    "format": "󰍛 {used:0.1f}/{total:0.1f}G",
     "tooltip-format": "Used: {used:0.1f}G / {total:0.1f}G\nSwap: {swapUsed:0.1f}G / {swapTotal:0.1f}G",
     "interval": 5
   },
   // ── Temperature ──────────────────────────────────────────────────────────
   "temperature": {
     "critical-threshold": 80,
-    "format": " {temperatureC}°C",
-    "format-critical": " {temperatureC}°C",
+    "format": "󰔏 {temperatureC}°C",
+    "format-critical": "󰸁 {temperatureC}°C",
     "tooltip": true
   },
   // ── Disk ─────────────────────────────────────────────────────────────────
   "disk": {
     "path": "/",
-    "format": " {free}",
+    "format": "󰋊 {free}",
     "tooltip-format": "{path}: {used} used / {total} total ({percentage_used}%)",
     "interval": 30
   },
@@ -144,11 +144,11 @@
         "critical": 15
     },
     "format": "{icon} {capacity}%",
-    "format-charging": " {capacity}%",
-    "format-plugged": " {capacity}%",
-    "format-full": " full",
-    "format-discharging": " {capacity}%",
-    "format-icons": ["", "", "", "", ""],
+    "format-charging": "󰂄 {capacity}%",
+    "format-plugged": "󰚥 {capacity}%",
+    "format-full": "󰁹 full",
+    "format-discharging": "{icon} {capacity}%",
+    "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰁹"],
     "tooltip-format": "{timeTo}\nPower draw: {power}W",
     "interval": 30
   },
