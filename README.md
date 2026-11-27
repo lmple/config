@@ -74,9 +74,9 @@ them:
 - A mouse selection in any pane, Emacs included, goes to the clipboard through
   `wl-copy` (`zellij/config.kdl`), not OSC 52, which ghostel ignores.
 - `C-c p p` asks which agent to start after the file picker: RET takes claude,
-  or pick `pi-local` (pi on the local model). The list is `my/project-agents`
-  in `doom/lisp/terminals.el`; `my/project-agent` (per machine, in
-  `extra_config.el`) is the one offered first.
+  or pick `pi-local` (pi on the local model) or `opencode`. The list is
+  `my/project-agents` in `doom/lisp/terminals.el`; `my/project-agent` (per
+  machine, in `extra_config.el`) is the one offered first.
 - Emacs's Claude is a claude-code-ide session: its edits open in ediff, and it
   sees the open file, the selection, diagnostics and xref. `C-c o c` opens its
   menu. `M-x claude-code-ide` starts another one in the project, under a name

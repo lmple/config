@@ -229,7 +229,7 @@ Any other agent runs in a zellij terminal, and the command also names its
 buffer, \"<project> :: <command>\", and its zellij session, so neither is
 reused for another agent.  Set it per machine in extra_config.el.")
 
-(defvar my/project-agents '("claude" "pi-local")
+(defvar my/project-agents '("claude" "pi-local" "opencode")
   "Agent commands `my/project-terminals' lets you pick from.
 Each runs as `my/project-agent' describes.  \"pi-local\" is zshrc's alias
 for pi on the local llama-server: it works because the terminal's zsh
