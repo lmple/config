@@ -76,7 +76,8 @@ them:
 - `C-c p p` asks which agent to start after the file picker: RET takes claude,
   or pick `pi-local` (pi on the local model) or `opencode`. The list is
   `my/project-agents` in `doom/lisp/terminals.el`; `my/project-agent` (per
-  machine, in `extra_config.el`) is the one offered first.
+  machine, in `extra_config.el`) is the one offered first. Treemacs opens on
+  the left, on the file you picked, and follows the files you open next.
 - The agents list sits in `main`, above the `~` shell; `C-c o a` goes there
   from anywhere (`doom/lisp/agents.el`). It shows every agent: Emacs's Claude
   sessions, from the state Claude Code reports to ghostel, and the agents in

@@ -316,11 +316,23 @@ unnamed one, or else the one used last; `claude-code-ide' starts more."
   "Fraction of the agent/shell split that the agent's window gets.
 The shell keeps the rest, which is still enough for a few commands.")
 
+(defun my/project-show-treemacs ()
+  "Open treemacs on the current project, keeping the selected window.
+Treemacs keeps a tree per workspace, so a project's new workspace starts
+without one, and treemacs only follows files while it is open.  Opened
+from the file's window, it lands on that file (`treemacs-follow-after-init')."
+  (require 'treemacs)
+  (unless (eq (treemacs-current-visibility) 'visible)
+    ;; `+treemacs/toggle' selects treemacs; the file keeps the cursor
+    (save-selected-window
+      (+treemacs/toggle))))
+
 (defun my/project-terminals (&optional dir)
   "Pick a file in the project at DIR, then open the agent and a shell beside it.
 DIR defaults to `default-directory'.  The agent is picked next, from
-`my/project-agents' (RET takes `my/project-agent').  The file goes on the
-left, the agent top-right and the shell bottom-right.  Cancelling the
+`my/project-agents' (RET takes `my/project-agent').  Treemacs goes on the
+far left, on the picked file (`my/project-show-treemacs'), the file next to
+it, the agent top-right and the shell bottom-right.  Cancelling the
 picker with \\[keyboard-quit] skips the file and puts the agent and the
 shell side by side.  Either way the agent gets `my/project-agent-share' of
 the space it shares with the shell.
@@ -358,7 +370,10 @@ to Emacs: switching back shows the running session, and after a crash
         (round (* my/project-agent-share (window-total-width))))))
     (my/project-ghostel "shell")
     (when file-window
-      (select-window file-window))))
+      (select-window file-window))
+    ;; Last, from the file's window when there is one, so treemacs lands on
+    ;; it; without a file it opens on the project root
+    (my/project-show-treemacs)))
 
 ;; Runs after `C-c p p' instead of Doom's default, `doom-project-find-file',
 ;; which `my/project-terminals' still calls first.
