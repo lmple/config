@@ -8,8 +8,8 @@
 ;;   `ghostel-program-status': working, blocked (a permission or a question),
 ;;   done, idle, with what it's doing.
 ;; - An agent in zellij (pi-local, opencode, cockpits) reports to zellij, which
-;;   doesn't pass it on to the terminal around it.  waybar/agents.sh already
-;;   reads zellij for the bar's agents pill, so its --json mode is reused here.
+;;   doesn't pass it on to the terminal around it.  doom/agents.sh reads
+;;   zellij, in the background, since it asks every session in turn.
 
 (require 'json)
 (require 'tabulated-list)
@@ -25,9 +25,8 @@
 (declare-function +workspace-current-name "autoload/workspaces")
 (defvar +workspaces-main)
 
-(defvar my/agents-script (expand-file-name "~/.config/waybar/agents.sh")
-  "The script that lists the agents in zellij, run with --json.
-install.sh links waybar/ there.")
+(defvar my/agents-script (expand-file-name "agents.sh" doom-user-dir)
+  "The script that lists the agents in zellij as JSON, doom/agents.sh.")
 
 (defvar my/agents-refresh-seconds 3
   "Seconds between refreshes of the agents buffer while it is shown.")
@@ -159,7 +158,7 @@ waits on it.  A failed run keeps the previous list."
              :buffer out
              ;; Apart, so a warning can't break the JSON
              :stderr err
-             :command (list my/agents-script "--json")
+             :command (list my/agents-script)
              :connection-type 'pipe
              :noquery t
              :sentinel

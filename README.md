@@ -80,7 +80,7 @@ them:
 - The agents list sits in `main`, above the `~` shell; `C-c o a` goes there
   from anywhere (`doom/lisp/agents.el`). It shows every agent: Emacs's Claude
   sessions, from the state Claude Code reports to ghostel, and the agents in
-  zellij, from `waybar/agents.sh --json`, cockpits and Alacritty included.
+  zellij, from `doom/agents.sh`, cockpits and Alacritty included.
   Waiting for you comes first, then done, working and idle; pi only ever shows
   as running. RET jumps to the agent's project workspace (an agent outside
   Emacs only says which session it's in), `g` refreshes, and it refreshes
