@@ -105,6 +105,8 @@ hl.config({
         touchpad = {
             natural_scroll = true,
             tap_to_click = true,
+            -- Right click by pressing with two fingers, not in the corner of the pad
+            clickfinger_behavior = true,
         },
         sensitivity = 0,
     },
