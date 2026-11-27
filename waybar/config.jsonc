@@ -84,8 +84,10 @@
   },
   // ── Network (nm-applet handles connecting; this just shows status) ───────
   "network": {
-    "format-wifi": " {essid} ({signalStrength}%)",
-    "format-ethernet": " {ipaddr}",
+    // The icon follows the signal: empty, then one to four bars
+    "format-wifi": "{icon} {essid} ({signalStrength}%)",
+    "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+    "format-ethernet": "󰈀 {ipaddr}",
     "format-disconnected": "⚠ disconnected",
     "tooltip-format": "{ifname}\n{ipaddr}/{cidr}\nGateway: {gwaddr}\nUp: {bandwidthUpBits} Down: {bandwidthDownBits}",
     "on-click": "nm-connection-editor"
