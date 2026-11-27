@@ -77,6 +77,13 @@ them:
   or pick `pi-local` (pi on the local model) or `opencode`. The list is
   `my/project-agents` in `doom/lisp/terminals.el`; `my/project-agent` (per
   machine, in `extra_config.el`) is the one offered first.
+- `C-c o a` lists every agent (`doom/lisp/agents.el`): Emacs's Claude
+  sessions, from the state Claude Code reports to ghostel, and the agents in
+  zellij, from `waybar/agents.sh --json`, cockpits and Alacritty included.
+  Waiting for you comes first, then done, working and idle; pi only ever shows
+  as running. RET jumps to the agent's project workspace (an agent outside
+  Emacs only says which session it's in), `g` refreshes, and it refreshes
+  itself every 3 s while shown.
 - Emacs's Claude is a claude-code-ide session: its edits open in ediff, and it
   sees the open file, the selection, diagnostics and xref. `C-c o c` opens its
   menu. `M-x claude-code-ide` starts another one in the project, under a name

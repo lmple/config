@@ -154,11 +154,17 @@ this file doesn't add a second."
                 (ignore-errors
                   (process-lines "zellij" "list-sessions" "--no-formatting")))))
 
+(defvar-local my/zellij-session nil
+  "Name of the zellij session this terminal buffer shows, or nil.
+Set by `my/ghostel-session', so the agents view (lisp/agents.el) finds the
+buffer of an agent that zellij reports.")
+
 (defun my/ghostel-session (dir buffer session &optional command)
   "Switch to ghostel terminal BUFFER, creating it in DIR if needed.
 The terminal runs in zellij session SESSION, which outlives Emacs, so after
 a crash this reattaches to it.  COMMAND, if non-nil, runs in the session
-when it is created, not on a reattach.  Returns the buffer."
+when it is created, not on a reattach.  Returns the buffer, with
+`my/zellij-session' set to SESSION."
   ;; Not `ghostel-project': it keys a terminal by project root alone, so a
   ;; second call returns the first terminal whatever `ghostel-buffer-name'
   ;; says.  Plain `ghostel' keys it by buffer name, one slot per BUFFER.
@@ -169,7 +175,12 @@ when it is created, not on a reattach.  Returns the buffer."
           (append (list (concat "MY_ZELLIJ_SESSION=" session))
                   (and command (list (concat "MY_ZELLIJ_RUN=" command)))
                   (bound-and-true-p ghostel-environment))))
-    (ghostel)))
+    (let ((terminal (ghostel)))
+      ;; Survives the mode's kill-all-local-variables: ghostel-mode has
+      ;; already run when `ghostel' returns
+      (with-current-buffer terminal
+        (setq my/zellij-session session))
+      terminal)))
 
 (defun my/project-ghostel (name &optional command)
   "Switch to the project's ghostel terminal NAME, creating it if needed.
