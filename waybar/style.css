@@ -52,7 +52,6 @@ window#waybar {
 #tray,
 #battery,
 #power-profiles-daemon,
-#custom-agents,
 #custom-gpu,
 #custom-power {
     background-color: @g-9;
@@ -210,17 +209,6 @@ window#waybar {
 
 #power-profiles-daemon.power-saver {
     color: @orange-golden;
-}
-
-/* Agents (agents.sh): the working count is orange, the waiting one is
-   red-ember from the script's own markup. No blink: an agent can wait for
-   as long as you are elsewhere. */
-#custom-agents {
-    color: @orange-glow;
-}
-
-#custom-agents.running {
-    color: @g-5;
 }
 
 /* Power menu button */

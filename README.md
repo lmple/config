@@ -145,12 +145,8 @@ linked into `~/.config` by `install.sh`.
 | Screen brightness | the brightness keys (`Fn F5` / `Fn F6`, held to repeat, also on the lock screen), or scroll on the bar's brightness pill: 5% steps, never below 5% (hidden without a backlight) |
 | Screenshot of a region, then copy it, save it to `~/Pictures/Screenshots`, or both | `Print` or `Super Shift S` |
 | Dismiss a notification | click it |
-| See the agents, and which one waits | the bar's agents pill (hidden when none runs): ⚙ working, red 🔔 waiting for you, `>_` running only; hover it for the list |
+| See the agents, and which one waits | Emacs's agents list, in its `main` workspace; `C-c o a` from anywhere in Emacs (see [Terminals and crashes](#terminals-and-crashes)) |
 
-- Agents pill (`waybar/agents.sh`): the `claude`, `pi` and `opencode` panes of
-  every live zellij session. Claude Code reports its state itself; pi only
-  counts as running. Emacs's Claude (claude-code-ide) runs outside zellij, so
-  it isn't listed.
 - GPU pill (`waybar/gpu.sh`): an NVIDIA or AMD card's usage and VRAM, red at
   90% full; hidden without one, and a sleeping laptop dGPU isn't woken.
 - Notifications are mako's, top right. The battery warns at 15% and, until
