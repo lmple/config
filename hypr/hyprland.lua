@@ -98,6 +98,8 @@ hl.config({
         -- Swiss French, as `localectl` reports; "ch" alone is Swiss German
         kb_layout = "ch",
         kb_variant = "fr",
+        -- Caps Lock is another Ctrl, easier to reach for Emacs's chords
+        kb_options = "ctrl:nocaps",
         follow_mouse = 1,
         -- The mouse wheel and TrackPoint scroll like the touchpad below.
         -- SUPER + wheel's workspace scroll follows, so it flips direction too.

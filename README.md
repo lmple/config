@@ -159,6 +159,8 @@ linked into `~/.config` by `install.sh`.
   `pkill hyprpaper; hyprpaper &`.
 - The laptop's screen (eDP-1) is always on the right of an external one; the
   mouse and TrackPoint scroll naturally, like the touchpad.
+- Caps Lock is a second Ctrl (`kb_options = "ctrl:nocaps"` in
+  `hypr/hyprland.lua`); there is no Caps Lock key left.
 - `Super M` quits Hyprland without asking.
 - `Hyprland --verify-config -c hypr/hyprland.lua` checks syntax and option
   names, not dispatcher arguments.
