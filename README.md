@@ -17,7 +17,8 @@
   in that project's own `AGENTS.md` or `CLAUDE.md`.
 - Claude Code subagents live in `agents/subagents/`, linked to
   `~/.claude/agents`. `implementer` runs on Sonnet: the Opus session hands it
-  small, fully specified tasks and reviews the result.
+  fully specified tasks that cost more to do than to describe, and reviews
+  the result.
 
 ## Setup
 

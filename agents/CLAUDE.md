@@ -15,5 +15,6 @@ mode reviews the command that actually runs instead of asking for it twice:
 
 Hand a task to the `implementer` subagent (Sonnet) when it is small and fully
 specified: the files, the change, how to verify it. Keep design, debugging
-and anything ambiguous here. Review its work yourself, read the diff and
-rerun the checks, before reporting the task done.
+and anything ambiguous here. Delegate only when doing the work costs more
+than describing it; write a few lines yourself. Review its work yourself,
+read the diff and rerun the checks, before reporting the task done.
