@@ -18,7 +18,8 @@
 - Claude Code subagents live in `agents/subagents/`, linked to
   `~/.claude/agents`. `implementer` runs on Sonnet: the Opus session hands it
   fully specified tasks that cost more to do than to describe, and reviews
-  the result.
+  the result. Independent tasks run in parallel, each in its own git
+  worktree.
 
 ## Setup
 

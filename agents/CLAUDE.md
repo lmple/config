@@ -18,3 +18,7 @@ specified: the files, the change, how to verify it. Keep design, debugging
 and anything ambiguous here. Delegate only when doing the work costs more
 than describing it; write a few lines yourself. Review its work yourself,
 read the diff and rerun the checks, before reporting the task done.
+Independent delegated tasks can run in parallel, each implementer with
+`isolation: "worktree"` so their edits can't collide. Review each worktree's
+diff, then apply it to the main tree with `git diff | git apply`, one at a
+time; nothing is committed, as usual.
