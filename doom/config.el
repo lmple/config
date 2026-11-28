@@ -1,30 +1,32 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-;; ashen is vendored in themes/, which Doom puts on custom-theme-load-path.
-(setq doom-theme 'ashen)
+;; Catppuccin (catppuccin-theme in packages.el) in its Mocha flavour, which
+;; must be set before Doom loads the theme. Ashen stays vendored in themes/,
+;; so `M-x load-theme RET ashen' still compares the two.
+(setq catppuccin-flavor 'mocha)
+(setq doom-theme 'catppuccin)
 
-;; The Ashen theme sets no terminal colours, so ghostel (its ghostel-color-*
-;; faces inherit ansi-color-*) fell back to Emacs's bright defaults, and `ls'
-;; drew directories in a vivid blue. These are alacritty/theme.toml's 16
-;; colours, so a terminal looks the same in Emacs and Alacritty. Set here, not in the
-;; vendored theme, which an update overwrites. Bright is normal but for black.
-(custom-theme-set-faces! 'ashen
-  '(ansi-color-black          :foreground "#121212" :background "#121212")
-  '(ansi-color-red            :foreground "#b14242" :background "#b14242")
-  '(ansi-color-green          :foreground "#d87c4a" :background "#d87c4a")
-  '(ansi-color-yellow         :foreground "#e49a44" :background "#e49a44")
-  '(ansi-color-blue           :foreground "#4a8b8b" :background "#4a8b8b")
-  '(ansi-color-magenta        :foreground "#a7a7a7" :background "#a7a7a7")
-  '(ansi-color-cyan           :foreground "#b4b4b4" :background "#b4b4b4")
-  '(ansi-color-white          :foreground "#d5d5d5" :background "#d5d5d5")
-  '(ansi-color-bright-black   :foreground "#949494" :background "#949494")
-  '(ansi-color-bright-red     :foreground "#b14242" :background "#b14242")
-  '(ansi-color-bright-green   :foreground "#d87c4a" :background "#d87c4a")
-  '(ansi-color-bright-yellow  :foreground "#e49a44" :background "#e49a44")
-  '(ansi-color-bright-blue    :foreground "#4a8b8b" :background "#4a8b8b")
-  '(ansi-color-bright-magenta :foreground "#a7a7a7" :background "#a7a7a7")
-  '(ansi-color-bright-cyan    :foreground "#b4b4b4" :background "#b4b4b4")
-  '(ansi-color-bright-white   :foreground "#d5d5d5" :background "#d5d5d5"))
+;; Catppuccin sets term-color-* but not ansi-color-*, which ghostel's
+;; ghostel-color-* faces inherit, so ghostel would fall back to Emacs's bright
+;; defaults. These are alacritty/theme.toml's 16 colours, so a terminal looks
+;; the same in Emacs and Alacritty. Bright is normal but for black and white.
+(custom-theme-set-faces! 'catppuccin
+  '(ansi-color-black          :foreground "#45475a" :background "#45475a")
+  '(ansi-color-red            :foreground "#f38ba8" :background "#f38ba8")
+  '(ansi-color-green          :foreground "#a6e3a1" :background "#a6e3a1")
+  '(ansi-color-yellow         :foreground "#f9e2af" :background "#f9e2af")
+  '(ansi-color-blue           :foreground "#89b4fa" :background "#89b4fa")
+  '(ansi-color-magenta        :foreground "#f5c2e7" :background "#f5c2e7")
+  '(ansi-color-cyan           :foreground "#94e2d5" :background "#94e2d5")
+  '(ansi-color-white          :foreground "#bac2de" :background "#bac2de")
+  '(ansi-color-bright-black   :foreground "#585b70" :background "#585b70")
+  '(ansi-color-bright-red     :foreground "#f38ba8" :background "#f38ba8")
+  '(ansi-color-bright-green   :foreground "#a6e3a1" :background "#a6e3a1")
+  '(ansi-color-bright-yellow  :foreground "#f9e2af" :background "#f9e2af")
+  '(ansi-color-bright-blue    :foreground "#89b4fa" :background "#89b4fa")
+  '(ansi-color-bright-magenta :foreground "#f5c2e7" :background "#f5c2e7")
+  '(ansi-color-bright-cyan    :foreground "#94e2d5" :background "#94e2d5")
+  '(ansi-color-bright-white   :foreground "#a6adc8" :background "#a6adc8"))
 (setq display-line-numbers-type t)
 (setq font-lock-maximum-decoration t)
 (setq org-directory "~/org/")
