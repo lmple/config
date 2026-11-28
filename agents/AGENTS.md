@@ -9,6 +9,16 @@ TLA+, TypeScript.
 - If a task is ambiguous, stop and ask before proceeding
 - If you are about to touch something outside the agreed scope, stop and ask
 
+## Planning
+- An idea that isn't settled yet gets grilled first (the `grilling` skill,
+  `/grill-me`): one question at a time until every decision is made
+- In a project with an `openspec/` directory, a new feature or a change in
+  behaviour starts as an OpenSpec change: propose, apply, then archive once
+  it is verified. Small fixes (a typo, a one-line bug) go in directly
+- In a project without one, plan in the conversation; don't run
+  `openspec init` unless asked
+- Debugging: find the root cause before changing code, never fix by guessing
+
 ## Code
 - Functional style where it makes sense: pure functions, immutable data
   structures, composition over inheritance
