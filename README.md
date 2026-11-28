@@ -142,8 +142,9 @@ linked into `~/.config` by `install.sh`.
   90% full; hidden without one, and a sleeping laptop dGPU isn't woken.
 - Notifications are mako's, top right. The battery warns at 15% and, until
   clicked, at 5%, even over a fullscreen window.
-- The desktop is Ashen too: `waybar/style.css` names the palette, and mako,
-  hyprlock and the window borders use the same values.
+- The desktop is still Ashen: `waybar/style.css` names the palette, and mako,
+  hyprlock and the window borders use the same values. Emacs and the terminal
+  (Alacritty, zellij, starship, zsh highlighting) are Catppuccin Mocha.
 - Wallpaper: `~/Pictures/wallpaper.jpg`, a symlink per machine (black
   without it). Change it with `ln -sf <image> ~/Pictures/wallpaper.jpg`, then
   `pkill hyprpaper; hyprpaper &`.
@@ -166,9 +167,9 @@ Zellij links a wrapped URL only up to the end of its first row
 | Emacs buffer outside Zellij (`M-x ghostel`) | `C-c o u` |
 | Alacritty | `Shift`+click (Shift is needed inside Zellij), `Ctrl+Shift+O` opens, `Ctrl+Shift+Y` copies |
 
-Claude Code follows the terminal's Ashen colours with `/theme` → "Dark mode
-(ANSI colors only)". The choice lives in `~/.claude.json`, outside this repo, so
-pick it once per machine. Ashen has no green, so lines a diff adds show orange.
+Claude Code follows the terminal's Catppuccin colours with `/theme` → "Dark
+mode (ANSI colors only)". The choice lives in `~/.claude.json`, outside this
+repo, so pick it once per machine.
 
 ## Local LLM (llama.cpp)
 
