@@ -1,12 +1,12 @@
 # mako: notification popups for the Hyprland session (started by hyprland.lua).
-# Ashen, with Waybar's font (waybar/style.css names the palette); the radius
-# is hyprland.lua's rounding. The border is orange-glow, not a red, so the
-# critical one's red-flame stands apart from it.
+# Catppuccin Mocha, with Waybar's font (waybar/style.css names the palette);
+# the radius is hyprland.lua's rounding. The border is peach, not a red, so
+# the critical one's red stands apart from it.
 
 font=JetBrainsMono Nerd Font 11
-background-color=#121212ee
-text-color=#b4b4b4
-border-color=#d87c4a
+background-color=#1e1e2eee
+text-color=#cdd6f4
+border-color=#fab387
 border-size=2
 border-radius=8
 padding=10
@@ -17,7 +17,7 @@ default-timeout=5000
 
 # Critical ones stay until clicked: they are the ones that can't be missed
 [urgency=critical]
-border-color=#c53030
+border-color=#f38ba8
 default-timeout=0
 
 # Battery alerts (hypr/battery-notify.sh) go above fullscreen windows, which

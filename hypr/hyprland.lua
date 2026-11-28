@@ -60,9 +60,10 @@ hl.config({
         gaps_out = 5,
         border_size = 2,
         col = {
-            -- Ashen red-ember and g-8, as zellij's selected tab and panes
-            active_border = "rgba(b14242ff)",
-            inactive_border = "rgba(323232cc)",
+            -- Catppuccin Mocha green and surface1: green is the selected tab
+            -- and pane frame in zellij's built-in catppuccin-mocha theme
+            active_border = "rgba(a6e3a1ff)",
+            inactive_border = "rgba(45475acc)",
         },
         layout = "dwindle",
         resize_on_border = true,

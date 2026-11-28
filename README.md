@@ -142,9 +142,10 @@ linked into `~/.config` by `install.sh`.
   90% full; hidden without one, and a sleeping laptop dGPU isn't woken.
 - Notifications are mako's, top right. The battery warns at 15% and, until
   clicked, at 5%, even over a fullscreen window.
-- The desktop is still Ashen: `waybar/style.css` names the palette, and mako,
-  hyprlock and the window borders use the same values. Emacs and the terminal
-  (Alacritty, zellij, starship, zsh highlighting) are Catppuccin Mocha.
+- Everything is Catppuccin Mocha: Emacs, the terminal (Alacritty, zellij,
+  starship, zsh highlighting) and the desktop. `waybar/style.css` names the
+  palette, and mako, hyprlock and the window borders use the same values;
+  green, zellij's selected tab, marks the active workspace and window.
 - Wallpaper: `~/Pictures/wallpaper.jpg`, a symlink per machine (black
   without it). Change it with `ln -sf <image> ~/Pictures/wallpaper.jpg`, then
   `pkill hyprpaper; hyprpaper &`.

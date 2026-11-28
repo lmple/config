@@ -1,22 +1,24 @@
-/* Ashen, as in doom/themes/ashen-theme.el (names and values from there) and
-   zellij's port in zellij/config.kdl: the selected workspace is red-ember on
-   the background, like zellij's selected tab. */
-@define-color background #121212;
-@define-color foreground #b4b4b4;
-@define-color red-flame #c53030;
-@define-color red-glowing #df6464;
-@define-color red-ember #b14242;
-@define-color orange-glow #d87c4a;
-@define-color orange-blaze #c4693d;
-@define-color orange-smolder #e49a44;
-@define-color orange-golden #e5a72a;
-@define-color blue #4a8b8b;
-@define-color g-1 #e5e5e5;
-@define-color g-4 #a7a7a7;
-@define-color g-5 #949494;
-@define-color g-7 #535353;
-@define-color g-8 #323232;
-@define-color g-9 #212121;
+/* Catppuccin Mocha (https://catppuccin.com/palette), named as in its palette:
+   only the colours used here. The selected workspace is green on mantle, like
+   the selected tab in zellij's built-in catppuccin-mocha theme. */
+@define-color base #1e1e2e;
+@define-color mantle #181825;
+@define-color surface0 #313244;
+@define-color surface1 #45475a;
+@define-color overlay0 #6c7086;
+@define-color overlay2 #9399b2;
+@define-color subtext0 #a6adc8;
+@define-color text #cdd6f4;
+@define-color red #f38ba8;
+@define-color maroon #eba0ac;
+@define-color peach #fab387;
+@define-color yellow #f9e2af;
+@define-color green #a6e3a1;
+@define-color teal #94e2d5;
+@define-color sapphire #74c7ec;
+@define-color blue #89b4fa;
+@define-color lavender #b4befe;
+@define-color pink #f5c2e7;
 
 * {
     font-family: "JetBrainsMono Nerd Font", "Noto Sans", monospace;
@@ -27,8 +29,8 @@
 }
 
 window#waybar {
-    background-color: alpha(@background, 0.92);
-    color: @foreground;
+    background-color: alpha(@base, 0.92);
+    color: @text;
     border-radius: 10px;
     transition: background-color 0.3s ease;
 }
@@ -54,8 +56,8 @@ window#waybar {
 #power-profiles-daemon,
 #custom-gpu,
 #custom-power {
-    background-color: @g-9;
-    color: @foreground;
+    background-color: @surface0;
+    color: @text;
     padding: 2px 10px;
     border-radius: 8px;
     margin: 4px 2px;
@@ -64,63 +66,63 @@ window#waybar {
 /* Workspaces */
 #workspaces button {
     padding: 0 6px;
-    color: @g-7;
+    color: @overlay0;
     border-radius: 6px;
     transition: all 0.2s;
 }
 
 #workspaces button.active {
-    color: @background;
-    background-color: @red-ember;
+    color: @mantle;
+    background-color: @green;
 }
 
 #workspaces button:hover {
-    color: @g-1;
-    background-color: @g-8;
+    color: @text;
+    background-color: @surface1;
 }
 
 /* Window title */
 #window {
-    color: @g-5;
+    color: @subtext0;
     padding: 2px 10px;
     margin: 4px 2px;
 }
 
 /* Clock */
 #clock {
-    color: @orange-glow;
+    color: @lavender;
     font-weight: 500;
 }
 
 /* CPU */
 #cpu {
-    color: @orange-smolder;
+    color: @peach;
 }
 
 #cpu.warning {
-    color: @orange-golden;
+    color: @yellow;
 }
 
 #cpu.critical {
-    color: @red-flame;
+    color: @red;
 }
 
-/* GPU (gpu.sh): grey when idle, orange like the CPU when busy, red once
+/* GPU (gpu.sh): grey when idle, peach like the CPU when busy, red once
    VRAM is nearly full, dim while a laptop's dGPU sleeps */
 #custom-gpu.idle {
-    color: @g-4;
+    color: @overlay2;
 }
 
 #custom-gpu.busy {
-    color: @orange-smolder;
+    color: @peach;
 }
 
 #custom-gpu.full {
-    color: @red-flame;
+    color: @red;
 }
 
 #custom-gpu.asleep {
-    color: @g-7;
+    color: @overlay0;
 }
 
 /* Memory */
@@ -130,40 +132,40 @@ window#waybar {
 
 /* Temperature */
 #temperature {
-    color: @orange-blaze;
+    color: @maroon;
 }
 
 #temperature.critical {
-    color: @red-flame;
+    color: @red;
     animation: blink 0.5s steps(1) infinite;
 }
 
 /* Disk */
 #disk {
-    color: @g-4;
+    color: @overlay2;
 }
 
 /* Network */
 #network {
-    color: @blue;
+    color: @sapphire;
 }
 
 #network.disconnected {
-    color: @red-flame;
+    color: @red;
 }
 
 /* Audio */
 #pulseaudio {
-    color: @red-glowing;
+    color: @pink;
 }
 
 #pulseaudio.muted {
-    color: @g-7;
+    color: @overlay0;
 }
 
 /* Screen brightness: the palette's sunniest colour */
 #backlight {
-    color: @orange-golden;
+    color: @yellow;
 }
 
 /* Tray */
@@ -173,20 +175,20 @@ window#waybar {
 
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
-    background-color: @red-flame;
+    background-color: @red;
 }
 
-/* Battery: Ashen has no green, so a healthy battery is orange */
+/* Battery: green while healthy */
 #battery {
-    color: @orange-glow;
+    color: @green;
 }
 
 #battery.warning {
-    color: @orange-golden;
+    color: @yellow;
 }
 
 #battery.critical {
-    color: @red-flame;
+    color: @red;
 }
 
 #battery.critical:not(.charging) {
@@ -195,12 +197,12 @@ window#waybar {
 
 /* Last, so plugging in at a low level shows charging, not the alarm */
 #battery.charging {
-    color: @orange-smolder;
+    color: @teal;
 }
 
 /* Power profile: colour says which one is on */
 #power-profiles-daemon.performance {
-    color: @red-glowing;
+    color: @red;
 }
 
 #power-profiles-daemon.balanced {
@@ -208,18 +210,18 @@ window#waybar {
 }
 
 #power-profiles-daemon.power-saver {
-    color: @orange-golden;
+    color: @green;
 }
 
 /* Power menu button */
 #custom-power {
-    color: @red-glowing;
+    color: @red;
 }
 
-/* Submap indicator */
+/* Submap indicator: the selected workspace's green, as both mark a mode */
 #submap {
-    background-color: @red-ember;
-    color: @background;
+    background-color: @green;
+    color: @mantle;
     padding: 2px 10px;
     border-radius: 8px;
     margin: 4px 2px;
@@ -227,5 +229,5 @@ window#waybar {
 }
 
 @keyframes blink {
-    to { background-color: alpha(@red-flame, 0.3); }
+    to { background-color: alpha(@red, 0.3); }
 }
