@@ -20,8 +20,8 @@ usage() {
 Usage: ./deps.sh [options]
 
 Without options, installs the base set: distro packages, oh-my-zsh, Node (NVM),
-the coding agents (Claude Code, opencode, pi), npm/pipx tools, Lean, Quint
-and SDKMAN.
+the coding agents (Claude Code, opencode, pi), npm/pipx tools, uv, Lean,
+Quint and SDKMAN.
 
   --heavy       Also install TeX Live, LanguageTool, PlantUML, Jupyter (several GB)
   --firewall    Also install and configure ufw (deny inbound, allow outbound)
@@ -222,6 +222,14 @@ pipx_tools() {
 }
 
 toolchains() {
+  log "uv"
+  # Astral's standalone installer, into ~/.local/bin; it updates itself with
+  # `uv self update`. zshrc already puts ~/.local/bin on PATH, so the
+  # installer may not edit shell files. Its uvx starts lean-lsp below.
+  if [[ ! -x "$HOME/.local/bin/uv" ]]; then
+    run_sh 'curl -LsSf https://astral.sh/uv/install.sh | sh -s -- --no-modify-path'
+  fi
+
   log "Lean"
   # elan adds itself to PATH via ~/.profile and ~/.zprofile, not the repo's zshrc
   if [[ ! -d "$HOME/.elan" ]]; then
@@ -229,7 +237,7 @@ toolchains() {
   fi
   # Proof goals and diagnostics for Claude Code without a full lake build,
   # pinned. Its four remote search tools are off: they send goal and search
-  # text to outside sites. uvx starts it, so uv must be installed.
+  # text to outside sites. uvx, installed above, starts it.
   if ! { [[ -x "$HOME/.local/bin/claude" ]] && "$HOME/.local/bin/claude" mcp get lean-lsp >/dev/null 2>&1; }; then
     run "$HOME/.local/bin/claude" mcp add lean-lsp --scope user \
       --env LEAN_MCP_DISABLED_TOOLS=lean_leansearch,lean_loogle,lean_leanfinder,lean_hammer_premise \

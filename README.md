@@ -28,8 +28,8 @@
   for Claude Code at user scope: proof goals, diagnostics and local search
   without a full `lake build`. Its remote search tools (LeanSearch, Loogle,
   Lean Finder, the premise hammer) are off, since they send goal text to
-  outside sites. It starts through `uvx`, which `deps.sh` doesn't install:
-  install uv first. Run `lake build` in a project before using it.
+  outside sites. It starts through `uvx`, from the uv that `deps.sh`
+  installs. Run `lake build` in a project before using it.
 
 ## Setup
 
