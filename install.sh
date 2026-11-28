@@ -43,8 +43,10 @@ link pi/models.json "$HOME/.pi/agent/models.json"
 # One set of coding rules for every agent. Each reads its own global file, in
 # a directory that also holds its logins and sessions, so the file is linked,
 # not the directory. Claude Code doesn't read AGENTS.md: its CLAUDE.md imports
-# it and adds what only Claude needs.
+# it and adds what only Claude needs. Subagents are Claude Code only, and
+# ~/.claude/agents holds nothing else, so that directory is linked whole.
 link agents/AGENTS.md "$HOME/.claude/AGENTS.md"
 link agents/CLAUDE.md "$HOME/.claude/CLAUDE.md"
+link agents/subagents "$HOME/.claude/agents"
 link agents/AGENTS.md "$HOME/.config/opencode/AGENTS.md"
 link agents/AGENTS.md "$HOME/.pi/agent/AGENTS.md"

@@ -15,6 +15,9 @@
   `agents/CLAUDE.md`, which adds rtk), opencode and pi. Edit it there; each
   agent reads it at the start of its next session. Rules for one project go
   in that project's own `AGENTS.md` or `CLAUDE.md`.
+- Claude Code subagents live in `agents/subagents/`, linked to
+  `~/.claude/agents`. `implementer` runs on Sonnet: the Opus session hands it
+  small, fully specified tasks and reviews the result.
 
 ## Setup
 

@@ -12,3 +12,8 @@ mode reviews the command that actually runs instead of asking for it twice:
 `rtk read FILE --head-lines N`), `rtk grep`, `rtk find`, `rtk diff`,
 `rtk du`, in every part of a pipe or `;`/`&&` chain. When unsure,
 `rtk rewrite 'CMD'` prints the form the hook would run.
+
+Hand a task to the `implementer` subagent (Sonnet) when it is small and fully
+specified: the files, the change, how to verify it. Keep design, debugging
+and anything ambiguous here. Review its work yourself, read the diff and
+rerun the checks, before reporting the task done.
