@@ -81,6 +81,16 @@ detect_distro() {
 pacman_install() { run sudo pacman -S --needed "$@"; }
 apt_install() { run sudo apt install "$@"; }
 
+# A Nerd Font that the distro doesn't package, from the latest release into
+# ~/.local/share/fonts/DIR; skipped once DIR exists.
+nerd_font() {
+  local archive=$1 dir="$HOME/.local/share/fonts/$2"
+  if [[ ! -d "$dir" ]]; then
+    run mkdir -p "$dir"
+    run_sh "curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$archive.tar.xz | tar -xJ -C \"$dir\" && fc-cache -f"
+  fi
+}
+
 # ---------------------------------------------------------------- base
 
 pkgs_arch() {
@@ -90,8 +100,12 @@ pkgs_arch() {
   # Shell: zshrc loads starship, pyenv and direnv; fzf/ripgrep/fd back fuzzy search in Emacs;
   # jq parses zellij's pane list for zellij/url-picker.sh
   pacman_install zsh starship pyenv direnv fzf ripgrep fd jq
-  # Terminal: zshrc auto-starts zellij; alacritty and Doom use FiraCode Nerd Font
+  # Terminal: zshrc auto-starts zellij; alacritty, Doom and hyprlock use
+  # FiraCode Nerd Font
   pacman_install alacritty ttf-firacode-nerd zellij wl-clipboard xclip
+  # Doom's other fonts: nerd-icons draws its icons with Symbols Nerd Font
+  # Mono, and (emoji +unicode) needs a colour emoji font
+  pacman_install ttf-nerd-fonts-symbols-mono noto-fonts-emoji
   # Terminal git UI, alongside magit
   pacman_install lazygit
   # File manager: Super+E in Hyprland (hypr/hyprland.lua) and Meta+E in Plasma open it
@@ -128,12 +142,14 @@ pkgs_apt() {
   apt_install zsh starship pyenv direnv fzf ripgrep fd-find jq
   run mkdir -p "$HOME/.local/bin"
   run_sh 'ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"'
-  # Terminal: FiraCode Nerd Font is not packaged, install it per user
+  # Terminal: alacritty and Doom use FiraCode Nerd Font, which is not
+  # packaged, so it's installed per user
   apt_install alacritty wl-clipboard xclip
-  if [[ ! -d "$HOME/.local/share/fonts/FiraCodeNerd" ]]; then
-    run mkdir -p "$HOME/.local/share/fonts/FiraCodeNerd"
-    run_sh 'curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.tar.xz | tar -xJ -C "$HOME/.local/share/fonts/FiraCodeNerd" && fc-cache -f'
-  fi
+  nerd_font FiraCode FiraCodeNerd
+  # Doom's other fonts: nerd-icons draws its icons with Symbols Nerd Font
+  # Mono (not packaged either), and (emoji +unicode) needs a colour emoji font
+  nerd_font NerdFontsSymbolsOnly NerdFontsSymbolsOnly
+  apt_install fonts-noto-color-emoji
   # emacs-pgtk is for Wayland, swap in emacs-gtk on X11; lazygit is a terminal git UI
   apt_install emacs-pgtk lazygit
   # Languages and LSP servers; zellij is not packaged, so build it with cargo
@@ -377,10 +393,12 @@ hyprland() {
   # whose daemon must also be running for the bar to switch them, and the
   # notification daemon (mako; Plasma's only runs inside Plasma) with the
   # notify-send that the battery alerts use (libnotify), and btop, which a
-  # click on the bar's CPU module opens.
+  # click on the bar's CPU module opens. Fonts: JetBrainsMono Nerd Font for
+  # Waybar and mako, Noto Sans as Waybar's fallback, and hyprlock's FiraCode
+  # Nerd Font (in the base set too, but here for --skip-base --hyprland).
   pacman_install hyprland hyprlock hypridle hyprpaper waybar wofi grim slurp \
     network-manager-applet polkit-gnome dolphin pavucontrol power-profiles-daemon \
-    mako libnotify btop
+    mako libnotify btop ttf-jetbrains-mono-nerd noto-fonts ttf-firacode-nerd
   run sudo systemctl enable --now power-profiles-daemon
 }
 
