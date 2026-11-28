@@ -10,9 +10,9 @@ right_format = ""
 # Don't add blank line before prompt
 add_newline = false
 
-# Ashen palette (https://codeberg.org/ficd/ashen). Its keys override
-# Starship's colour names, so "green", "red"... resolve to exact Ashen hex.
-palette = "ashen"
+# Catppuccin Mocha palette (https://catppuccin.com/palette). Its keys override
+# Starship's colour names, so "green", "red"... resolve to exact Mocha hex.
+palette = "catppuccin_mocha"
 
 # Fill between left and right
 [fill]
@@ -164,18 +164,19 @@ style = "fg:orange bg:current_line"
 symbol = "\ue738 "
 format = "[ $symbol$version ]($style)"
 
-# Ashen palette, referenced by `palette` at the top. The keys are role names
-# the styles above already use; Ashen has no green or purple, so those map to
-# the same Ashen colours its Alacritty theme puts in the green/magenta slots.
-[palettes.ashen]
-background = "#121212"
-current_line = "#212121"
-foreground = "#b4b4b4"
-comment = "#535353"
-cyan = "#4a8b8b"
-green = "#d87c4a"
-orange = "#c4693d"
-pink = "#df6464"
-purple = "#a7a7a7"
-red = "#c53030"
-yellow = "#e49a44"
+# Catppuccin Mocha, referenced by `palette` at the top. The keys are role
+# names the styles above already use, each mapped to its Mocha colour (named
+# after the value); cyan is teal, the colour alacritty/theme.toml puts in the
+# terminal's cyan slot, so the prompt matches the terminal.
+[palettes.catppuccin_mocha]
+background = "#1e1e2e"   # base
+current_line = "#313244" # surface0
+foreground = "#cdd6f4"   # text
+comment = "#6c7086"      # overlay0
+cyan = "#94e2d5"         # teal
+green = "#a6e3a1"
+orange = "#fab387"       # peach
+pink = "#f5c2e7"
+purple = "#cba6f7"       # mauve
+red = "#f38ba8"
+yellow = "#f9e2af"

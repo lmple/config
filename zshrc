@@ -15,53 +15,49 @@ plugins=(
     zsh-syntax-highlighting
 )
 
-# Ashen palette for zsh-syntax-highlighting, matching the vendored Emacs theme
-# (doom/themes/ashen-theme.el): strings and keywords use its font-lock colours,
-# and commands use orange-glow, the colour Ashen puts in the terminal's green
-# slot. Set before oh-my-zsh loads the plugin, whose defaults only fill unset styles.
+# Catppuccin Mocha for zsh-syntax-highlighting: the role colours of
+# catppuccin/zsh-syntax-highlighting's Mocha theme (commit 7926c3d3e17d),
+# grouped by role instead of pasted line by line. Set before oh-my-zsh loads
+# the plugin, whose defaults only fill unset styles.
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main cursor)
 typeset -gA ZSH_HIGHLIGHT_STYLES
 () {
-    local fg='#b4b4b4' comment='#535353' command='#d87c4a' option='#e49a44'
-    local string='#df6464' keyword='#b14242' builtin='#4a8b8b'
-    local separator='#c4693d' error='#c53030'
-    ZSH_HIGHLIGHT_STYLES[comment]="fg=$comment,italic"
-    ZSH_HIGHLIGHT_STYLES[alias]="fg=$command"
-    ZSH_HIGHLIGHT_STYLES[suffix-alias]="fg=$command"
-    ZSH_HIGHLIGHT_STYLES[global-alias]="fg=$command"
-    ZSH_HIGHLIGHT_STYLES[function]="fg=$command"
-    ZSH_HIGHLIGHT_STYLES[command]="fg=$command"
-    ZSH_HIGHLIGHT_STYLES[hashed-command]="fg=$command"
+    local fg='#cdd6f4' comment='#585b70' command='#a6e3a1' option='#fab387'
+    local substitution='#cba6f7' separator='#f38ba8' string='#f9e2af'
+    local error='#eba0ac'
+    ZSH_HIGHLIGHT_STYLES[comment]="fg=$comment"
+    local style
+    for style in alias suffix-alias global-alias function command \
+        hashed-command builtin reserved-word; do
+        ZSH_HIGHLIGHT_STYLES[$style]="fg=$command"
+    done
     ZSH_HIGHLIGHT_STYLES[precommand]="fg=$command,italic"
-    ZSH_HIGHLIGHT_STYLES[builtin]="fg=$builtin"
-    ZSH_HIGHLIGHT_STYLES[reserved-word]="fg=$keyword"
     ZSH_HIGHLIGHT_STYLES[autodirectory]="fg=$option,italic"
     ZSH_HIGHLIGHT_STYLES[single-hyphen-option]="fg=$option"
     ZSH_HIGHLIGHT_STYLES[double-hyphen-option]="fg=$option"
-    ZSH_HIGHLIGHT_STYLES[back-quoted-argument]="fg=$builtin"
-    ZSH_HIGHLIGHT_STYLES[history-expansion]="fg=$builtin"
-    ZSH_HIGHLIGHT_STYLES[commandseparator]="fg=$separator"
-    ZSH_HIGHLIGHT_STYLES[back-quoted-argument-delimiter]="fg=$separator"
-    ZSH_HIGHLIGHT_STYLES[path_pathseparator]="fg=$separator"
-    ZSH_HIGHLIGHT_STYLES[path_prefix_pathseparator]="fg=$separator"
-    # Escapes inside strings, like the theme's font-lock-escape-face
-    ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]="fg=$option"
-    ZSH_HIGHLIGHT_STYLES[back-dollar-quoted-argument]="fg=$option"
-    ZSH_HIGHLIGHT_STYLES[single-quoted-argument]="fg=$string"
-    ZSH_HIGHLIGHT_STYLES[double-quoted-argument]="fg=$string"
-    ZSH_HIGHLIGHT_STYLES[rc-quote]="fg=$string"
-    ZSH_HIGHLIGHT_STYLES[command-substitution-quoted]="fg=$string"
-    ZSH_HIGHLIGHT_STYLES[command-substitution-delimiter-quoted]="fg=$string"
-    ZSH_HIGHLIGHT_STYLES[single-quoted-argument-unclosed]="fg=$error"
-    ZSH_HIGHLIGHT_STYLES[double-quoted-argument-unclosed]="fg=$error"
-    ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument-unclosed]="fg=$error"
-    ZSH_HIGHLIGHT_STYLES[back-quoted-argument-unclosed]="fg=$error"
-    ZSH_HIGHLIGHT_STYLES[unknown-token]="fg=$error"
-    local style
+    ZSH_HIGHLIGHT_STYLES[back-quoted-argument]="fg=$substitution"
+    ZSH_HIGHLIGHT_STYLES[history-expansion]="fg=$substitution"
+    for style in commandseparator back-quoted-argument-delimiter \
+        back-double-quoted-argument back-dollar-quoted-argument; do
+        ZSH_HIGHLIGHT_STYLES[$style]="fg=$separator"
+    done
+    ZSH_HIGHLIGHT_STYLES[path_pathseparator]="fg=$separator,underline"
+    ZSH_HIGHLIGHT_STYLES[path_prefix_pathseparator]="fg=$separator,underline"
+    for style in single-quoted-argument double-quoted-argument rc-quote \
+        command-substitution-quoted command-substitution-delimiter-quoted; do
+        ZSH_HIGHLIGHT_STYLES[$style]="fg=$string"
+    done
+    for style in single-quoted-argument-unclosed double-quoted-argument-unclosed \
+        dollar-quoted-argument-unclosed back-quoted-argument-unclosed \
+        unknown-token; do
+        ZSH_HIGHLIGHT_STYLES[$style]="fg=$error"
+    done
+    ZSH_HIGHLIGHT_STYLES[path]="fg=$fg,underline"
+    ZSH_HIGHLIGHT_STYLES[path_prefix]="fg=$fg,underline"
     for style in command-substitution-delimiter \
         command-substitution-delimiter-unquoted process-substitution-delimiter \
         dollar-quoted-argument dollar-double-quoted-argument assign named-fd \
-        numeric-fd path path_prefix globbing redirection arg0 default; do
+        numeric-fd globbing redirection arg0 default cursor; do
         ZSH_HIGHLIGHT_STYLES[$style]="fg=$fg"
     done
 }
