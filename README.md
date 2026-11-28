@@ -28,7 +28,6 @@ Opt-in extras, combinable:
 | `--firewall` | ufw: deny inbound, allow outbound |
 | `--clamav` | ClamAV with its signature updater and daemon (about 1 GB of RAM); scan by hand with `clamdscan --multiscan --fdpass <path>` |
 | `--llama` | llama.cpp from the llama.app installer, on every distro, see [Local LLM](#local-llm-llamacpp) |
-| `--helix` | Helix from upstream master, built from source |
 | `--hyprland` | Hyprland, Waybar, hyprlock/hypridle, wofi, Dolphin, nm-applet, power-profiles-daemon, mako, btop (Arch only), see [Hyprland desktop](#hyprland-desktop) |
 | `--doom` | Doom Emacs core + `doom install` |
 
@@ -37,11 +36,10 @@ Opt-in extras, combinable:
 Everything at once, links first:
 
 ```sh
-./install.sh && ./deps.sh --heavy --firewall --clamav --llama --helix --hyprland --doom
+./install.sh && ./deps.sh --heavy --firewall --clamav --llama --hyprland --doom
 ```
 
-- `install.sh` goes first: `--doom` needs `~/.config/doom` linked, and `--helix`
-  would otherwise make `~/.config/helix` a real directory.
+- `install.sh` goes first: `--doom` needs `~/.config/doom` linked.
 - Emacs is the Wayland build (`emacs-wayland` / `emacs-pgtk`); on X11, swap in
   `emacs` / `emacs-gtk` in `deps.sh`.
 - Ubuntu: most packages live in `universe` (enabled by default on desktop).

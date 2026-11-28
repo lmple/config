@@ -119,9 +119,6 @@ export PATH="$HOME/.opencode/bin:$PATH"
 export PATH="$HOME/.pi/agent/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 
-# Helix built by deps.sh --helix needs no HELIX_RUNTIME: deps.sh links the
-# runtime beside the binary, which every shell finds, old ones included.
-
 # PyEnv
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"

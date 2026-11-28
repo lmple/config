@@ -6,6 +6,3 @@ tmp/
 doom/extra_config.el
 doom/extra_packages.el
 doom/custom.el
-# Helix builds its grammars into the first runtime dir, ~/.config/helix/runtime,
-# which is this repo through the install.sh link (2+ GB)
-helix/runtime/

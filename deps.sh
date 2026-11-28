@@ -12,8 +12,6 @@ REPO_DIR="$(dirname "$(realpath "$0")")"
 readonly REPO_DIR
 readonly NVM_DIR="$HOME/.nvm"
 readonly ZSH_CUSTOM_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
-# Its runtime/ is linked beside the hx binary, see helix()
-readonly HELIX_SRC="$HOME/.local/src/helix"
 
 DRY_RUN=false
 
@@ -31,7 +29,6 @@ and SDKMAN.
                 scanning daemon (clamd, about 1 GB of RAM); scans are manual
   --llama       Also install llama.cpp with the llama.app installer, on every
                 distro: CUDA/ROCm/Vulkan/CPU build into ~/.local/bin/llama
-  --helix       Also build Helix from upstream master (updated on every run)
   --hyprland    Also install the Hyprland desktop: Waybar, lock, idle, wifi
                 and power tools (Arch only)
   --doom        Also install Doom Emacs (run ./install.sh first)
@@ -347,43 +344,6 @@ llama() {
   fi
 }
 
-helix() {
-  log "Helix from upstream master"
-  # rustup comes with the base set; with --skip-base it must already be there
-  command -v cargo >/dev/null || "$DRY_RUN" || die "cargo not found; run without --skip-base first"
-  # Master rather than the distro package: workspace trust (helix/config.toml),
-  # which keeps a repo's .helix/ config and language servers from running
-  # until :workspace-trust, is in no release yet. Its tip on purpose: a re-run
-  # pulls and rebuilds, like the llama.app installer updates.
-  if [[ ! -d "$HELIX_SRC" ]]; then
-    run git clone https://github.com/helix-editor/helix.git "$HELIX_SRC"
-  fi
-  run git -C "$HELIX_SRC" pull --ff-only
-  # ~/.cargo/bin/hx may still be the link to the Steel build's wrapper:
-  # remove it, so cargo writes the binary there, not through the link
-  if [[ -L "$HOME/.cargo/bin/hx" ]]; then
-    run rm "$HOME/.cargo/bin/hx"
-  fi
-  # Installs hx into ~/.cargo/bin, which zshrc puts ahead of /usr/bin
-  run_sh "cd \"$HELIX_SRC\" && cargo install --path helix-term --locked"
-  # Helix also looks for runtime/ beside its binary, so themes and queries are
-  # found by every hx, even from a shell started before HELIX_RUNTIME existed
-  run ln -sfn "$HELIX_SRC/runtime" "$HOME/.cargo/bin/runtime"
-  # Grammars build into ~/.config/helix/runtime, the first runtime dir
-  run_sh "export HELIX_RUNTIME=\"$HELIX_SRC/runtime\" && \"\$HOME/.cargo/bin/hx\" --grammar fetch && \"\$HOME/.cargo/bin/hx\" --grammar build"
-
-  # The Steel build this replaced left its binaries and checkouts; nothing
-  # uses them now, but they are the user's to delete
-  local steel_leftovers=() path
-  for path in "$HOME"/.cargo/bin/{hx-steel,steel,forge,steel-language-server,cargo-steel-lib} \
-    "$HOME"/.local/src/{helix-steel,helix-file-watcher}; do
-    if [[ -e "$path" ]]; then steel_leftovers+=("$path"); fi
-  done
-  if ((${#steel_leftovers[@]})); then
-    warn "the Steel build of Helix left these behind, unused now: rm -rf ${steel_leftovers[*]}"
-  fi
-}
-
 hyprland() {
   local distro=$1
   log "Hyprland desktop"
@@ -422,7 +382,7 @@ doom() {
 # ---------------------------------------------------------------- main
 
 main() {
-  local want_base=true want_heavy=false want_firewall=false want_clamav=false want_llama=false want_helix=false want_hyprland=false want_doom=false
+  local want_base=true want_heavy=false want_firewall=false want_clamav=false want_llama=false want_hyprland=false want_doom=false
   local arg
   for arg in "$@"; do
     case "$arg" in
@@ -430,7 +390,6 @@ main() {
       --firewall) want_firewall=true ;;
       --clamav) want_clamav=true ;;
       --llama) want_llama=true ;;
-      --helix) want_helix=true ;;
       --hyprland) want_hyprland=true ;;
       --doom) want_doom=true ;;
       --skip-base) want_base=false ;;
@@ -458,7 +417,6 @@ main() {
   if "$want_firewall"; then firewall "$distro"; fi
   if "$want_clamav"; then clamav "$distro"; fi
   if "$want_llama"; then llama; fi
-  if "$want_helix"; then helix; fi
   if "$want_hyprland"; then hyprland "$distro"; fi
   if "$want_doom"; then doom; fi
   log "Done"
