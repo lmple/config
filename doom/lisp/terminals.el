@@ -286,10 +286,26 @@ form as the other project terminals, so the ibuffer Term column shows it."
 (map! :leader
       :desc "Claude Code IDE menu" "o c" #'claude-code-ide-menu)
 
+(defun my/claude-has-conversation-p (dir)
+  "Return non-nil when Claude Code has a saved conversation started in DIR.
+Claude Code keeps them as .jsonl files under its config directory, in
+projects/NAME, where NAME is DIR with every character other than a letter
+or a digit turned into -."
+  (let ((transcripts
+         (expand-file-name
+          (replace-regexp-in-string "[^A-Za-z0-9]" "-"
+                                    (directory-file-name (expand-file-name dir)))
+          (expand-file-name "projects"
+                            (or (getenv "CLAUDE_CONFIG_DIR") "~/.claude")))))
+    (and (file-directory-p transcripts)
+         (directory-files transcripts nil "\\.jsonl\\'" t 1))))
+
 (defun my/project-claude-ide ()
   "Show the project's claude-code-ide session in the selected window.
-Starts one when the project has none.  Of several, it shows the first,
-unnamed one, or else the one used last; `claude-code-ide' starts more."
+Starts one when the project has none, continuing the project's latest
+conversation when there is one (`claude-code-ide-continue').  Of several,
+it shows the first, unnamed one, or else the one used last;
+`claude-code-ide' starts more."
   (require 'claude-code-ide)
   (let* ((root (expand-file-name (project-root (project-current t))))
          (live (seq-filter (lambda (session)
@@ -310,7 +326,11 @@ unnamed one, or else the one used last; `claude-code-ide' starts more."
       ;; claude-code-ide shows a new session with plain `display-buffer'
       ;; when side windows are off; this keeps it in the selected window.
       (let ((display-buffer-overriding-action '(display-buffer-same-window)))
-        (claude-code-ide)))))
+        ;; `claude -c' exits at once when there is nothing to continue, which
+        ;; would leave a dead buffer, so only ask for it when there is.
+        (if (my/claude-has-conversation-p root)
+            (claude-code-ide-continue)
+          (claude-code-ide))))))
 
 (defvar my/project-agent-share 0.65
   "Fraction of the agent/shell split that the agent's window gets.
@@ -339,8 +359,8 @@ the space it shares with the shell.
 The shell runs in a zellij session that outlives Emacs: switching back to
 a project, even after an Emacs crash, reattaches it.  So does an agent
 other than claude.  Claude runs in claude-code-ide instead, which ties it
-to Emacs: switching back shows the running session, and after a crash
-`claude-code-ide-continue' picks the conversation back up."
+to Emacs: switching back shows the running session, and after a crash it
+starts again on the project's latest conversation (`my/project-claude-ide')."
   (interactive)
   (let* ((default-directory (or dir default-directory))
          (file-window (progn

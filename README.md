@@ -56,7 +56,7 @@ them:
 | Where | Session | After a crash |
 | --- | --- | --- |
 | Emacs shell (`C-c p p`), and the agent when it isn't claude | `emacs-<project>-<name>-<hash>`, buffer `<project> :: <name>` | `C-c p p` the project again and pick the same agent: same agent, same shell |
-| Emacs Claude (`C-c p p`) | none: claude-code-ide runs it in Emacs, buffer `<project> :: claude-ide` | gone with Emacs; `M-x claude-code-ide-continue` brings the conversation back |
+| Emacs Claude (`C-c p p`) | none: claude-code-ide runs it in Emacs, buffer `<project> :: claude-ide` | gone with Emacs; `C-c p p` the project again continues its latest conversation |
 | Emacs `main` workspace, beside `*scratch*` | `emacs-home-shell`, buffer `~ :: shell`, in `~/` | reattached on the next start |
 | Emacs `org` workspace, beside Dired of `~/org` | `emacs-org-shell`, buffer `org :: shell`, in `~/org` | reattached on the next start |
 | Emacs `C-c o T` | the same, with `term-1`, `term-2`, ... as names | `C-c o z` reattaches every one the project still has |
