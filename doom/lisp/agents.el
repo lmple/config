@@ -7,7 +7,7 @@
 ;;   which keeps the state Claude Code reports (OSC 7501) in
 ;;   `ghostel-program-status': working, blocked (a permission or a question),
 ;;   done, idle, with what it's doing.
-;; - An agent in zellij (pi-local, opencode, cockpits) reports to zellij, which
+;; - An agent in zellij (pi-local, opencode) reports to zellij, which
 ;;   doesn't pass it on to the terminal around it.  doom/agents.sh reads
 ;;   zellij, in the background, since it asks every session in turn.
 

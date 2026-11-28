@@ -28,7 +28,7 @@ Opt-in extras, combinable:
 | `--firewall` | ufw: deny inbound, allow outbound |
 | `--clamav` | ClamAV with its signature updater and daemon (about 1 GB of RAM); scan by hand with `clamdscan --multiscan --fdpass <path>` |
 | `--llama` | llama.cpp from the llama.app installer, on every distro, see [Local LLM](#local-llm-llamacpp) |
-| `--helix` | Helix from upstream master, built from source, see [Zellij cockpit](#zellij-cockpit-helix) |
+| `--helix` | Helix from upstream master, built from source |
 | `--hyprland` | Hyprland, Waybar, hyprlock/hypridle, wofi, Dolphin, nm-applet, power-profiles-daemon, mako, btop (Arch only), see [Hyprland desktop](#hyprland-desktop) |
 | `--doom` | Doom Emacs core + `doom install` |
 
@@ -61,7 +61,6 @@ them:
 | Emacs `main` workspace, beside `*scratch*` | `emacs-home-shell`, buffer `~ :: shell`, in `~/` | reattached on the next start |
 | Emacs `org` workspace, beside Dired of `~/org` | `emacs-org-shell`, buffer `org :: shell`, in `~/org` | reattached on the next start |
 | Emacs `C-c o T` | the same, with `term-1`, `term-2`, ... as names | `C-c o z` reattaches every one the project still has |
-| `cockpit` | `cockpit-<project>`, refused while another project of that name has a live one | `cockpit` in the project again: same editor, agent and shell |
 | Alacritty | `main`, shared by every window, each on its own tab | a new window attaches `main` again |
 | `M-x ghostel` | none, plain zsh | gone with Emacs |
 
@@ -81,7 +80,7 @@ them:
 - The agents list sits in `main`, above the `~` shell; `C-c o a` goes there
   from anywhere (`doom/lisp/agents.el`). It shows every agent: Emacs's Claude
   sessions, from the state Claude Code reports to ghostel, and the agents in
-  zellij, from `doom/agents.sh`, cockpits and Alacritty included.
+  zellij, from `doom/agents.sh`, Alacritty included.
   Waiting for you comes first, then done, working and idle; pi only ever shows
   as running. RET jumps to the agent's project workspace (an agent outside
   Emacs only says which session it's in), `g` refreshes, and it refreshes
@@ -90,35 +89,6 @@ them:
   sees the open file, the selection, diagnostics and xref. `C-c o c` opens its
   menu. `M-x claude-code-ide` starts another one in the project, under a name
   you pick (`<project> :: claude-ide:<name>`); C-x C-b shows which is which.
-
-## Zellij cockpit (Helix)
-
-A terminal-only take on `C-c p p`: `cockpit [DIR]` opens the project at DIR
-(default: here) in zellij with Helix on the left, the agent top-right and a
-shell below (`zellij/layouts/cockpit.kdl`). The agent is `$MY_COCKPIT_AGENT`,
-`claude` by default; set it per machine in `~/.extra_config`. From inside
-zellij it switches session, from outside it attaches.
-
-```sh
-./install.sh                    # links ~/.config/helix
-./deps.sh --skip-base --helix   # builds hx into ~/.cargo/bin
-```
-
-| Want | How |
-| --- | --- |
-| Open a file in the editor pane | `Alt e` (fzf), or `~/.config/zellij/hx-open.sh FILE[:LINE]` from the agent or shell; in any session, a tab without one gets a new Helix pane |
-| See an agent's edits | `space R` rereads every buffer from disk (`:reload-all`); Helix doesn't notice changes by itself |
-| Start the language servers | `:workspace-trust` once per project, or Enter on the prompt; until then nothing from the project runs |
-| Switch project | `Ctrl o w`, or `cockpit DIR` again |
-| Open or go to a project's cockpit from any pane | `Alt c`: fzf over the live cockpits (●), then the repos under `~/sources`; a typed path that matches nothing opens as is |
-| Ask the local model (docs, small tasks) | `Alt f` shows or hides pi on the local model, floating, in `~` (see [pi on the local model](#pi-on-the-local-model)); only cockpits created since it was added have it |
-
-- `--helix` builds upstream master and re-running it updates: workspace trust
-  is in no release yet, and without it a repo's `.helix/` config and language
-  servers run as soon as Helix opens it.
-- Grammars build into `helix/runtime` here (ignored, 2+ GB).
-- Still in Emacs: org, Lean's infoview (Helix gets diagnostics only), gptel,
-  magit.
 
 ## Hyprland desktop
 
@@ -224,11 +194,11 @@ Reading tools run without asking; `write_file` waits for `C-c C-c` (run) or
 
 ### pi on the local model
 
-`Alt f` in a cockpit shows or hides it; `pi-local` starts it anywhere else. It
-uses the loaded model, searches the notes in `~/notes` (or `$MY_NOTES_DIR`), and
-`pi/guard.ts` gives it gptel's rules: reading runs, `edit`/`write` ask, no
-`bash`, the same denied paths plus `/proc`. Don't `/login llama.cpp` in pi: a
-stored key wins over the key file and goes stale.
+`pi-local` starts it. It uses the loaded model, searches the notes in
+`~/notes` (or `$MY_NOTES_DIR`), and `pi/guard.ts` gives it gptel's rules:
+reading runs, `edit`/`write` ask, no `bash`, the same denied paths plus
+`/proc`. Don't `/login llama.cpp` in pi: a stored key wins over the key file
+and goes stale.
 
 ### Add or change a model
 

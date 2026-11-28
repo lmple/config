@@ -3,7 +3,7 @@
 # for Emacs's agents list (doom/lisp/agents.el, C-c o a). Emacs's own Claude
 # runs outside zellij: the list reads that one from Emacs itself.
 #
-# Why zellij: every other agent here runs in a zellij pane (cockpits, Emacs's
+# Why zellij: every other agent here runs in a zellij pane (Emacs's
 # emacs-* sessions, pi-local in main), and zellij 0.46 tracks each pane's state
 # (`list-panes --json` .attention), which Claude Code sets itself: Working
 # while it runs, NeedsYou when it asks. So no agent needs a hook for this.

@@ -103,7 +103,7 @@ export GIT_EDITOR="$EDITOR"
 
 # Aliases
 alias ll='ls -lah'
-# pi on the local model, as in the cockpit's Alt f float (pi/local.sh)
+# pi on the local model (pi/local.sh)
 alias pi-local='~/.config/pi/local.sh'
 
 # extra_config for special variables for personnal or job configs
@@ -164,8 +164,8 @@ if [[ -z "$ZELLIJ" ]]; then
         # Plain ghostel terminals (M-x ghostel) skip this and stay plain zsh.
         # Every window joins one general session, so a crashed window's
         # shells are in the next one. Windows share it but not their view:
-        # with mirror_session off, each can be on its own tab. Projects get
-        # their own cockpit-* sessions (`cockpit` below), Emacs its emacs-*.
+        # with mirror_session off, each can be on its own tab. Emacs's
+        # projects get their own emacs-* sessions.
         zellij attach --create main
     fi
 fi
@@ -189,68 +189,6 @@ if [[ -n "$ZELLIJ" && -n "$MY_ZELLIJ_RUN" ]]; then
     fi
     unset MY_ZELLIJ_RUN
 fi
-
-# Print the name of the zellij cockpit session (zellij/layouts/cockpit.kdl) of
-# the project at directory $1, creating the session detached if it isn't live.
-my_cockpit_session() {
-    local dir=${1:A}
-    if [[ ! -d $dir ]]; then
-        print -u2 -r -- "cockpit: $dir is not a directory"
-        return 1
-    fi
-    # The project is the nearest directory with a .git (a file in a worktree),
-    # found without running git, which runs the filters a repo's config names.
-    local root=$dir
-    until [[ -e $root/.git || $root == / ]]; do root=${root:h}; done
-    [[ -e $root/.git ]] || root=$dir
-    # Named after the project alone, so `zellij ls` and Ctrl o w read well;
-    # the truncation keeps zellij's socket path under its limit.
-    local name=${${root:t}[1,32]//[^A-Za-z0-9_-]/-}
-    local session="cockpit-$name"
-    local state=$(zellij list-sessions --no-formatting 2>/dev/null \
-        | awk -v s="$session" '$1 == s { print (/EXITED/ ? "exited" : "live") }')
-    # Without a hash, two projects with the same directory name share a
-    # name, so each cockpit records its root when created. A record is only
-    # read while its session is live, and sits in the runtime dir, which a
-    # reboot clears along with those sessions; a live one without a record
-    # (made by hand) isn't checked.
-    local roots=${XDG_RUNTIME_DIR:-/tmp/cockpit-$UID}/cockpit-roots
-    if [[ $state == live && -r $roots/$session && $(<$roots/$session) != $root ]]; then
-        print -u2 -r -- "cockpit: $session is already the cockpit of $(<$roots/$session)"
-        return 1
-    fi
-    # A session the server lost (reboot, logout) resurrects with its editor
-    # and agent behind "ENTER to run"; their processes are gone, so start over.
-    if [[ $state == exited ]]; then
-        zellij delete-session "$session" >/dev/null || return
-    fi
-    if [[ $state != live ]]; then
-        # Created first and joined after: `switch-session --layout` would also
-        # stack the layout onto a session that already exists. The subshell
-        # drops the current session's variables, which would otherwise make
-        # zellij act on it and reach the new panes.
-        ( cd "$root" && unset ZELLIJ ZELLIJ_PANE_ID ZELLIJ_SESSION_NAME &&
-              zellij --layout cockpit attach --create-background "$session" ) \
-            || return
-        mkdir -p -m 700 $roots && print -r -- $root >| $roots/$session
-    fi
-    print -r -- "$session"
-}
-
-# cockpit [DIR]: go to the cockpit of the project at DIR (default: here), the
-# zellij counterpart of Emacs's C-c p p. Its session outlives the terminal, so
-# after a crash or a detach, running this again brings the same editor, agent
-# and shell back; the agent only starts when the session is created.
-cockpit() {
-    local session
-    session=$(my_cockpit_session "${1:-$PWD}") || return
-    if [[ -n $ZELLIJ ]]; then
-        # Attaching from inside a pane would nest a zellij in it
-        zellij action switch-session "$session"
-    else
-        zellij attach "$session"
-    fi
-}
 
 # nvm resolving its default alias took ~1.2 s of a 1.6 s startup, paid by every
 # zellij pane and Emacs terminal. --no-use loads only the nvm command; the

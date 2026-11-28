@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # pi on the local llama-server (systemd/llama-server@.service), with the tool
-# rules gptel has in Emacs (pi/guard.ts). Run by the cockpit's floating pi
-# (zellij/layouts/cockpit.kdl) and by zshrc's `pi-local`; arguments go to pi.
+# rules gptel has in Emacs (pi/guard.ts). Run by zshrc's `pi-local`;
+# arguments go to pi.
 #
 # pi's built-in llama.cpp provider counts as set up once LLAMA_BASE_URL is
 # set; its key comes from pi/models.json (linked into ~/.pi/agent by
@@ -56,8 +56,8 @@ model="$(jq -r '
 [[ -n "$model" ]] || die "llama-server at $HOST has no preset model"
 
 # The notes it is meant to answer from (MY_NOTES_DIR per machine, in
-# ~/.extra_config). Named in the prompt because the cockpit's float starts in
-# ~, where the guard refuses a grep of "." (it holds ~/.ssh): the model has
+# ~/.extra_config). Named in the prompt because pi-local may start in ~,
+# where the guard refuses a grep of "." (it holds ~/.ssh): the model has
 # to know where to search instead. Left out when the folder doesn't exist, so
 # the model isn't sent looking for it.
 notes="${MY_NOTES_DIR:-$HOME/notes}"
