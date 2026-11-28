@@ -227,6 +227,14 @@ toolchains() {
   if [[ ! -d "$HOME/.elan" ]]; then
     run_sh 'curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y'
   fi
+  # Proof goals and diagnostics for Claude Code without a full lake build,
+  # pinned. Its four remote search tools are off: they send goal and search
+  # text to outside sites. uvx starts it, so uv must be installed.
+  if ! { [[ -x "$HOME/.local/bin/claude" ]] && "$HOME/.local/bin/claude" mcp get lean-lsp >/dev/null 2>&1; }; then
+    run "$HOME/.local/bin/claude" mcp add lean-lsp --scope user \
+      --env LEAN_MCP_DISABLED_TOOLS=lean_leansearch,lean_loogle,lean_leanfinder,lean_hammer_premise \
+      -- uvx lean-lsp-mcp==0.33.0
+  fi
 }
 
 sdkman() {

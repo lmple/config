@@ -24,6 +24,12 @@
   of the context used, directory and branch. When the context share climbs,
   `/clear` before starting the next task. `statusLine` in
   `~/.claude/settings.json` points at it (set by hand, that file isn't linked).
+- `deps.sh` registers the Lean MCP server `lean-lsp` (lean-lsp-mcp, pinned)
+  for Claude Code at user scope: proof goals, diagnostics and local search
+  without a full `lake build`. Its remote search tools (LeanSearch, Loogle,
+  Lean Finder, the premise hammer) are off, since they send goal text to
+  outside sites. It starts through `uvx`, which `deps.sh` doesn't install:
+  install uv first. Run `lake build` in a project before using it.
 
 ## Setup
 
