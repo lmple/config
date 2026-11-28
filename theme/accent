@@ -1,0 +1,6 @@
+# The Catppuccin Mocha accent: the active workspace and mode in Waybar, the
+# active window border, the lock screen ring, and zellij's selected tab and
+# pane. One of: rosewater flamingo pink mauve red maroon peach yellow green
+# teal sky sapphire blue lavender. Applied on Hyprland login and on
+# `hyprctl reload`; a new zellij session picks it up.
+red

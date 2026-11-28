@@ -1,6 +1,10 @@
+/* @accent, the accent named in theme/accent: theme/apply-accent.sh writes
+   accent.css (gitignored), which GTK only allows as the file's first rule. */
+@import url("accent.css");
+
 /* Catppuccin Mocha (https://catppuccin.com/palette), named as in its palette:
-   only the colours used here. The selected workspace is green on mantle, like
-   the selected tab in zellij's built-in catppuccin-mocha theme. */
+   only the colours used here. The selected workspace is the accent on mantle,
+   like the selected tab in zellij's catppuccin-mocha-accent theme. */
 @define-color base #1e1e2e;
 @define-color mantle #181825;
 @define-color surface0 #313244;
@@ -73,7 +77,7 @@ window#waybar {
 
 #workspaces button.active {
     color: @mantle;
-    background-color: @green;
+    background-color: @accent;
 }
 
 #workspaces button:hover {
@@ -218,9 +222,9 @@ window#waybar {
     color: @red;
 }
 
-/* Submap indicator: the selected workspace's green, as both mark a mode */
+/* Submap indicator: the accent, like the selected workspace */
 #submap {
-    background-color: @green;
+    background-color: @accent;
     color: @mantle;
     padding: 2px 10px;
     border-radius: 8px;

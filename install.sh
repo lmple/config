@@ -49,5 +49,11 @@ link agents/AGENTS.md "$HOME/.claude/AGENTS.md"
 link agents/CLAUDE.md "$HOME/.claude/CLAUDE.md"
 link agents/subagents "$HOME/.claude/agents"
 link agents/statusline.sh "$HOME/.claude/statusline.sh"
+
+# The accent's generated files (theme/accent), so zellij finds its theme
+# before the first Hyprland login, or in a Plasma session; hyprland.lua
+# rewrites them on every load. The hex it prints isn't needed here.
+"$REPO_DIR/theme/apply-accent.sh" >/dev/null
+printf 'accent applied from theme/accent\n'
 link agents/AGENTS.md "$HOME/.config/opencode/AGENTS.md"
 link agents/AGENTS.md "$HOME/.pi/agent/AGENTS.md"

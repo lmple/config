@@ -144,8 +144,14 @@ linked into `~/.config` by `install.sh`.
   clicked, at 5%, even over a fullscreen window.
 - Everything is Catppuccin Mocha: Emacs, the terminal (Alacritty, zellij,
   starship, zsh highlighting) and the desktop. `waybar/style.css` names the
-  palette, and mako, hyprlock and the window borders use the same values;
-  green, zellij's selected tab, marks the active workspace and window.
+  palette, and mako, hyprlock and the window borders use the same values.
+- The accent (red) marks the active workspace and window, the
+  lock screen ring and zellij's selected tab and pane. To change it, put
+  another Mocha accent in `theme/accent` (red, mauve, blue… the file lists
+  all 14) and run `hyprctl reload`; new zellij sessions follow. A wrong name
+  shows an error and keeps the last good accent. `theme/apply-accent.sh`
+  writes the gitignored files the apps read; Hyprland runs it on every load
+  and `install.sh` on setup.
 - Wallpaper: `~/Pictures/wallpaper.jpg`, a symlink per machine (black
   without it). Change it with `ln -sf <image> ~/Pictures/wallpaper.jpg`, then
   `pkill hyprpaper; hyprpaper &`.

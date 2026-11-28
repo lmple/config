@@ -53,6 +53,40 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("emacs --daemon")
 end)
 
+-- ─── Accent ──────────────────────────────────────────────────────────────────
+-- theme/accent names the Catppuccin Mocha accent. theme/apply-accent.sh turns
+-- it into the files Waybar, hyprlock and zellij read and prints its hex,
+-- which becomes the active border. It runs on every load, so `hyprctl reload`
+-- applies a new accent. Its exit status can't be read here (Hyprland reaps
+-- its children first), so success is output that is exactly one hex colour.
+local function apply_accent()
+    -- An error raised here would stop the rest of this file loading, keys
+    -- included, so a failure is reported instead
+    local run = io.popen('"$(dirname "$(realpath "$HOME/.config/hypr")")/theme/apply-accent.sh" 2>&1')
+    local out = "could not start theme/apply-accent.sh"
+    if run then
+        out = run:read("a")
+        run:close()
+    end
+    local hex = out:match("^(%x%x%x%x%x%x)\n$")
+    if hex then
+        -- After a reload Waybar is running; at login it starts later anyway
+        os.execute("pkill -USR2 -x waybar")
+        return hex
+    end
+    hl.notification.create({ text = "Accent not applied: " .. out, timeout = 20000, color = "rgba(f38ba8ff)" })
+    -- The script wrote nothing, so hyprlock and Waybar keep the last good
+    -- accent: take the border from the same file
+    local last = io.open(os.getenv("HOME") .. "/.config/hypr/accent.conf")
+    if not last then
+        return nil
+    end
+    local text = last:read("a")
+    last:close()
+    return text:match("rgba%((%x%x%x%x%x%x)ff%)")
+end
+local accent = apply_accent()
+
 -- ─── Look and feel ───────────────────────────────────────────────────────────
 hl.config({
     general = {
@@ -60,9 +94,10 @@ hl.config({
         gaps_out = 5,
         border_size = 2,
         col = {
-            -- Catppuccin Mocha green and surface1: green is the selected tab
-            -- and pane frame in zellij's built-in catppuccin-mocha theme
-            active_border = "rgba(a6e3a1ff)",
+            -- The accent (see above) and Catppuccin Mocha surface1. With no
+            -- accent at all (a fresh machine whose first run failed),
+            -- Hyprland's default border shows, next to the error.
+            active_border = accent and ("rgba(" .. accent .. "ff)") or nil,
             inactive_border = "rgba(45475acc)",
         },
         layout = "dwindle",

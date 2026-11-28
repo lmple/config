@@ -6,3 +6,7 @@ tmp/
 doom/extra_config.el
 doom/extra_packages.el
 doom/custom.el
+# Written by theme/apply-accent.sh from theme/accent
+waybar/accent.css
+hypr/accent.conf
+zellij/themes/catppuccin-mocha-accent.kdl
