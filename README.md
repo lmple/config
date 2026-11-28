@@ -20,6 +20,10 @@
   fully specified tasks that cost more to do than to describe, and reviews
   the result. Independent tasks run in parallel, each in its own git
   worktree.
+- Claude Code's status line is `agents/statusline.sh`: model, effort, share
+  of the context used, directory and branch. When the context share climbs,
+  `/clear` before starting the next task. `statusLine` in
+  `~/.claude/settings.json` points at it (set by hand, that file isn't linked).
 
 ## Setup
 
