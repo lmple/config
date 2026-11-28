@@ -21,8 +21,10 @@
   the result. Independent tasks run in parallel, each in its own git
   worktree.
 - Claude Code's status line is `agents/statusline.sh`: model, effort, share
-  of the context used, directory and branch. When the context share climbs,
-  `/clear` before starting the next task. `statusLine` in
+  of the context used, plan usage (the 5-hour limit with its reset time, the
+  weekly one; shown on Pro/Max plans once the session has a reply),
+  directory and branch. When the context share climbs, `/clear` before
+  starting the next task. `statusLine` in
   `~/.claude/settings.json` points at it (set by hand, that file isn't linked).
 - `deps.sh` registers the Lean MCP server `lean-lsp` (lean-lsp-mcp, pinned)
   for Claude Code at user scope: proof goals, diagnostics and local search
