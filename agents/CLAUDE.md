@@ -11,7 +11,9 @@ mode reviews the command that actually runs instead of asking for it twice:
 `rtk git …`, `rtk ls`, `rtk read FILE` (for `cat`; `head` is
 `rtk read FILE --head-lines N`), `rtk grep`, `rtk find`, `rtk diff`,
 `rtk du`, in every part of a pipe or `;`/`&&` chain. When unsure,
-`rtk rewrite 'CMD'` prints the form the hook would run.
+`rtk rewrite 'CMD'` prints the form the hook would run. The exception is
+jq: `rtk jq` prints a compressed view, not JSON, and hides jq's failures, so
+use `rtk proxy jq` whenever its output feeds a pipe or a file.
 
 Hand a task to the `implementer` subagent (Sonnet) when it is small and fully
 specified: the files, the change, how to verify it. Keep design, debugging
