@@ -39,3 +39,12 @@ link systemd/llama-server@.service "$HOME/.config/systemd/user/llama-server@.ser
 # directory, linked as a file since ~/.pi/agent also holds pi's logins
 link pi "$HOME/.config/pi"
 link pi/models.json "$HOME/.pi/agent/models.json"
+
+# One set of coding rules for every agent. Each reads its own global file, in
+# a directory that also holds its logins and sessions, so the file is linked,
+# not the directory. Claude Code doesn't read AGENTS.md: its CLAUDE.md imports
+# it and adds what only Claude needs.
+link agents/AGENTS.md "$HOME/.claude/AGENTS.md"
+link agents/CLAUDE.md "$HOME/.claude/CLAUDE.md"
+link agents/AGENTS.md "$HOME/.config/opencode/AGENTS.md"
+link agents/AGENTS.md "$HOME/.pi/agent/AGENTS.md"

@@ -10,6 +10,11 @@
   a shell logged in with `ssh` on the right. Run again, it switches back.
 - Emacs loads a snapshot of the shell environment, not zshrc: after changing
   PATH in `zshrc` or installing a new Node, run `doom sync --env` and restart it.
+- Coding rules for every agent (tests, style, README, commits) live in
+  `agents/AGENTS.md`, linked by `install.sh` for Claude Code (through
+  `agents/CLAUDE.md`, which adds rtk), opencode and pi. Edit it there; each
+  agent reads it at the start of its next session. Rules for one project go
+  in that project's own `AGENTS.md` or `CLAUDE.md`.
 
 ## Setup
 
