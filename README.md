@@ -5,8 +5,9 @@
 - `doom/config.el` holds the core settings and loads one file per topic from
   `doom/lisp/`: `terminals`, `remote`, `documents` (org, LaTeX), `lang-python`,
   `lang-js`, `llm`, `llm-tools`, `lang-lean`, `lang-quint`.
-- `C-c o s` opens Dired on a host from `~/.ssh/config`, over TRAMP (by hand:
-  `C-x d`, then `/ssh:` and TAB).
+- `C-c o s` opens a workspace named after a host from `~/.ssh/config`: Dired
+  of its home over TRAMP on the left (by hand: `C-x d`, then `/ssh:` and TAB),
+  a shell logged in with `ssh` on the right. Run again, it switches back.
 - Emacs loads a snapshot of the shell environment, not zshrc: after changing
   PATH in `zshrc` or installing a new Node, run `doom sync --env` and restart it.
 
@@ -60,6 +61,7 @@ them:
 | Emacs `org` workspace, beside Dired of `~/org` | `emacs-org-shell`, buffer `org :: shell`, in `~/org` | reattached on the next start |
 | Emacs `C-c o T` | the same, with `term-1`, `term-2`, ... as names | `C-c o z` reattaches every one the project still has |
 | Alacritty | `main`, shared by every window, each on its own tab | a new window attaches `main` again |
+| Emacs `C-c o s` | `emacs-ssh-<host>`, buffer `<host> :: ssh`, `ssh` typed into a local shell | `C-c o s` the host again: reattached, still logged in |
 | `M-x ghostel` | none, plain zsh | gone with Emacs |
 
 - Killing a buffer or window only detaches, and a reattach never starts the
